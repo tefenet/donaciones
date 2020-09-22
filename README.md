@@ -1,6 +1,6 @@
-# Proyecto de Software - Aplicación de ejemplo
+# Proyecto de Software - Grupo 56
 
-Aplicación de ejemplo para la cátedra de Proyecto de Software de la Facultad de Informática de la U.N.L.P.
+Grupo 56 de la cátedra de Proyecto de Software de la Facultad de Informática de la U.N.L.P.
 
 ## Iniciar ambiente
 

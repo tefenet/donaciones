@@ -1,34 +1,17 @@
-class User(object):
-    @classmethod
-    def all(cls, conn):
-        sql = "SELECT * FROM users"
-        cursor = conn.cursor()
-        cursor.execute(sql)
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import Column, Integer, String
+from app.db import dbSession
 
-        return cursor.fetchall()
+Base = declarative_base()
 
-    @classmethod
-    def create(cls, conn, data):
-        sql = """
-            INSERT INTO users (email, password, first_name, last_name)
-            VALUES (%s, %s, %s, %s)
-        """
 
-        cursor = conn.cursor()
-        cursor.execute(sql, list(data.values()))
-        conn.commit()
+class User(Base):
+    __tablename__ = 'users'
+    id = Column(Integer, primary_key=True)
+    email = Column(String)
+    password = Column(String)
+    first_name = Column(String)
+    last_name = Column(String)
 
-        return True
-
-    @classmethod
-    def find_by_email_and_pass(cls, conn, email, password):
-        sql = """
-            SELECT * FROM users AS u
-            WHERE u.email = %s AND u.password = %s
-        """
-
-        cursor = conn.cursor()
-        cursor.execute(sql, (email, password))
-
-        return cursor.fetchone()
-
+    def __repr__(self):
+        return "<User(email='{}', id='{})'>".format(self.email, self.id)

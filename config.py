@@ -1,5 +1,6 @@
 from os import environ
 
+
 class BaseConfig(object):
     """Base configuration."""
 
@@ -25,6 +26,7 @@ class DevelopmentConfig(BaseConfig):
     DB_USER = environ.get("DB_USER", "grupo56")
     DB_PASS = environ.get("DB_PASS", "proyecto2020")
     DB_NAME = environ.get("DB_NAME", "grupo56")
+    SQLALCHEMY_URL = 'mysql://{}:{}@{}/{}'.format(DB_USER, DB_PASS, DB_HOST, DB_NAME)
 
 
 class TestingConfig(BaseConfig):
@@ -37,6 +39,7 @@ class TestingConfig(BaseConfig):
     DB_USER = environ.get("DB_USER", "grupo56")
     DB_PASS = environ.get("DB_PASS", "proyecto2020")
     DB_NAME = environ.get("DB_NAME", "grupo56_test")
+    SQLALCHEMY_URL = 'mysql://{}:{}@{}/{}'.format(DB_USER, DB_PASS, DB_HOST, DB_NAME)
 
 
 class ProductionConfig(BaseConfig):
@@ -48,6 +51,7 @@ class ProductionConfig(BaseConfig):
     DB_USER = environ.get("DB_USER", "grupo56")
     DB_PASS = environ.get("DB_PASS", "MWQ3MzkxOTQwYWMw")
     DB_NAME = environ.get("DB_NAME", "grupo56")
+    SQLALCHEMY_URL = 'mysql://{}:{}@{}/{}'.format(DB_USER, DB_PASS, DB_HOST, DB_NAME)
 
 
 config = dict(
