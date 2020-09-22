@@ -116,7 +116,7 @@ CREATE TABLE `users` (
   `first_name` varchar(30) NOT NULL,
   `last_name` varchar(30) NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `email` (`email`),
+  UNIQUE KEY `email` (`email`)
 --  UNIQUE KEY `password` (`password`),
 --  UNIQUE KEY `first_name` (`first_name`),
 --  UNIQUE KEY `last_name` (`last_name`)
