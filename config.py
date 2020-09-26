@@ -10,6 +10,7 @@ class BaseConfig(object):
     DB_PASS = "db_pass"
     DB_NAME = "db_name"
     SECRET_KEY = "grupo56_dev"
+    SQLALCHEMY_URI = 'mysql://{}:{}@{}/{}'.format(DB_USER, DB_PASS, DB_HOST, DB_NAME)
 
     @staticmethod
     def configure(app):
@@ -23,10 +24,10 @@ class DevelopmentConfig(BaseConfig):
     ENV = "development"
     DEBUG = environ.get("DEBUG", True)
     DB_HOST = environ.get("DB_HOST", "localhost")
-    DB_USER = environ.get("DB_USER", "grupo56")
-    DB_PASS = environ.get("DB_PASS", "proyecto2020")
-    DB_NAME = environ.get("DB_NAME", "grupo56")
-    SQLALCHEMY_URL = 'mysql://{}:{}@{}/{}'.format(DB_USER, DB_PASS, DB_HOST, DB_NAME)
+    DB_USER = environ.get("DB_USER")
+    DB_PASS = environ.get("DB_PASS")
+    DB_NAME = environ.get("DB_NAME")
+    SQLALCHEMY_URI = 'mysql://{}:{}@{}/{}'.format(DB_USER, DB_PASS, DB_HOST, DB_NAME)
 
 
 class TestingConfig(BaseConfig):
@@ -36,10 +37,10 @@ class TestingConfig(BaseConfig):
     TESTING = True
     DEBUG = environ.get("DEBUG", True)
     DB_HOST = environ.get("DB_HOST", "localhost")
-    DB_USER = environ.get("DB_USER", "grupo56")
-    DB_PASS = environ.get("DB_PASS", "proyecto2020")
-    DB_NAME = environ.get("DB_NAME", "grupo56_test")
-    SQLALCHEMY_URL = 'mysql://{}:{}@{}/{}'.format(DB_USER, DB_PASS, DB_HOST, DB_NAME)
+    DB_USER = environ.get("DB_USER")
+    DB_PASS = environ.get("DB_PASS")
+    DB_NAME = environ.get("DB_NAME")
+    SQLALCHEMY_URI = 'mysql://{}:{}@{}/{}'.format(DB_USER, DB_PASS, DB_HOST, DB_NAME)
 
 
 class ProductionConfig(BaseConfig):
@@ -51,7 +52,7 @@ class ProductionConfig(BaseConfig):
     DB_USER = environ.get("DB_USER", "grupo56")
     DB_PASS = environ.get("DB_PASS", "MWQ3MzkxOTQwYWMw")
     DB_NAME = environ.get("DB_NAME", "grupo56")
-    SQLALCHEMY_URL = 'mysql://{}:{}@{}/{}'.format(DB_USER, DB_PASS, DB_HOST, DB_NAME)
+    SQLALCHEMY_URI = 'mysql://{}:{}@{}/{}'.format(DB_USER, DB_PASS, DB_HOST, DB_NAME)
 
 
 config = dict(
