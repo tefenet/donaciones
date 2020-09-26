@@ -59,6 +59,7 @@ def create_app(environment="production"):
     # Handlers
     app.register_error_handler(404, handler.not_found_error)
     app.register_error_handler(401, handler.unauthorized_error)
+    app.register_error_handler(500, handler.internal_server_error)
     # Implementar lo mismo para el error 500 y 401
 
     # Retornar la instancia de app configurada
