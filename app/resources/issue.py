@@ -5,7 +5,8 @@ from app.models.issue import Issue
 
 # Public resources
 def index():
-    issues = dbSession.query(Issue).all()
+    # issues = dbSession.query(Issue).all()
+    issues = Issue.query.all()
     return render_template("issue/index.html", issues=issues)
 
 

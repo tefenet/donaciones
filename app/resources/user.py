@@ -9,8 +9,8 @@ def index():
     if not authenticated(session):
         abort(401)
 
-    users = dbSession.query(User).all()
-
+    users = User.query.all()
+    # User.query.filter(User.name == 'admin').first()
     return render_template("user/index.html", users=users)
 
 

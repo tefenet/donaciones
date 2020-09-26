@@ -1,8 +1,8 @@
-from os import path, environ
-from flask import Flask, render_template, g
+from os import environ
+from flask import Flask, render_template
 from flask_session import Session
 from config import config
-from app.db import dbSession
+from app.db import dbSession, init_db
 from app.resources import issue
 from app.resources import user
 from app.resources import auth

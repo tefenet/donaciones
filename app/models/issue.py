@@ -1,7 +1,5 @@
-from sqlalchemy.ext.declarative import declarative_base
+from app.db import Base
 from sqlalchemy import Column, Integer, String
-
-Base = declarative_base()
 
 
 class Issue(Base):
@@ -11,6 +9,12 @@ class Issue(Base):
     description = Column(String)
     category_id = Column(String)
     status_id = Column(String)
+
+    def __init__(self, email=None, description=None, category_id=None, status_id=None):
+        self.email = email
+        self.description = description
+        self.category_id = category_id
+        self.status_id = status_id
 
     def __repr__(self):
         return "<Issue(email='{}', id='{}')>".format(self.email, self.id)
