@@ -1,8 +1,8 @@
-from os import path, environ
-from flask import Flask, render_template, g
+from os import environ
+from flask import Flask, render_template
 from flask_session import Session
 from config import config
-from app import db
+from app.db import dbSession, init_db
 from app.resources import issue
 from app.resources import user
 from app.resources import auth
@@ -23,8 +23,10 @@ def create_app(environment="production"):
     app.config["SESSION_TYPE"] = "filesystem"
     Session(app)
 
-    # Configure db
-    db.init_app(app)
+    # Configure db, decorator cause callback cleanup, to release resources used by a session after request
+    @app.teardown_appcontext
+    def cleanup(resp_or_exc):
+        dbSession.remove()
 
     # Funciones que se exportan al contexto de Jinja2
     app.jinja_env.globals.update(is_authenticated=helper_auth.authenticated)
@@ -57,6 +59,7 @@ def create_app(environment="production"):
     # Handlers
     app.register_error_handler(404, handler.not_found_error)
     app.register_error_handler(401, handler.unauthorized_error)
+    app.register_error_handler(500, handler.internal_server_error)
     # Implementar lo mismo para el error 500 y 401
 
     # Retornar la instancia de app configurada

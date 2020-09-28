@@ -1,30 +1,24 @@
-import pymysql
+from os import environ
 
-from flask import current_app
-from flask import g
-from flask import cli
+from sqlalchemy import create_engine
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import scoped_session
+from sqlalchemy.orm import sessionmaker
 
+from config import config
 
-def connection():
-    if "db_conn" not in g:
-        conf = current_app.config
-        g.db_conn = pymysql.connect(
-            host=conf["DB_HOST"],
-            user=conf["DB_USER"],
-            password=conf["DB_PASS"],
-            db=conf["DB_NAME"],
-            cursorclass=pymysql.cursors.DictCursor,
-        )
+engine = create_engine(config.get(environ.get("FLASK_ENV")).SQLALCHEMY_URL)
 
-    return g.db_conn
+dbSession = scoped_session(sessionmaker(autocommit=False,
+                                        autoflush=False, bind=engine))
+
+Base = declarative_base()
+Base.query = dbSession.query_property()
 
 
-def close(e=None):
-    conn = g.pop("db_conn", None)
-
-    if conn is not None:
-        conn.close()
-
-
-def init_app(app):
-    app.teardown_appcontext(close)
+def init_db():
+    # import all modules here that might define models so that
+    # they will be registered properly on the metadata.  Otherwise
+    # you will have to import them first before calling init_db()
+    import app.models
+    Base.metadata.create_all(bind=engine)

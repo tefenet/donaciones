@@ -1,22 +1,20 @@
-class Issue(object):
-    @classmethod
-    def all(cls, conn):
-        sql = "SELECT * FROM issues"
+from app.db import Base
+from sqlalchemy import Column, Integer, String
 
-        cursor = conn.cursor()
-        cursor.execute(sql)
 
-        return cursor.fetchall()
+class Issue(Base):
+    __tablename__ = 'issues'
+    id = Column(Integer, primary_key=True)
+    email = Column(String)
+    description = Column(String)
+    category_id = Column(String)
+    status_id = Column(String)
 
-    @classmethod
-    def create(cls, conn, data):
-        sql = """
-            INSERT INTO issues (email, description, category_id, status_id)
-            VALUES (%s, %s, %s, %s)
-        """
+    def __init__(self, email=None, description=None, category_id=None, status_id=None):
+        self.email = email
+        self.description = description
+        self.category_id = category_id
+        self.status_id = status_id
 
-        cursor = conn.cursor()
-        cursor.execute(sql, list(data.values()))
-        conn.commit()
-
-        return True
+    def __repr__(self):
+        return "<Issue(email='{}', id='{}')>".format(self.email, self.id)
