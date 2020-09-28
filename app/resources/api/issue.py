@@ -1,9 +1,8 @@
 from flask import jsonify
-from app.db import dbSession
 from app.models.issue import Issue
 
 
 def index():
-    issues = dbSession.query(Issue).all()
+    issues = Issue.query.all()
 
     return jsonify(issues=issues)

@@ -1,5 +1,4 @@
-from flask import redirect, render_template, request, url_for, abort, session, flash, current_app as app
-from app.db import dbSession
+from flask import redirect, render_template, request, url_for, session, flash, current_app as app
 from app.models.user import User
 
 
@@ -9,8 +8,8 @@ def login():
 
 def authenticate():
     params = request.form
-    user = dbSession.query(User).filter(User.email == params["email"],
-                                        User.password == params["password"]).first()  # query and
+    user = User.query.filter(User.email == params["email"],
+                             User.password == params["password"]).first()  # query and
     app.logger.info("user: %s", user)
 
     if not user:
