@@ -5,9 +5,27 @@
 {% endblock %}
 {% block content %}
   <h1>Iniciar sesión</h1>
+<div class="container">
   <form action="{{ url_for('auth_authenticate') }}" method="POST">
-    <input name="email" placeholder="Correo" required/>
-    <input type="password" name="password" placeholder="Clave" required/>
-    <input type="submit" value="Login">
+    <div class="row">
+      <div class="col-25">
+        <label for="mail">Email</label>
+      </div>
+      <div class="col-25">
+        <input  type="text" id="mail" name="email" placeholder="Correo"/>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-25">
+        <label for="pass">Clave</label>
+      </div>
+      <div class="col-75">
+        <input type="password" id="pass" name="password" placeholder="Clave"/>
+      </div>
+    </div>
+    <div class="row">
+      <input type="submit" value="Login">
+    </div>
   </form>
+</div>
 {% endblock %}

@@ -16,9 +16,9 @@
   <ul class="list-group">
     {% for issue in issues %}
     <li class="list-group-item {{loop.cycle('oddRow', 'evenRow')}}">
-            <h5>{{ issue.status_id }} </h5>
+            <h5>{{ 'New' if issue.status_id==1 else ('toDo 'if issue.status_id==2 else 'inProgress') }} </h5>
             <p>{{ issue.description }}</p>
-            <p>autor: {{ issue.email }} - categoría: {{ issue.category_id }}</p>
+        <p>autor: {{ issue.email }} - categoría: <em class="{{ 'bug' if issue.category_id==1 else 'question' }}">{{ 'Bug' if issue.category_id==1 else 'Question' }}</em></p>
     </li>
     {% endfor %}
     </ul>
