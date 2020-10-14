@@ -4,10 +4,21 @@
   {{ super() }}
 {% endblock %}
 {% block content %}
-  <h1>usuarios</h1>
+<div style="display:flex">
+    <h1 class="mx-auto">Usuarios</h1>
+</div>
+<div style="display:flex">
+    <a href="{{ url_for('home') }}" class="link mx-auto">Volver</a>
+    <a href="{{ url_for('user_new') }}" class="link mx-auto">Nuevo</a>
+</div>
+<div class="container">
+  <ul class="list-group ">
   {% for user in users %}
-  <li>{{ user.email }} - {{ user.first_name }} - {{ user.last_name }} - {{ user.password }}</li>
+  <li class="list-group-item {{loop.cycle('oddRow', 'evenRow')}}">
+    <h6>{{ user.first_name }} - {{ user.last_name }}</h6>
+    <p>email: {{ user.email }} - password: {{ user.password }}</p>
+  </li>
   {% endfor %}
-  <a href="{{ url_for('home') }}" class="link">Volver</a>
-  <a href="{{ url_for('user_new') }}" class="link">Nuevo</a>
+  </ul>
+</div>
 {% endblock %}
