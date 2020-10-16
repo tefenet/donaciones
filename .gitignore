@@ -150,3 +150,6 @@ coc-settings.json
 
 # JIRA plugin
 atlassian-ide-plugin.xml
+
+# alembic migrations
+alembic.ini

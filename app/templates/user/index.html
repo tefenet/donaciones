@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 {% block title %}Usuarios{% endblock %}
 {% block head %}
-  {{ super() }}
+{{ super() }}
 {% endblock %}
 {% block content %}
 <div style="display:flex">
@@ -12,13 +12,63 @@
     <a href="{{ url_for('user_new') }}" class="link mx-auto">Nuevo</a>
 </div>
 <div class="container">
-  <ul class="list-group ">
-  {% for user in users %}
-  <li class="list-group-item {{loop.cycle('oddRow', 'evenRow')}}">
-    <h6>{{ user.first_name }} - {{ user.last_name }}</h6>
-    <p>email: {{ user.email }} - password: {{ user.password }}</p>
-  </li>
-  {% endfor %}
-  </ul>
+
+    <div class="card">
+        <div class="card-body">
+            <p class="card-description">
+                Lista de usuarios
+            </p>
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th>Correo</th>
+                        <th>Username</th>
+                        <th>Nombre</th>
+                        <th>Apellido</th>
+                        <th>Activo</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td>{{user.email}}</td>
+                        <td>{{user.username}}</td>
+                        <td>{{user.first_name}}</td>
+                        <td>{{user.last_name}}</td>
+                        <td>{{user.active}}</td>
+                        {% if user.active %}
+                        <td><label class="badge badge-success decoration-none">
+                            <a class="text-decoration-none"
+                               href="{{url_for('user_deactivate', id=user.id)}}">Desactivar</a></label>
+                        </td>
+                        {% else %}
+                        <td><label class="badge badge-danger">
+                            <a class="text-decoration-none"
+                               href="{{url_for('user_activate', id=user.id)}}">Activar</a></label>
+                        </td>
+                        {% endif %}
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="m-3">
+            <h5>Buscar por nombre de usuario</h5>
+            <form class="form-inline my-2 my-lg-0 mr-auto d-lg-inline-block d-none"
+                  action="{{url_for('user_search_by_username')}}">
+                <input class="form-control mr-sm-2" type="text" id="username" name="username" placeholder="Username"
+                       aria-label="Username">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Buscar</button>
+            </form>
+        </div>
+        <div class="m-3">
+            <h5>Buscar por estado</h5>
+            <a class="btn btn-outline-success my-2 my-sm-0" href="{{url_for('user_search_by_status', status=True)}}">Activos</a>
+            <a class="btn btn-outline-success my-2 my-sm-0" href="{{url_for('user_search_by_status', status=False)}}">Inactivos</a>
+        </div>
+    </div>
+
 </div>
 {% endblock %}
