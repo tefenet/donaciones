@@ -14,11 +14,12 @@ class LoginForm(FlaskForm):
     """Formulario para inicio de sesión del usuario"""
 
     username = StringField('Email o Nombre de usuario: ', [DataRequired(), Length(min=4, max=25)])
-    password = PasswordField('Contraseña: ', [DataRequired(), Length(min=6, max=200)])
+    password = PasswordField('Contraseña: ', [DataRequired()])
     submit = SubmitField('Iniciar Sesión')
 
+    # Formulario para registro de usuarios
 
-# Formulario para registro de usuarios
+
 class CreateUserForm(FlaskForm):
     email = EmailField('Dirección de correo',
                        [DataRequired(), Email(message="Ingresá un correo electronico válido")])
@@ -29,24 +30,25 @@ class CreateUserForm(FlaskForm):
                                             length(message="La contraseña debe tener entre 6 y 20 caracteres", min=6,
                                                    max=20),
                                             EqualTo('confirm', message='Las contraseñas deben ser iguales')])
+    confirm = PasswordField('Confirmar Contraseña')
     first_name = StringField('Nombre',
                              [Length(message="El nombre  debe tener entre 4 y 20 caracteres", min=4, max=20),
                               DataRequired()])
     last_name = StringField('Apellido',
                             [Length(message="El apellido  debe tener entre 2 y 20 caracteres", min=2, max=20),
                              DataRequired()])
-    active = BooleanField('Estado(Activo/Inactivo)', DataRequired())
-    confirm = PasswordField('Confirmar Contraseña')
-    submit = SubmitField('Registrarse')
+    active = BooleanField('Estado(Activo/Inactivo)')
 
     def validate_username(self, username):
         """Compruebo que el nombre de usuario no exista en el sistema"""
-        user = User.query.filter(User.email == username.data).first()
+        if ' ' in username.data:
+            raise ValidationError("El nombre de usuario no puede contener espacios")
+        user = User.query.filter(User.username == username.data).first()
         if user is not None:
-            raise ValidationError('Ya hay una cuenta registrada con ese nombre de usuario.')
+            raise ValidationError('Ya existe una cuenta registrada con ese nombre de usuario.')
 
     def validate_email(self, email):
         """Compruebo que el correo no exista en el sistema, si existe levanta una excepción de tipo ValidationError"""
         user = User.query.filter(User.email == email.data).first()
         if user is not None:
-            raise ValidationError('Ya hay una cuenta registrada con ese correo.')
+            raise ValidationError('Ya existe una cuenta registrada con ese correo.')
