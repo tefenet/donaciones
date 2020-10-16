@@ -9,7 +9,7 @@ def login_required(f):
             return f(*args, **kwargs)
         else:
             flash("Tenes estar logueado para acceder a esta página!")
-            return redirect(url_for('login'))  # url_login
+            abort(401)
 
     return wrap
 
@@ -30,7 +30,7 @@ def authenticated(session):
 
 
 def administrator(session):
-    if ('user' in session) and (session['user'].tipo_cuenta == 1):
+    if 'user_id' in session and session['is_admin']:
         return True
     return False
 
