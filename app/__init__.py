@@ -1,5 +1,5 @@
 from os import environ
-from flask import Flask, render_template
+from flask import Flask, render_template, session
 from flask_session import Session
 from config import config
 from app.db import dbSession, init_db
@@ -34,9 +34,7 @@ def create_app(environment="production"):
     # Autenticación
     app.add_url_rule("/iniciar_sesion", "auth_login", auth.login)
     app.add_url_rule("/cerrar_sesion", "auth_logout", auth.logout)
-    app.add_url_rule(
-        "/autenticacion", "auth_authenticate", auth.authenticate, methods=["POST"]
-    )
+    app.add_url_rule("/autenticacion", "auth_authenticate", auth.authenticate, methods=["POST"])
 
     # Rutas de Consultas
     app.add_url_rule("/consultas", "issue_index", issue.index)
@@ -47,11 +45,20 @@ def create_app(environment="production"):
     app.add_url_rule("/usuarios", "user_index", user.index)
     app.add_url_rule("/usuarios", "user_create", user.create, methods=["POST"])
     app.add_url_rule("/usuarios/nuevo", "user_new", user.new)
+    app.add_url_rule("/usuarios/desactivar/<int:id>", "user_deactivate", user.deactive_account)
+    app.add_url_rule("/usuarios/activar/<int:id>", "user_activate", user.activate_account)
+    app.add_url_rule("/usuarios/perfil", "user_profile", user.profile)
 
     # Ruta para el Home (usando decorator)
     @app.route("/")
     def home():
         return render_template("home.html")
+
+    # Session
+    @app.route('/session')
+    @helper_auth.admin_required
+    def get_session():
+        return render_template('session.html', session=session)
 
     # Rutas de API-rest
     app.add_url_rule("/api/consultas", "api_issue_index", api_issue.index)
