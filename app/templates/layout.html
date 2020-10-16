@@ -57,7 +57,7 @@
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                         {% if is_authenticated(session) %}
-                        <a class="dropdown-item" href="{{ url_for('user_index') }}">perfil</a>
+                        <a class="dropdown-item" href="{{ url_for('user_profile') }}">perfil</a>
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="{{ url_for('auth_logout') }}">log out</a>
                         {% else %}
