@@ -28,42 +28,36 @@ def authenticate():
     """authenticate() realiza los chequeos necesarios para autorizar el ingreso del usuario al sistema.
     La funcion thwart del paquete pymsql se encarga de sanitizar el parametro para evitar posibles sql injections"""
 
-    params = request.form
+    form = LoginForm(request.form)
 
-    username = thwart(params['username']).lower()
-    password = thwart(params['password'])
+    username = thwart(form.username.data.lower())
+    password = thwart(form.password.data.lower())
+
+    app.logger.info("username {}".format(username))
 
     user = User.query.filter(
         User.email == username).first()  # primero compruebo el que exista el correo, sino voy por el nombre de usuario
-
     if user is not None:
         if user.check_password(password) is False:  # pregunto si la pw conincide con el hash almacenado
             flash("Usuario/Email o Clave incorrecto.", "danger")
-            return redirect(url_for('login'))
+            return redirect(url_for('auth_login'))
     else:
+        # si llegué aca es porque no encontro el mail, pruebo buscando el username
         user = User.query.filter(User.username == username).first()
         if user is None:
             flash("Usuario/Email o Clave incorrecto.", "danger")
-            return redirect(url_for('login'))
+            return redirect(url_for('auth_login'))
         else:
             if user.check_password(password) is False:
                 flash("Usuario/Email o Clave incorrecto.", "danger")
-                return redirect(url_for('login'))
+                return redirect(url_for('auth_login'))
         if not user.active:
             flash("La cuenta que has ingresado está desactivada.", "danger")
-            return redirect(url_for('login'))
+            return redirect(url_for('auth_login'))
 
     app.logger.info("user: %s", user)
     set_session(user)
-
-    if not user:
-        flash("Usuario o clave incorrecto.")
-        return redirect(url_for("auth_login"))
-
-    set_session(user)
-    app.logger.info("session %s", session)
-    flash("La sesión se inició correctamente.")
-
+    flash("La sesión se inició correctamente.", "success")
     return redirect(url_for("home"))
 
 
@@ -72,6 +66,6 @@ def logout():
     """El decorador @login_required lo uso para indicar que para acceder a esta ruta tengo que estar logueado.
     La función logout limpia la sesion y envía al usuario al home."""
     session.clear()
-    clear_session()  # otra forma de limpiar la sesión puede ser recorriendo los items de la sesion y eliminarlos, similar al metodo session.clear() pero implementado por nosotros
+    # clear_session()  # otra forma de limpiar la sesión puede ser recorriendo los items de la sesion y eliminarlos, similar al metodo session.clear() pero implementado por nosotros
     flash("La sesión se cerró correctamente.", "success")
     return redirect(url_for('home'))
