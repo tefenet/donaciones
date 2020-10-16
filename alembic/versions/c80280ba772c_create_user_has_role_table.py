@@ -26,5 +26,4 @@ def upgrade():
 
 
 def downgrade():
-    def downgrade():
-    	op.drop_table('user_has_role')
+   	op.drop_table('user_has_role')

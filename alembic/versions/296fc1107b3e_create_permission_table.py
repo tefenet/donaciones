@@ -25,5 +25,4 @@ def upgrade():
 
 
 def downgrade():
-    def downgrade():
-    	op.drop_table('permission')
+    op.drop_table('permission')
