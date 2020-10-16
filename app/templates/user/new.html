@@ -1,31 +1,28 @@
 {% extends "layout.html" %}
 {% block title %}Usuarios{% endblock %}
 {% block head %}
-  {{ super() }}
+{{ super() }}
 {% endblock %}
 {% block content %}
-  <h1>Crear un usuario</h1>
-  <form action="{{ url_for('user_create') }}" method="POST">
+<h1>Crear un usuario</h1>
+
+<form method=post action="{{url_for('user_create')}}">
+    {{ form.hidden_tag() }}
+
+    {% for field in form %}
+    {% if field.name != "csrf_token" %}
     <p>
-      <label>Email<label></br>
-      <input name="email" placeholder="Correo"/>
+        {{ field.label() }}
+        {{ field(class="js-scroll-trigger", placeholder="") }}
     </p>
-    <p>
-      <label>Clave<label></br>
-      <input type="password" name="password" placeholder="Clave"/>
-    </p>
-    <p>
-      <label>Nombre<label></br>
-      <input name="first_name" placeholder="Nombre"/>
-    </p>
-    <p>
-      <label>Apellido<label></br>
-      <input name="last_name" placeholder="Apellido"/>
-    </p>
-    <p>
-      <input type="submit" value="Crear">
-      <button type="reset">Limpiar</button>
-    </p>
-  </form>
-  <a href="{{ url_for('user_index') }}" class="link">Volver</a>
+    {% endif %}
+    {% endfor %}
+
+    <input type="submit" value="Crear" class="btn btn-primary js-scroll-trigger">
+    <button type="reset" class="btn btn-primary js-scroll-trigger">Limpiar</button>
+
+</form>
+
+
+<a href="{{ url_for('user_index') }}" class="link">Volver</a>
 {% endblock %}
