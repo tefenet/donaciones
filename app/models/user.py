@@ -20,6 +20,7 @@ class User(Base):
     active = Column(Boolean, index=True)
     account_type = Column(SmallInteger, default=2)
     create_date = Column(DateTime, default=datetime.now())
+    update_date = Column(DateTime, default=datetime.now())
 
     def __init__(self, email=None, username=None, password=None, first_name=None, last_name=None, account_type=2,
                  active=None):
@@ -41,3 +42,7 @@ class User(Base):
     def check_password(self, password):
         """Comprueba que la contraseña ingresada corresponda al hash almacenado"""
         return check_password_hash(self.password_hash, password)
+
+    def set_update_date(self):
+        """Setea el campo update_date con datetime now"""
+        self.update_date = datetime.now()
