@@ -1,9 +1,10 @@
-from flask import redirect, render_template, request, url_for, session, abort, flash
+from flask import redirect, render_template, request, url_for, session, abort, flash, current_app as app
 from app.db import dbSession
 from app.models.user import User
 from app.helpers.auth import login_required, admin_required, administrator
 from app.helpers.handler import display_errors
 from app.resources.forms import CreateUserForm
+from werkzeug.exceptions import BadRequestKeyError
 from pymysql import escape_string as thwart
 
 
@@ -87,17 +88,29 @@ def update_user(id=None):
 
 
 @admin_required
-def search_user_by_status(status=True):
+def search_by_status():
     """Busca usuarios por estado(activo/inactivo).
     Recibe status, que es un booleano, devuelve una lista de usuarios """
-    return list(User.query.filter(User.active == status))
+    try:
+        status = False if request.args['status'] == "False" else True
+    except BadRequestKeyError:
+        return render_template("user/index.html", users=[])
+    users = list(User.query.filter(User.active == status))
+    return render_template("user/index.html", users=users)
 
 
 @admin_required
-def search_user_by_username(username):
+def search_by_username():
     """Busca usuarios por nombre de usuario.
     Recibe status, que es un booleano, devuelve una lista de usuarios """
-    return list(User.query.filter(User.username.contains('pepe')))
+    app.logger.info(request.form)
+    try:
+        username = request.args['username']
+    except BadRequestKeyError:
+        return render_template("user/index.html", users=[])
+
+    users = list(User.query.filter(User.username.contains(username)))
+    return render_template("user/index.html", users=users)
 
 
 @login_required
