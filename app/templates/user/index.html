@@ -1,13 +1,56 @@
 {% extends "layout.html" %}
 {% block title %}Usuarios{% endblock %}
 {% block head %}
-  {{ super() }}
+{{ super() }}
 {% endblock %}
 {% block content %}
-  <h1>usuarios</h1>
-  {% for user in users %}
-  <li>{{ user.email }} - {{ user.first_name }} - {{ user.last_name }} - {{ user.password }}</li>
-  {% endfor %}
-  <a href="{{ url_for('home') }}" class="link">Volver</a>
-  <a href="{{ url_for('user_new') }}" class="link">Nuevo</a>
+<h1>Usuarios</h1>
+<div class="col-lg-6 grid-margin stretch-card">
+    <div class="card">
+        <div class="card-body">
+            <p class="card-description">
+                Lista de usuarios
+            </p>
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th>Correo</th>
+                        <th>Username</th>
+                        <th>Nombre</th>
+                        <th>Apellido</th>
+                        <th>Activo</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td>{{user.email}}</td>
+                        <td>{{user.username}}</td>
+                        <td>{{user.first_name}}</td>
+                        <td>{{user.last_name}}</td>
+                        <td>{{user.active}}</td>
+                        {% if user.active %}
+                        <td><label class="badge badge-success decoration-none">
+                            <a class="text-decoration-none"
+                               href="{{url_for('user_deactivate', id=user.id)}}">Desactivar</a></label>
+                        </td>
+                        {% else %}
+                        <td><label class="badge badge-danger">
+                            <a class="text-decoration-none"
+                               href="{{url_for('user_activate', id=user.id)}}">Activar</a></label>
+                        </td>
+                        {% endif %}
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="m-3">
+    <a href="{{ url_for('home') }}" class="link">Volver</a>
+    <a href="{{ url_for('user_new') }}" class="link">Nuevo</a>
+</div>
 {% endblock %}
