@@ -19,11 +19,12 @@
 <header>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <a class="navbar-brand" href="#">
-             <span class="d-lg-inline-block d-none">Donaciones.gov</span>
+            <span class="d-lg-inline-block d-none">Donaciones.gov</span>
         </a>
         {% block navbar %}
         {% endblock %}
-         <button class="navbar-toggler " type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler " type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
 
@@ -42,7 +43,7 @@
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <a class="nav-link dropdown-item" href="{{ url_for('issue_index') }}">Consultas</a>
                         {% if is_authenticated(session) %}
-                        <a class="nav-link dropdown-item" href="{{ url_for('user_index') }}" >Usuarios</a>
+                        <a class="nav-link dropdown-item" href="{{ url_for('user_index') }}">Usuarios</a>
                         {% endif %}
 
                     </div>
@@ -71,13 +72,21 @@
 </header>
 <content style="min-Height:calc(100vh - 60px)">
     <div id="content">
-        {% with messages = get_flashed_messages() %}
+        {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
-        <ul class=flashes>
-            {% for message in messages %}
-            <li>{{ message }}</li>
-            {% endfor %}
-        </ul>
+        {% for category, mess in messages %}
+        {% if category != 'message' %}
+        <div class="alert alert-{{category}} alert-dismissible fade show ">
+            {% else %}
+            <div class="alert alert-danger alert-dismissible fade show ">
+                {% endif %}
+                <button type="button" class="fade close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                {{mess}}
+            </div>
+        </div>
+        {% endfor %}
         {% endif %}
         {% endwith %}
 
@@ -88,7 +97,7 @@
 <footer class="mt-auto bg-dark" style="height:60px" id="footer">
     <div class="mx-auto" style="margin-top:20px;width:40%;text-align:center;color:white">
         <p class="mx-auto" style="width:60%">
-        desarrollado por grupo 56</p>
+            desarrollado por grupo 56</p>
     </div>
     {% block footer %}
     {% endblock %}
