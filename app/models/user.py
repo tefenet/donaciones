@@ -4,6 +4,7 @@ from sqlalchemy import Column, Integer, String, Boolean, DateTime, SmallInteger
 from datetime import datetime
 
 
+
 class User(Base):
     """
     account type = 1 --> administrator
