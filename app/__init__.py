@@ -53,10 +53,11 @@ def create_app(environment="production"):
     app.add_url_rule("/usuarios/buscarPorEstado", "user_search_by_status", user.search_by_status)  # recibe status(bool)
 
     # Ruta para el Home (usando decorator)
-    @app.route("/")
-    def home():
-        return render_template("home.html")
+    # @app.route("/")
+    # def home():
+    #     return render_template("home.html", site=sistema)
 
+    app.add_url_rule("/", "home", sistema.home)
     # Session
     @app.route('/session')
     @helper_auth.admin_required

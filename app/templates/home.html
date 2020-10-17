@@ -4,6 +4,16 @@
   {{ super() }}
 {% endblock %}
 {% block content %}
-  <h1>Inicio</h1>
-  <p>Página de inicio de la aplicación</p>
+<div style="display:flex">
+    <h1 class="mx-auto">{{sistema.titulo}}</h1>
+</div>
+<div style="display:flex">
+    <p class="mx-auto">{{sistema.descripcion}}</p>
+</div>
+<div style="display:flex">
+    <h5 class="mx-auto">{{sistema.bienvenida}}</h5>
+</div>
+{% endblock %}
+{% block footer %}
+{{sistema.email}}
 {% endblock %}

@@ -8,30 +8,37 @@ from app.resources.forms import SistemaForm
 from werkzeug.exceptions import BadRequestKeyError
 from pymysql import escape_string as thwart
 
+
 @admin_required
 def config_sistema_get():
     sistema = Sistema.query.get(1)
     form = SistemaForm(obj=sistema)
     return render_template("sistema/config-sistema.html", form=form)
 
+
 @admin_required
 def config_sistema_post():
     form = SistemaForm(formdata=request.form)
     if form.validate_on_submit() and request.method == "POST":
-            
-            sistema = Sistema.query.get(1)
-            sistema.titulo = form.titulo.data
-            sistema.descripcion = form.descripcion.data
-            sistema.bienvenida = form.bienvenida.data
-            sistema.email = form.email.data
-            sistema.cant_por_pagina = form.cant_por_pagina.data
-            sistema.habilitado = form.habilitado.data
 
-            dbSession.commit()
+        sistema = Sistema.query.get(1)
+        sistema.titulo = form.titulo.data
+        sistema.descripcion = form.descripcion.data
+        sistema.bienvenida = form.bienvenida.data
+        sistema.email = form.email.data
+        sistema.cant_por_pagina = form.cant_por_pagina.data
+        sistema.habilitado = form.habilitado.data
 
-            flash("Configuración actualizada correctamente!", "success")
-            #return redirect(url_for(''))
+        dbSession.commit()
+
+        flash("Configuración actualizada correctamente!", "success")
+        # return redirect(url_for(''))
     else:
         display_errors(form.errors)
-        #return redirect(url_for())
+        # return redirect(url_for())
     return redirect(url_for('home'))
+
+
+def home():
+    sys = Sistema.query.get(1)
+    return render_template("home.html", sistema=sys)

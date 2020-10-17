@@ -93,13 +93,19 @@
         {% endblock %}
     </div>
 </content>
-<footer class="mt-auto bg-dark" style="height:60px" id="footer">
+<footer class="mt-auto bg-dark" style="display:flex,height:60px" id="footer">
     <div class="mx-auto" style="margin-top:20px;width:40%;text-align:center;color:white">
         <p class="mx-auto" style="width:60%">
             desarrollado por grupo 56</p>
     </div>
-    {% block footer %}
-    {% endblock %}
+    <div class="mx-auto" style="margin-top:5px;width:40%;text-align:center;color:azure">
+        <p class="mx-auto" style="width:60%">
+            {% block footer %}
+            {% endblock %}
+        </p>
+    </div>
+
+
 </footer>
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
         integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
