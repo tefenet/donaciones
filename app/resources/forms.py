@@ -63,5 +63,7 @@ class SistemaForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Length(
         message="El email no puede superar más de 25 caracteres", max=25)])
     cant_por_pagina = IntegerField('Cantidad de elementos por página', validators=[DataRequired()])
-    habilitado = BooleanField('Estado de la página')
+    habilitado = RadioField('Estado de la página', coerce=int, choices=[(0, "Deshabilitado."),
+                                                            (1, "Habilitado")], default=1)
+    #habilitado = BooleanField('Estado de la página')
     

@@ -25,6 +25,7 @@ def config_sistema_post(id):
             sistema.bienvenida = form.bienvenida.data
             sistema.email = form.email.data
             sistema.cant_por_pagina = form.cant_por_pagina.data
+            sistema.habilitado = form.habilitado.data
 
             dbSession.commit()
 
