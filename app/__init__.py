@@ -11,6 +11,7 @@ from app.resources.api import issue as api_issue
 from app.helpers import handler
 from app.helpers import auth as helper_auth
 from app.models.sistema import Sistema as Sys
+import pymysql
 
 
 def create_app(environment="production"):
@@ -24,6 +25,20 @@ def create_app(environment="production"):
     # Server Side session
     app.config["SESSION_TYPE"] = "filesystem"
     Session(app)
+
+
+    #conexion a la BD por pymsql
+    def connection():
+        db_conn = pymysql.connect(
+            host="localhost",
+            user="grupo56",
+            password="grupo56",
+            db="grupo56",
+            cursorclass=pymysql.cursors.DictCursor,
+        )
+        return db_conn
+
+
 
     # Configure db, decorator cause callback cleanup, to release resources used by a session after request
     @app.teardown_appcontext
@@ -53,10 +68,12 @@ def create_app(environment="production"):
     app.add_url_rule("/usuarios/buscarPorUsuario", "user_search_by_username", user.search_by_username)
     app.add_url_rule("/usuarios/buscarPorEstado", "user_search_by_status", user.search_by_status)  # recibe status(bool)
 
+	
     # Ruta para el Home (usando decorator)
     @app.route("/")
     def home():
         return render_template("home.html")
+
 
 
     # Session

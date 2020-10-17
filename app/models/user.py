@@ -4,6 +4,7 @@ from sqlalchemy import Column, Integer, String, Boolean, DateTime, SmallInteger
 from datetime import datetime
 
 
+
 class User(Base):
     """
     account type = 1 --> administrator
@@ -46,3 +47,7 @@ class User(Base):
     def updated(self):
         """Setea el campo update_date con datetime now"""
         self.update_date = datetime.now()
+
+    def role():
+        """Retorna el rol del user"""
+        return('Pendiente')
