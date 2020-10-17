@@ -1,0 +1,31 @@
+{% extends "layout.html" %}
+{% block title %}Configuración del sistema{% endblock %}
+{% block head %}
+{{ super() }}
+{% endblock %}
+{% block content %}
+<div style="display:flex">
+  <h3 class="mx-auto">Configuracion del sistema</h3>
+</div>
+
+<div class="container">
+            <form method=post action="{{url_for('config_sistema_post')}}" enctype="multipart/form-data">
+                {{ form.hidden_tag() }}
+
+                {% for field in form %}
+                {% if field.name != "csrf_token" %}
+                <p>
+                    {{ field.label() }}
+                    {{ field(class="js-scroll-trigger", placeholder="") }}
+                </p>
+                {% endif %}
+                {% endfor %}
+
+                <p><input type=submit value='Guardar Cambios' class="btn btn-primary js-scroll-trigger">
+                    <a href="{{ url_for('home') }}" class="btn btn-primary js-scroll-trigger">Cancelar</a>
+                </p>
+            </form>
+
+        </div>
+
+{% endblock %}
