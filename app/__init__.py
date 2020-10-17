@@ -6,6 +6,7 @@ from app.db import dbSession, init_db
 from app.resources import issue
 from app.resources import user
 from app.resources import auth
+from app.resources import home
 from app.resources.api import issue as api_issue
 from app.helpers import handler
 from app.helpers import auth as helper_auth
@@ -51,10 +52,11 @@ def create_app(environment="production"):
     app.add_url_rule("/usuarios/buscarPorUsuario", "user_search_by_username", user.search_by_username)
     app.add_url_rule("/usuarios/buscarPorEstado", "user_search_by_status", user.search_by_status)  # recibe status(bool)
 
-    # Ruta para el Home (usando decorator)
-    @app.route("/")
-    def home():
-        return render_template("home.html")
+   
+
+    #home (sin decorator)
+    app.add_url_rule("/", "home", home.index)
+   
 
     # Session
     @app.route('/session')

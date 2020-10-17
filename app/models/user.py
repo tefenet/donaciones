@@ -46,3 +46,7 @@ class User(Base):
     def updated(self):
         """Setea el campo update_date con datetime now"""
         self.update_date = datetime.now()
+
+    def role():
+        """Retorna el rol del user"""
+        return('Pendiente')
