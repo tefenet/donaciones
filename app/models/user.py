@@ -67,3 +67,7 @@ class User(Base):
         """Recibe un booleano indicando el estado(activo/inactivo).
          Retorna una lista con los usuarios que esten activos/inactivos"""
         return list(cls.query.filter(User.active == status))
+
+    # def role():
+    #     """Retorna el rol del user"""
+    #     return ('Pendiente')

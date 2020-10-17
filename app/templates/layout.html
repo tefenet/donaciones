@@ -9,6 +9,10 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    
+    <!--Ionicons-->
+    <link href="https://unpkg.com/ionicons@4.5.10-0/dist/css/ionicons.min.css" rel="stylesheet">
+    
     {% block head %}
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"/>
     <title>{% block title %}{% endblock %}</title>
@@ -16,87 +20,12 @@
 </head>
 
 <body class="d-flex flex-column min-vh-100">
-<header>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="#">
-            <span class="d-lg-inline-block d-none">Donaciones.gov</span>
-        </a>
-        {% block navbar %}
-        {% endblock %}
-        <button class="navbar-toggler " type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+{% include 'header.html' %}
 
-        <div class="collapse navbar-collapse order-3"  id="navbarSupportedContent">
-            <ul class="navbar-nav ml-auto ">
-                <li class="nav-item dropdown ml-auto">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                       data-toggle="dropdown"
-                       aria-haspopup="true" aria-expanded="false">
-                        Menu
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                        <a class="nav-link dropdown-item" href="{{ url_for('issue_index') }}">Consultas</a>
-                        {% if is_authenticated(session) %}
-                        <a class="nav-link dropdown-item" href="{{ url_for('user_index') }}">Usuarios</a>
-                        {% endif %}
+{% import 'main.html' as main %}
+{{ main.set(content) }}
 
-                    </div>
-                </li>
-                <li class="divider">&nbsp</li>
-                <li class="nav-item dropdown ml-auto">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown2" role="button"
-                       data-toggle="dropdown"
-                       aria-haspopup="true" aria-expanded="false">
-                        user
-                    </a>
-                    <div class=" dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                        {% if is_authenticated(session) %}
-                        <a class="dropdown-item" href="{{ url_for('user_profile') }}">perfil</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="{{ url_for('auth_logout') }}">log out</a>
-                        {% else %}
-                        <a class="dropdown-item" href="{{ url_for('auth_login') }}">log in</a>
-                        {% endif %}
-
-                    </div>
-                </li>
-            </ul>
-        </div>
-    </nav>
-</header>
-<content style="min-Height:calc(100vh - 60px)">
-    <div id="content">
-        {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-        {% for category, mess in messages %}
-        {% if category != 'message' %}
-        <div class="alert alert-{{category}} alert-dismissible fade show ">
-            {% else %}
-            <div class="alert alert-danger alert-dismissible fade show ">
-                {% endif %}
-                <button type="button" class="fade close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-                {{mess}}
-            </div>
-        </div>
-        {% endfor %}
-        {% endif %}
-        {% endwith %}
-
-        {% block content %}
-        {% endblock %}
-    </div>
-</content>
-<footer class="mt-auto bg-dark" style="height:60px" id="footer">
-    <div class="mx-auto" style="margin-top:20px;width:40%;text-align:center;color:white">
-        <p class="mx-auto" style="width:60%">
-            desarrollado por grupo 56</p>
-    </div>
-    {% block footer %}
-    {% endblock %}
-</footer>
+{% include 'footer.html' %}
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
         integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
         crossorigin="anonymous"></script>

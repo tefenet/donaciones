@@ -3,7 +3,11 @@
 {% block head %}
   {{ super() }}
 {% endblock %}
-{% block content %}
-  <h1>Inicio</h1>
-  <p>Página de inicio de la aplicación</p>
-{% endblock %}
+{% set content %}
+<div style="display:flex">
+    <p class="mx-auto">{{site_variables.descripcion}}</p>
+</div>
+<div style="display:flex">
+    <h5 class="mx-auto">{{site_variables.bienvenida}}</h5>
+</div>
+{% endset %}

@@ -116,5 +116,5 @@ def search_by_username():
 @login_required
 def profile():
     if session['user_id']:
-        abort(501, "Error al obtener datos del perfil")
+        return render_template("user/show.html", session=session)
     abort(502, "Error al obtener datos del perfil")
