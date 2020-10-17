@@ -46,3 +46,24 @@ class User(Base):
     def updated(self):
         """Setea el campo update_date con datetime now"""
         self.update_date = datetime.now()
+
+    @classmethod
+    def all(cls):
+        """Retorna todos los usuarios de la clase User"""
+        return cls.query.all()
+
+    @classmethod
+    def get_by_id(cls, user_id):
+        """Retorna el usuario con id user_id"""
+        return cls.query.get(user_id)
+
+    @classmethod
+    def find_by_username(cls, username):
+        """Retorna una lista con los usuarios que contengan username en su nombre de usuario"""
+        return list(cls.query.filter(User.username.contains(username)))
+
+    @classmethod
+    def find_by_status(cls, status=True):
+        """Recibe un booleano indicando el estado(activo/inactivo).
+         Retorna una lista con los usuarios que esten activos/inactivos"""
+        return list(cls.query.filter(User.active == status))
