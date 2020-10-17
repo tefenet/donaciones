@@ -3,7 +3,7 @@
 {% block head %}
 {{ super() }}
 {% endblock %}
-{% block content %}
+{% set content %}
 
 <div style="display:flex">
     <h1 class="mx-auto">Consultas</h1>
@@ -23,4 +23,4 @@
     {% endfor %}
     </ul>
 </div>
-{% endblock %}
+{% endset %}

@@ -37,8 +37,3 @@ def config_sistema_post():
         display_errors(form.errors)
         # return redirect(url_for())
     return redirect(url_for('home'))
-
-
-def home():
-    sys = Sistema.query.get(1)
-    return render_template("home.html", sistema=sys)

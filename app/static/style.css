@@ -11,6 +11,9 @@ input[type=text], select, textarea{
   box-sizing: border-box;
   resize: vertical;
 }
+main{
+   min-height:100vh;
+}
 
 /* Style the label to display next to the inputs */
 label {

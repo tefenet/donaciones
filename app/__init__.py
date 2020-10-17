@@ -10,6 +10,7 @@ from app.resources import sistema
 from app.resources.api import issue as api_issue
 from app.helpers import handler
 from app.helpers import auth as helper_auth
+from app.models.sistema import Sistema as Sys
 
 
 def create_app(environment="production"):
@@ -31,7 +32,7 @@ def create_app(environment="production"):
 
     # Funciones que se exportan al contexto de Jinja2
     app.jinja_env.globals.update(is_authenticated=helper_auth.authenticated)
-
+    app.add_template_global(name='site_variables',f=Sys.query.get(1))
     # Autenticación
     app.add_url_rule("/iniciar_sesion", "auth_login", auth.login)
     app.add_url_rule("/cerrar_sesion", "auth_logout", auth.logout)
@@ -53,11 +54,11 @@ def create_app(environment="production"):
     app.add_url_rule("/usuarios/buscarPorEstado", "user_search_by_status", user.search_by_status)  # recibe status(bool)
 
     # Ruta para el Home (usando decorator)
-    # @app.route("/")
-    # def home():
-    #     return render_template("home.html", site=sistema)
+    @app.route("/")
+    def home():
+        return render_template("home.html")
 
-    app.add_url_rule("/", "home", sistema.home)
+
     # Session
     @app.route('/session')
     @helper_auth.admin_required

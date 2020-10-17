@@ -3,7 +3,7 @@
 {% block head %}
   {{ super() }}
 {% endblock %}
-{% block content %}
+{% set content %}
   <h1>Crear una consulta</h1>
 <div class="container">
   <form action="{{ url_for('issue_create') }}" method="POST">
@@ -55,4 +55,4 @@
 <div style="display:flex">
   <a href="{{ url_for('issue_index') }}" class="link mx-auto">Volver</a>
 </div>
-{% endblock %}
+{% endset %}
