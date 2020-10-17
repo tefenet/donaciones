@@ -11,10 +11,10 @@ class Sistema(Base):
 
     __tablename__ = 'sistema'
     id = Column(Integer, primary_key=True)
-    titulo = Column(String(50), nullable=False)
-    descripcion = Column(String, nullable=False)
+    titulo = Column(String(50))
+    descripcion = Column(String)
     bienvenida = Column(String)
-    email = Column(String(25), nullable=False)
+    email = Column(String(25))
     cant_por_pagina = Column(Integer, nullable=False)
     habilitado = Column(Boolean, default=True)
     

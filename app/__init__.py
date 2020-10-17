@@ -68,7 +68,7 @@ def create_app(environment="production"):
 
     # Ruta de configuración del sistema
     app.add_url_rule("/sistema/config-sistema", 'config_sistema_get', sistema.config_sistema_get)
-    app.add_url_rule("/sistema/actualizar-configuracion/<string:id>", 'config_sistema_post',
+    app.add_url_rule("/sistema/actualizar-configuracion", 'config_sistema_post',
                         sistema.config_sistema_post, methods=["POST"])
 
 
