@@ -11,7 +11,7 @@ class Sistema(Base):
 
     __tablename__ = 'sistema'
     id = Column(Integer, primary_key=True)
-    titulo = Column(String, nullable=False)
+    titulo = Column(String(50), nullable=False)
     descripcion = Column(String, nullable=False)
     bienvenida = Column(String)
     email = Column(String(25), nullable=False)

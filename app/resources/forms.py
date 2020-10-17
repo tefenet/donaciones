@@ -52,3 +52,16 @@ class CreateUserForm(FlaskForm):
         user = User.query.filter(User.email == email.data).first()
         if user is not None:
             raise ValidationError('Ya existe una cuenta registrada con ese correo.')
+
+# Formulario de configuración del sistema
+class SistemaForm(FlaskForm):
+    titulo = StringField('Título', validators=[DataRequired(), Length(max=55)])
+    descripcion = StringField('Descripción', validators=[DataRequired(), Length(
+        message="La descripción no puede superar más de 255 caracteres", max=255)])
+    bienvenida = StringField('Bienvenida', validators=[DataRequired(), Length(
+        message="El texto de la bienvenida no puede superar más de 255 caracteres", max=255)])
+    email = StringField('Email', validators=[DataRequired(), Length(
+        message="El email no puede superar más de 25 caracteres", max=25)])
+    cant_por_pagina = IntegerField('Cantidad de elementos por página', validators=[DataRequired()])
+    habilitado = BooleanField('Estado de la página')
+    
