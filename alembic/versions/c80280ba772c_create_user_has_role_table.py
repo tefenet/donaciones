@@ -17,12 +17,21 @@ depends_on = None
 
 
 def upgrade():
-    op.create_table(
-        'user_has_role',
+
+    user_has_role_table = op.create_table(
+    	'user_has_role',
         sa.Column('id', sa.Integer, primary_key=True),
         sa.Column('user_id', sa.Integer, nullable=False),
         sa.Column('role_id', sa.Integer, nullable=False),
     )
+
+
+    op.bulk_insert(user_has_role_table,
+    [
+        {'id':1, 'user_id':1, 'role_id':1},
+        {'id':2, 'user_id':2, 'role_id':2},
+    ]
+)
 
 
 def downgrade():
