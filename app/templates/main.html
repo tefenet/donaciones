@@ -1,0 +1,26 @@
+{% macro set(content) -%}
+<main>
+    <div id="content">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, mess in messages %}
+        {% if category != 'message' %}
+        <div class="alert alert-{{category}} alert-dismissible fade show ">
+            {% else %}
+            <div class="alert alert-danger alert-dismissible fade show ">
+                {% endif %}
+                <button type="button" class="fade close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                {{mess}}
+            </div>
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        {{ content }}
+
+    </div>
+</main>
+{%- endmacro %}
