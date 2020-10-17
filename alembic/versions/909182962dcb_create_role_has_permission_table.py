@@ -1,4 +1,4 @@
-"""create role has permission table#permission_index
+"""create role has permission table
 
 Revision ID: 909182962dcb
 Revises: 296fc1107b3e

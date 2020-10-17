@@ -1,4 +1,4 @@
-"""create permiso table
+"""create permissions table
 
 Revision ID: 296fc1107b3e
 Revises: e032fdcefd33
@@ -17,13 +17,13 @@ depends_on = None
 
 
 def upgrade():
-    permission_table = op.create_table(
-        'permission',
+    permissions_table = op.create_table(
+        'permissions',
         sa.Column('id', sa.Integer, primary_key=True),
         sa.Column('name', sa.String(50), nullable=False),
     )
 
-    op.bulk_insert(permission_table,
+    op.bulk_insert(permissions_table,
     [
         {'id':1, 'name':'user_index'},
         {'id':2, 'name':'user_new'},
@@ -47,4 +47,4 @@ def upgrade():
  )
 
 def downgrade():
-    op.drop_table('permission')
+    op.drop_table('permissions')

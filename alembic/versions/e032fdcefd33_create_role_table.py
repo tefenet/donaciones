@@ -1,4 +1,4 @@
-"""create rol table
+"""create roles table
 
 Revision ID: e032fdcefd33
 Revises: 9b7544dca7ea
@@ -18,13 +18,13 @@ depends_on = None
 
 def upgrade():
     
-    role_table = op.create_table(
-        'role',
+    roles_table = op.create_table(
+        'roles',
         sa.Column('id', sa.Integer, primary_key=True),
         sa.Column('name', sa.String(50), nullable=False),
     )
 
-    op.bulk_insert(role_table,
+    op.bulk_insert(roles_table,
     [
         {'id':1, 'name':'Administrador'},
         {'id':2, 'name':'Operador del Centro de Ayuda'},
@@ -34,4 +34,4 @@ def upgrade():
 
 
 def downgrade():
-  	op.drop_table('role')
+  	op.drop_table('roles')
