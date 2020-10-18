@@ -4,10 +4,17 @@
   {{ super() }}
 {% endblock %}
 {% set content %}
+{{site_variables.habilitado}}
+{% if site_variables.habilitado %}
 <div style="display:flex">
     <p class="mx-auto">{{site_variables.descripcion}}</p>
 </div>
 <div style="display:flex">
     <h5 class="mx-auto">{{site_variables.bienvenida}}</h5>
 </div>
+{% else %}
+<div style="display:flex">
+    <h3 class="mx-auto">El Sitio no está disponible momentaneamente.</h3>
+</div>
+{% endif %}
 {% endset %}
