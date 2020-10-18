@@ -12,6 +12,7 @@ from app.helpers import handler
 from app.helpers import auth as helper_auth
 from app.models.sistema import Sistema as Sys
 from app.resources.sistema import Sistema
+import importlib
 import pymysql
 
 
@@ -96,7 +97,19 @@ def create_app(environment="production"):
     app.register_error_handler(404, handler.not_found_error)
     app.register_error_handler(401, handler.unauthorized_error)
     app.register_error_handler(500, handler.internal_server_error)
+
     # Implementar lo mismo para el error 500 y 401
+
+    # import all models, context for flask_shell
+    @app.shell_context_processor
+    def make_shell_context():
+        modules = dict(app=app)
+        modelsmodule = importlib.import_module('app.models')
+        for modulename in modelsmodule.__dict__:
+            modules[modulename] = getattr(modelsmodule, modulename)
+        modules['db'] = dbSession
+        print('Modulos auto-importados ', [i[0] for i in modules.items()])
+        return modules
 
     # Retornar la instancia de app configurada
     return app
