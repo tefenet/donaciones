@@ -22,14 +22,16 @@ class LoginForm(FlaskForm):
 
 class CreateUserForm(FlaskForm):
     email = EmailField('Dirección de correo',
-                       [DataRequired(), Email(message="Ingresá un correo electronico válido")],render_kw={"placeholder": "my.email@mail.com"})
+                       [DataRequired(), Email(message="Ingresá un correo electronico válido")],
+                       render_kw={"placeholder": "my.email@mail.com"})
     username = StringField('Nombre de usuario',
                            [Length(message="El nombre de usuario debe tener entre 4 y 20 caracteres", min=4, max=20),
-                            DataRequired()],render_kw={"placeholder": "bob_username"})
+                            DataRequired()], render_kw={"placeholder": "bob_username"})
     password = PasswordField('Contraseña', [DataRequired(),
                                             length(message="La contraseña debe tener entre 6 y 20 caracteres", min=6,
                                                    max=20),
-                                            EqualTo('confirm', message='Las contraseñas deben ser iguales')],render_kw={"placeholder": "entre 6 y 20 caracteres"})
+                                            EqualTo('confirm', message='Las contraseñas deben ser iguales')],
+                             render_kw={"placeholder": "entre 6 y 20 caracteres"})
     confirm = PasswordField('Confirmar Contraseña')
     first_name = StringField('Nombre',
                              [Length(message="El nombre  debe tener entre 4 y 20 caracteres", min=4, max=20),
@@ -51,7 +53,27 @@ class CreateUserForm(FlaskForm):
         """Compruebo que el correo no exista en el sistema, si existe levanta una excepción de tipo ValidationError"""
         user = User.query.filter(User.email == email.data).first()
         if user is not None:
-            raise ValidationError('Ya existe una cuenta registrada con ese correo.')
+            raise ValidationError('Ya existe una cuenta registrada con ese correoo.')
+
+
+class EditUserForm(FlaskForm):
+    email = EmailField('Dirección de correo',
+                       [DataRequired(), Email(message="Ingresá un correo electronico válido")])
+    username = StringField('Nombre de usuario',
+                           [Length(message="El nombre de usuario debe tener entre 4 y 20 caracteres", min=4, max=20),
+                            DataRequired()])
+    password = PasswordField('Contraseña', [Optional(),
+                                            length(message="La contraseña debe tener entre 6 y 20 caracteres", min=6,
+                                                   max=20),],
+                             render_kw={"placeholder": "entre 6 y 20 caracteres"})
+    first_name = StringField('Nombre',
+                             [Length(message="El nombre  debe tener entre 4 y 20 caracteres", min=4, max=20),
+                              DataRequired()])
+    last_name = StringField('Apellido',
+                            [Length(message="El apellido  debe tener entre 2 y 20 caracteres", min=2, max=20),
+                             DataRequired()])
+    active = BooleanField('Estado(Activo/Inactivo)')
+
 
 # Formulario de configuración del sistema
 class SistemaForm(FlaskForm):
@@ -64,6 +86,5 @@ class SistemaForm(FlaskForm):
         message="El email no puede superar más de 25 caracteres", max=25)])
     cant_por_pagina = IntegerField('Cantidad de elementos por página', validators=[DataRequired()])
     habilitado = RadioField('Estado de la página', coerce=int, choices=[(0, "Deshabilitado."),
-                                                            (1, "Habilitado")], default=1)
-    #habilitado = BooleanField('Estado de la página')
-    
+                                                                        (1, "Habilitado")], default=1)
+    # habilitado = BooleanField('Estado de la página')

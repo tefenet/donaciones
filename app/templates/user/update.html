@@ -1,0 +1,38 @@
+{% extends "layout.html" %}
+{% block title %}Usuarios{% endblock %}
+{% block head %}
+{{ super() }}
+{% endblock %}
+{% set content %}
+<div style="display:flex">
+  <h3 class="mx-auto">Editar usuario</h3>
+</div>
+
+
+  <div style="display:flex">
+  <a href="{{ url_for('user_index') }}" class="link mx-auto">Volver</a>
+  </div>
+
+<div class="container">
+<form method=post action="{{url_for('user_update_by_id_post', user_id=user_id)}}">
+  {{ form.hidden_tag() }}
+
+    {% for field in form %}
+    {% if field.name != "csrf_token" %}
+    <div class="row">
+      <div class="col-25">
+        {{ field.label() }}
+      </div>
+      <div class="col-75">
+        {{ field(class="js-scroll-trigger") }}
+      </div>
+    </div>
+    {% endif %}
+    {% endfor %}
+    <div class="row">
+    <input type="submit" value="Editar" class="btn btn-primary js-scroll-trigger">
+
+  </div>
+</form>
+</div>
+{% endset %}

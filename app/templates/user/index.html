@@ -32,11 +32,18 @@
                     <tbody>
                     {% for user in users %}
                     <tr>
-                        <td>{{user.email}}</td>
-                        <td>{{user.username}}</td>
-                        <td>{{user.first_name}}</td>
-                        <td>{{user.last_name}}</td>
-                        <td>{{user.active}}</td>
+                        <a href="#">
+                            <td><a href="">{{user.email}}</td>
+                            <td>{{user.username}}</td>
+                            <td>{{user.first_name}}</td>
+                            <td>{{user.last_name}}</td>
+                            <td>{{user.active}}</td>
+                        </a>
+                        {% if user_is_admin %}
+                        <td><label class="badge badge-alert">
+                            <a class="text-decoration-none"
+                               href="{{url_for('user_update_by_id', user_id=user.id)}}">Editar</a></label>
+                        </td>
                         {% if user.active %}
                         <td><label class="badge badge-success decoration-none">
                             <a class="text-decoration-none"
@@ -46,6 +53,11 @@
                         <td><label class="badge badge-danger">
                             <a class="text-decoration-none"
                                href="{{url_for('user_activate', id=user.id)}}">Activar</a></label>
+                        </td>
+                        {% endif %}
+                        <td><label class="badge badge-danger">
+                            <a class="text-decoration-none"
+                               href="{{url_for('user_delete_by_id', user_id=user.id)}}">Borrar</a></label>
                         </td>
                         {% endif %}
                     </tr>

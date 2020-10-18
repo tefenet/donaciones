@@ -64,8 +64,12 @@ def create_app(environment="production"):
     app.add_url_rule("/usuarios/desactivar/<int:id>", "user_deactivate", user.deactive_account)
     app.add_url_rule("/usuarios/activar/<int:id>", "user_activate", user.activate_account)
     app.add_url_rule("/usuarios/perfil", "user_profile", user.profile)
-    app.add_url_rule("/usuarios/buscarPorUsuario", "user_search_by_username", user.search_by_username)
+    app.add_url_rule("/usuarios/buscarPorUsuario", "user_search_by_username",
+                     user.search_by_username)  # recibe string(username)
     app.add_url_rule("/usuarios/buscarPorEstado", "user_search_by_status", user.search_by_status)  # recibe status(bool)
+    app.add_url_rule("/usuarios/deleteById", "user_delete_by_id", user.delete_user)  # recibe id(int)
+    app.add_url_rule("/usuarios/editar/<int:user_id>", "user_update_by_id", user.update_user_render)
+    app.add_url_rule("/usuarios/editar/<int:user_id>", "user_update_by_id_post", user.update_user, methods=["POST"])
 
     # Rutas de Sistema
     app.add_url_rule("/sistema/configurar", "system_configure", sistema.config_sistema_get)
