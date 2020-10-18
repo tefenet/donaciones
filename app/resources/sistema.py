@@ -11,7 +11,7 @@ from pymysql import escape_string as thwart
 
 @admin_required
 def config_sistema_get():
-    sistema = Sistema.query.get(1)
+    sistema = Sistema.get_sistema()
     form = SistemaForm(obj=sistema)
     return render_template("sistema/config-sistema.html", form=form)
 
@@ -21,7 +21,7 @@ def config_sistema_post():
     form = SistemaForm(formdata=request.form)
     if form.validate_on_submit() and request.method == "POST":
 
-        sistema = Sistema.query.get(1)
+        sistema = Sistema.get_sistema()
         sistema.titulo = form.titulo.data
         sistema.descripcion = form.descripcion.data
         sistema.bienvenida = form.bienvenida.data
@@ -36,4 +36,4 @@ def config_sistema_post():
     else:
         display_errors(form.errors)
         # return redirect(url_for())
-    return redirect(url_for('home'))
+    return redirect(url_for('system_configure'))

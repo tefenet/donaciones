@@ -11,7 +11,7 @@ from app.helpers.pagination import paginate
 
 
 def is_administator(user_id):
-    user = User.query.get(user_id)
+    user = User.get_by_id(user_id)
     if user is None:
         return False
     return True if user.account_type == 1 else False
@@ -52,7 +52,7 @@ def create():
 @admin_required
 def deactive_account(id=None):
     """Recibe un id de usuario. Si el usuario existe y su estado es activo, desactiva la cuenta seteando el campo active a False."""
-    user = User.query.get(id)
+    user = User.get_by_id(id)
     if user and user.active is True:
         if is_administator(user.id):
             flash("El usuario {} es un administrador".format(user.email), "danger")
@@ -70,7 +70,7 @@ def deactive_account(id=None):
 @admin_required
 def activate_account(id=None):
     """Recibe un id de usuario. Si el usuario existe y su estado es inactivo, activa la cuenta seteando el campo active a True."""
-    user = User.query.get(id)
+    user = User.get_by_id(id)
     if user and user.active is False:
         if is_administator(user.id):
             flash("El usuario {} es un administrador".format(user.email), "danger")
@@ -98,7 +98,7 @@ def search_by_status():
         status = False if request.args['status'] == "False" else True
     except BadRequestKeyError:
         return render_template("user/index.html", users=[])
-    users = list(User.query.filter(User.active == status))
+    users = User.find_by_status(status)
     return render_template("user/index.html", users=users)
 
 
@@ -112,14 +112,14 @@ def search_by_username():
     except BadRequestKeyError:
         return render_template("user/index.html", users=[])
 
-    users = list(User.query.filter(User.username.contains(username)))
+    users = User.find_by_username(username)
     return render_template("user/index.html", users=users)
 
 
 @login_required
 def profile():
     if session['user_id']:
-        abort(501, "Error al obtener datos del perfil")
+        return render_template("user/show.html", session=session)
     abort(502, "Error al obtener datos del perfil")
 
 
