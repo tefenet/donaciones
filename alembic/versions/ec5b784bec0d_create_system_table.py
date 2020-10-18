@@ -45,7 +45,14 @@ def upgrade():
 
     op.bulk_insert(users_table,
                    [
-                       {'id': 1, 'titulo': 'Sitio de Prueba', 'descripcion': 'Descripcion del sitio'}
+                       {
+                           'titulo': 'Centros de Ayuda BA',
+                           'descripcion': 'Descripcion del sitio',
+                           'bienvenida': 'Bienvenido a la pagina de administración de Centros de Ayuda BA',
+                           'email': 'admin@donaciones.gov',
+                           'cant_por_pagina': '5',
+                           'habilitado': True
+                       }
                    ]
                    )
 
