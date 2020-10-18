@@ -39,6 +39,9 @@ class Sistema(Base):
     def __update__(self):
         self.update_date = datetime.now()
 
+    def register_update(self):
+        self.__update__()
+
     def __repr__(self):
         return "<Sistema(titulo='{}')'>".format(self.titulo, self.id)
 
