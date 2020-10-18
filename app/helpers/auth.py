@@ -29,6 +29,7 @@ def authenticated(session):
     return session.get('logged_in')
 
 
+#aca hay que reemplazarlo haciendo el chequeo con el metodo del modelo
 def administrator(session):
     if 'user_id' in session and session['is_admin']:
         return True

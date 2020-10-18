@@ -17,10 +17,12 @@
                     </a>
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                         <a class="nav-link dropdown-item" href="{{ url_for('issue_index') }}">Consultas</a>
+                        {% if is_admin(session) %}
+                        <a class="nav-link dropdown-item" href="{{ url_for('config_sistema_get') }}">Configuracion del Sistema</a>
+                        {% endif %}
                         {% if is_authenticated(session) %}
                         <a class="nav-link dropdown-item" href="{{ url_for('user_index') }}">Usuarios</a>
                         {% endif %}
-
                     </div>
                 </li>
                 <li class="divider" style="margin-left:3vh"></li>
