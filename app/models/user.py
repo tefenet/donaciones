@@ -43,9 +43,22 @@ class User(Base):
         """Comprueba que la contraseña ingresada corresponda al hash almacenado"""
         return check_password_hash(self.password_hash, password)
 
+    def activate(self):
+        self.active = True
+
+    def deactivate(self):
+        self.active = False
+
     def updated(self):
         """Setea el campo update_date con datetime now"""
         self.update_date = datetime.now()
+
+    def update(self, email, username, first_name, last_name):
+        """Actualiza los datos del usuario"""
+        self.email = email
+        self.username = username
+        self.first_name = first_name
+        self.last_name = last_name
 
     @classmethod
     def all(cls):
@@ -67,6 +80,16 @@ class User(Base):
         """Recibe un booleano indicando el estado(activo/inactivo).
          Retorna una lista con los usuarios que esten activos/inactivos"""
         return list(cls.query.filter(User.active == status))
+
+    @classmethod
+    def delete_by_id(cls, id):
+        """Elimina un usuario de la base de datos de forma permanente"""
+        return cls.query.filter(cls.id == id).delete()
+
+    def is_admin(self):
+        if self.account_type == 1:
+            return True
+        return False
 
     # def role():
     #     """Retorna el rol del user"""

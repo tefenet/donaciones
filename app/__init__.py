@@ -12,6 +12,7 @@ from app.helpers import handler
 from app.helpers import auth as helper_auth
 from app.models.sistema import Sistema as Sys
 from app.resources.sistema import Sistema
+import importlib
 import pymysql
 
 
@@ -74,8 +75,12 @@ def create_app(environment="production"):
     app.add_url_rule("/usuarios/desactivar/<int:id>", "user_deactivate", user.deactive_account)
     app.add_url_rule("/usuarios/activar/<int:id>", "user_activate", user.activate_account)
     app.add_url_rule("/usuarios/perfil", "user_profile", user.profile)
-    app.add_url_rule("/usuarios/buscarPorUsuario", "user_search_by_username", user.search_by_username)
+    app.add_url_rule("/usuarios/buscarPorUsuario", "user_search_by_username",
+                     user.search_by_username)  # recibe string(username)
     app.add_url_rule("/usuarios/buscarPorEstado", "user_search_by_status", user.search_by_status)  # recibe status(bool)
+    app.add_url_rule("/usuarios/deleteById", "user_delete_by_id", user.delete_user)  # recibe id(int)
+    app.add_url_rule("/usuarios/editar/<int:user_id>", "user_update_by_id", user.update_user_render)
+    app.add_url_rule("/usuarios/editar/<int:user_id>", "user_update_by_id_post", user.update_user, methods=["POST"])
 
     # Rutas de Sistema
     app.add_url_rule("/sistema/configurar", "system_configure", sistema.config_sistema_get)
@@ -107,7 +112,19 @@ def create_app(environment="production"):
     app.register_error_handler(404, handler.not_found_error)
     app.register_error_handler(401, handler.unauthorized_error)
     app.register_error_handler(500, handler.internal_server_error)
+
     # Implementar lo mismo para el error 500 y 401
+
+    # import all models, context for flask_shell
+    @app.shell_context_processor
+    def make_shell_context():
+        modules = dict(app=app)
+        modelsmodule = importlib.import_module('app.models')
+        for modulename in modelsmodule.__dict__:
+            modules[modulename] = getattr(modelsmodule, modulename)
+        modules['db'] = dbSession
+        print('Modulos auto-importados ', [i[0] for i in modules.items()])
+        return modules
 
     # Retornar la instancia de app configurada
     return app
