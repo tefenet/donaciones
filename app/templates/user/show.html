@@ -12,11 +12,11 @@
     <a href="{{ url_for('home') }}" class="link mx-auto">Volver</a>
 </div>
 <div class="container">
-    <h5>Usuario:  (rol) </h5>
-        <ul class="list-group-item" style="list-style:none">
-            <li>nombre: </li>
-            <li>apellido: </li>
-            <li>email: </li>
-        </ul>
+    <h5>Usuario: {{user.username}}(rol) id={{user.id}}</h5>
+    <ul class="list-group-item" style="list-style:none">
+        <li>Nombre: {{user.first_name}}</li>
+        <li>Apellido: {{user.last_name}}</li>
+        <li>Email: {{user.email}}</li>
+    </ul>
 </div>
 {% endset %}
