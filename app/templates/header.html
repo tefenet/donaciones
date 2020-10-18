@@ -21,7 +21,7 @@
                         <a class="nav-link dropdown-item" href="{{ url_for('config_sistema_get') }}">Configuracion del Sistema</a>
                         {% endif %}
                         {% if is_authenticated(session) %}
-                        <a class="nav-link dropdown-item" href="{{ url_for('user_index') }}">Usuarios</a>
+                        <a class="nav-link dropdown-item" href="{{ url_for('user_index', page=1) }}">Usuarios</a>
                         {% endif %}
                     </div>
                 </li>
