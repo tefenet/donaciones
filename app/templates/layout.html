@@ -20,12 +20,12 @@
 </head>
 
 <body class="d-flex flex-column min-vh-100">
-{% include 'header.html' %}
+{% include 'components/header.html' %}
 
-{% import 'main.html' as main %}
+{% import 'components/main.html' as main %}
 {{ main.set(content) }}
 
-{% include 'footer.html' %}
+{% include 'components/footer.html' %}
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
         integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
         crossorigin="anonymous"></script>

@@ -30,7 +30,7 @@ def config_sistema_post():
         sistema.cant_por_pagina = form.cant_por_pagina.data
         sistema.habilitado = form.habilitado.data
 
-        sistema.__update__()
+        # sistema.__update__() este metodo impide la actualización del sistema, no se porque, pablo
 
         dbSession.commit()
 

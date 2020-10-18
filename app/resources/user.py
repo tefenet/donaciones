@@ -100,10 +100,11 @@ def search_by_status():
     try:
         status = False if request.args['status'] == "False" else True
         page = int(request.args['page'])
+        user_is_admin = is_administator(session['user_id'])
     except BadRequestKeyError: # no se que es este error pero la paginación es incorrecta
         return render_template("user/index.html", users=[])
     pagination = User.find_by_status_paginated(status, page)
-    return render_template("user/index.html", pagination=pagination)
+    return render_template("user/index.html", pagination=pagination,user_is_admin=user_is_admin)
 
 
 @admin_required
@@ -114,10 +115,11 @@ def search_by_username():
     try:
         username = request.args['username']
         page = int(request.args['page'])
+        user_is_admin = is_administator(session['user_id'])
     except BadRequestKeyError: # no se que es este error pero la paginación es incorrecta
         return render_template("user/index.html", pagination=[])
     pagination = User.find_by_username_paginated(username, page)
-    return render_template("user/index.html", pagination=pagination)
+    return render_template("user/index.html", pagination=pagination, user_is_admin=user_is_admin)
 
 
 @login_required
