@@ -9,7 +9,7 @@
 </div>
 
 <div class="container">
-            <form method=post action="{{url_for('config_sistema_post')}}" enctype="multipart/form-data">
+            <form method=post action="{{url_for('system_configure_post')}}" enctype="multipart/form-data">
                 {{ form.hidden_tag() }}
 
                 {% for field in form %}
