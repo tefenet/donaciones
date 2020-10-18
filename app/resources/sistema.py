@@ -28,6 +28,8 @@ def config_sistema_post():
         sistema.cant_por_pagina = form.cant_por_pagina.data
         sistema.habilitado = form.habilitado.data
 
+        sistema.__update__()
+
         dbSession.commit()
 
         flash("Configuración actualizada correctamente!", "success")

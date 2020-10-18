@@ -50,7 +50,8 @@ def create_app(environment="production"):
     # Funciones que se exportan al contexto de Jinja2
     app.jinja_env.globals.update(is_authenticated=helper_auth.authenticated)
     app.jinja_env.globals.update(is_admin=helper_auth.administrator)
-    app.add_template_global(name='site_variables', f=Sys.get_sistema())
+    app.jinja_env.globals.update(site_variables=Sys.get_sistema)
+
 
 
     # Autenticación
