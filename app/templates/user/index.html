@@ -30,7 +30,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    {% for user in users %}
+                    {% for user in pagination.items %}
                     <tr>
                         <td>{{user.email}}</td>
                         <td>{{user.username}}</td>
@@ -52,6 +52,26 @@
                     {% endfor %}
                     </tbody>
                 </table>
+                <div class=pagination>
+                    <!-- previous page -->
+                    {% if pagination.has_previous %}
+                    <li>
+                        <a href="{{ url_for('user_index', page=pagination.previous_page) }}">Previous</a>
+                    </li>
+                    {% endif %}
+
+                    {%- for page in range(1,pagination.pages) %}
+                    <a href="{{ url_for('user_index', page=page) }}">{{ page }}</a>
+                    <span class=ellipsis>…</span>
+
+                    {%- endfor %}
+
+                    <!-- next page -->
+                    {% if pagination.has_next %}
+                    <li>
+                        <a href="{{ url_for('user_index', page=pagination.next_page) }}">Next</a></li>
+                    {% endif %}
+                </div>
             </div>
         </div>
         <div class="m-3">

@@ -1,11 +1,13 @@
 from flask import redirect, render_template, request, url_for, session, abort, flash, current_app as app
 from app.db import dbSession
+from app.models.sistema import Sistema
 from app.models.user import User
 from app.helpers.auth import login_required, admin_required, administrator
 from app.helpers.handler import display_errors
 from app.resources.forms import CreateUserForm
 from werkzeug.exceptions import BadRequestKeyError
 from pymysql import escape_string as thwart
+from app.helpers.pagination import paginate
 
 
 def is_administator(user_id):
@@ -17,9 +19,10 @@ def is_administator(user_id):
 
 # Protected resources
 @admin_required
-def index():
-    users = User.query.all()
-    return render_template("user/index.html", users=users)
+def index(page):
+    sys=Sistema.query.get(1)
+    res = paginate(User.query, page, sys.cant_por_pagina)
+    return render_template("user/index.html", pagination=res)
 
 
 @admin_required
@@ -118,3 +121,7 @@ def profile():
     if session['user_id']:
         abort(501, "Error al obtener datos del perfil")
     abort(502, "Error al obtener datos del perfil")
+
+
+
+

@@ -44,7 +44,12 @@ def create_app(environment="production"):
     app.add_url_rule("/consultas/nueva", "issue_new", issue.new)
 
     # Rutas de Usuarios
-    app.add_url_rule("/usuarios", "user_index", user.index)
+    @app.route('/users/', defaults={'page': 1})
+    @app.route('/users/page/<int:page>')
+    def user_index(page):
+        return user.index(page)
+
+    # app.add_url_rule("/usuarios?page=<int:page>", "user_index", user.index, defaults={'page': 1})
     app.add_url_rule("/usuarios", "user_create", user.create, methods=["POST"])
     app.add_url_rule("/usuarios/nuevo", "user_new", user.new)
     app.add_url_rule("/usuarios/desactivar/<int:id>", "user_deactivate", user.deactive_account)
