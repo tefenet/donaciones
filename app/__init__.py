@@ -69,8 +69,8 @@ def create_app(environment="production"):
     app.add_url_rule("/usuarios", "user_index", user.index)
     app.add_url_rule("/usuarios", "user_create", user.create, methods=["POST"])
     app.add_url_rule("/usuarios/nuevo", "user_new", user.new)
-    app.add_url_rule("/usuarios/desactivar/<int:id>", "user_deactivate", user.deactive_account)
-    app.add_url_rule("/usuarios/activar/<int:id>", "user_activate", user.activate_account)
+    app.add_url_rule("/usuarios/desactivar/<int:user_id>", "user_deactivate", user.deactive_account)
+    app.add_url_rule("/usuarios/activar/<int:user_id>", "user_activate", user.activate_account)
     app.add_url_rule("/usuarios/perfil", "user_profile", user.profile)
     app.add_url_rule("/usuarios/buscarPorUsuario", "user_search_by_username",
                      user.search_by_username)  # recibe string(username)

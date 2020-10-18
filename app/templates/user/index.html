@@ -45,12 +45,12 @@
                         {% if user.active %}
                         <td><label class="badge badge-success decoration-none">
                             <a class="text-decoration-none"
-                               href="{{url_for('user_deactivate', id=user.id)}}">Desactivar</a></label>
+                               href="{{url_for('user_deactivate', user_id=user.id)}}">Desactivar</a></label>
                         </td>
                         {% else %}
                         <td><label class="badge badge-danger">
                             <a class="text-decoration-none"
-                               href="{{url_for('user_activate', id=user.id)}}">Activar</a></label>
+                               href="{{url_for('user_activate', user_id=user.id)}}">Activar</a></label>
                         </td>
                         {% endif %}
                         <td>
