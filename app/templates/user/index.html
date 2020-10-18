@@ -21,24 +21,21 @@
             <div class="table-responsive">
                 <table class="table table-hover">
                     <thead>
-                    <tr>
+                    <tr align="center">
+                        <th></th>
                         <th>Correo</th>
                         <th>Username</th>
                         <th>Nombre</th>
-                        <th>Apellido</th>
-                        <th>Activo</th>
                     </tr>
                     </thead>
                     <tbody>
                     {% for user in pagination.items %}
-                    <tr>
-                        <a href="#">
-                            <td><a href="">{{user.email}}</td>
-                            <td>{{user.username}}</td>
-                            <td>{{user.first_name}}</td>
-                            <td>{{user.last_name}}</td>
-                            <td>{{user.active}}</td>
-                        </a>
+                    <tr align="center">
+                        <td><i class="{{ 'fa fa-user text-success' if user.active else 'fa fa-user text-danger' }}"></i>
+                        </td>
+                        <td>{{user.email}}</td>
+                        <td>{{user.username}}</td>
+                        <td>{{user.first_name}} {{user.last_name}}</td>
                         {% if user_is_admin %}
                         <td><label class="badge badge-alert">
                             <a class="text-decoration-none"
@@ -55,12 +52,40 @@
                                href="{{url_for('user_activate', id=user.id)}}">Activar</a></label>
                         </td>
                         {% endif %}
-                        <td><label class="badge badge-danger">
+                        <td>
                             <a class="text-decoration-none"
-                               href="{{url_for('user_delete_by_id', user_id=user.id)}}">Borrar</a></label>
+                               href="{{url_for('user_delete_by_id', user_id=user.id)}}"><i
+                                    class="fa fa-trash-alt text-danger"></i></a>
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-danger btn-xs" data-toggle="modal"
+                                    data-target="#modalDeleteUser{{loop.index}}">Eliminar
+                            </button>
                         </td>
                         {% endif %}
                     </tr>
+
+                    {# modal delete user #}
+                    <div id="confirm-deletion-user-{{loop.index}}">
+                        <div id="modalDeleteUser{{loop.index}}" class="modal fade" role="dialog">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">Eliminar Usuario</div>
+                                    <div class="modal-body">¿Estás seguro que queres eliminar al usuario
+                                        <b>{{user.username}}</b>? Este cambios
+                                        es irreversible
+                                    </div>
+                                    <div class="modal-footer">
+                                        <form action="{{url_for('user_delete_by_id', user_id=user.id)}}" method="post">
+                                            <button type="submit" class="btn btn-danger">Eliminar</button>
+                                            <button class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     {% endfor %}
                     </tbody>
                 </table>
@@ -101,6 +126,5 @@
             <a class="btn btn-outline-success my-2 my-sm-0" href="{{url_for('user_search_by_status', status=False)}}">Inactivos</a>
         </div>
     </div>
-
 </div>
 {% endset %}

@@ -18,7 +18,25 @@ def is_administator(user_id):
     return user.is_admin()
 
 
+def activate(user):
+    user.activate()
+    flash("El usuario {} fue activado exitosamente".format(user.email), "success")
+    return True
+
+
+def deactivate(user):
+    if not is_administator(user.id):
+        user.deactivate()
+        flash("El usuario {} fue desactivado exitosamente".format(user.email), "success")
+        return True
+    flash("Error al desactivar usuario. No podés desactivar a un administrador")
+    return False
+
+
 # Protected resources
+
+#####
+# Index
 @admin_required
 def index(page):
     sys = Sistema.get_sistema()
@@ -27,6 +45,8 @@ def index(page):
     return render_template("user/index.html", pagination=res, user_is_admin=user_is_admin)
 
 
+#####
+# Create
 @admin_required
 def new():
     form = CreateUserForm()
@@ -51,90 +71,18 @@ def create():
     return redirect(url_for("user_index"))
 
 
-def activate(user):
-    user.activate()
-    flash("El usuario {} fue activado exitosamente".format(user.email), "success")
-    return True
-
-
-def deactivate(user):
-    if not is_administator(user.id):
-        user.deactivate()
-        flash("El usuario {} fue desactivado exitosamente".format(user.email), "success")
-        return True
-    flash("Error al desactivar usuario. No podés desactivar a un administrador")
-    return False
-
-
-@admin_required
-def deactive_account(id=None):
-    """Recibe un id de usuario. Si el usuario existe y su estado es activo, desactiva la cuenta seteando el campo active a False."""
-    user = User.get_by_id(id)
-    if user and user.active:
-        deactivate(user)
-        user.updated()
-        dbSession.commit()
-        return redirect(url_for("user_index"))
-    flash("Usuario con id {} no encontrado".format(id), "danger")
-    return redirect(url_for("user_index"))
-
-
-@admin_required
-def activate_account(id=None):
-    """Recibe un id de usuario. Si el usuario existe y su estado es inactivo, activa la cuenta seteando el campo active a True."""
-    user = User.get_by_id(id)
-    if user and user.active is False:
-        activate(user)
-        user.updated()
-        dbSession.commit()
-        return redirect(url_for("user_index"))
-    flash("Usuario con id {} no encontrado".format(id), "danger")
-    return redirect(url_for("user_index"))
-
-
-@admin_required
-def search_by_status():
-    """Busca usuarios por estado(activo/inactivo).
-    Recibe status, que es un booleano, devuelve una lista de usuarios """
-    try:
-        status = False if request.args['status'] == "False" else True
-    except BadRequestKeyError:
-        return render_template("user/index.html", users=[])
-    users = User.find_by_status(status)
-    return render_template("user/index.html", users=users)
-
-
-@admin_required
-def search_by_username():
-    """Busca usuarios por nombre de usuario.
-    Recibe status, que es un booleano, devuelve una lista de usuarios """
-    app.logger.info(request.form)
-    try:
-        username = request.args['username']
-    except BadRequestKeyError:
-        return render_template("user/index.html", users=[])
-
-    users = User.find_by_username(username)
-    return render_template("user/index.html", users=users)
-
-
-@login_required
-def profile():
-    if session['user_id']:
-        user = User.get_by_id(session['user_id'])
-        return render_template("user/show.html", user=user)
-    abort(502, "Error al obtener datos del perfil")
-
+#####
+# Update user
 
 @admin_required
 def update_user_render(user_id):
     user = User.get_by_id(user_id)
-    app.logger.info("entre")
     if user:
         form = EditUserForm(obj=user)
         return render_template('user/update.html', form=form, user_id=user_id)
-    flash("ERROR: Error al obtener usuario", "danger")
-    return redirect(url_for("user_index"))
+    # abort(500, "ERROR: Error al obtener usuario. id = {}".format(user_id))
+    abort(500, "ERROR: Error al obtener usuario. id = {}".format(user_id))
+    # return redirect(url_for("user_index"))
 
 
 @admin_required
@@ -164,15 +112,49 @@ def update_user(user_id):
     return redirect(url_for("user_index"))
 
 
+#####
+# Deactivate user accounts
+
 @admin_required
-def __delete(id):
+def deactive_account(user_id=None):
+    """Recibe un id de usuario. Si el usuario existe y su estado es activo, desactiva la cuenta seteando el campo active a False."""
+    user = User.get_by_id(user_id)
+    if user and user.active:
+        deactivate(user)
+        user.updated()
+        dbSession.commit()
+        return redirect(url_for("user_index"))
+    abort(500, "ERROR: Error al obtener usuario. id = {}".format(user_id))
+    return redirect(url_for("user_index"))
+
+
+@admin_required
+def activate_account(user_id=None):
+    """Recibe un id de usuario. Si el usuario existe y su estado es inactivo, activa la cuenta seteando el campo active a True."""
+    user = User.get_by_id(user_id)
+    if user and user.active is False:
+        activate(user)
+        user.updated()
+        dbSession.commit()
+        return redirect(url_for("user_index"))
+    abort(500, "ERROR: Error al obtener usuario. id = {}".format(user_id))
+    return redirect(url_for("user_index"))
+
+
+#####
+# Delete User
+
+@admin_required
+def __delete(user_id):
     """Elimina un usuario del sistema de manera definitiva.
     Retorna True si pudo eliminar el usuario, caso contrario retorna false"""
-    u = User.get_by_id(id)
+    u = User.get_by_id(user_id)
     if u and not u.is_admin():
-        if User.delete_by_id(id):
+        if User.delete_by_id(user_id):
             dbSession.commit()
             return True
+    if u.is_admin():
+        raise PermissionError
     return False
 
 
@@ -182,9 +164,50 @@ def delete_user():
         user_id = request.args['user_id']
         if __delete(user_id):
             flash("Usuario id {} eliminado exitosamente".format(user_id), "success")
-            return redirect(url_for('user_index'))
     except BadRequestKeyError:
-        flash("ERRROR: id usuario no recibido", "danger")
+        flash("ERROR: id usuario no recibido", "danger")
         return redirect(url_for('user_index'))
-    flash("Error el borrar usuario con id {}. No podés borrar a un administrador".format(user_id), "danger")
+    except PermissionError:
+        flash("ERROR: No podés eliminar a un usuario administrador!".format())
     return redirect(url_for('user_index'))
+
+
+#####
+# Search users
+
+@admin_required
+def search_by_status():
+    """Busca usuarios por estado(activo/inactivo).
+    Recibe status, que es un booleano, devuelve una lista de usuarios """
+    try:
+        status = False if request.args['status'] == "False" else True
+    except BadRequestKeyError:
+        return render_template("user/index.html", users=[])
+    users = User.find_by_status(status)
+    return render_template("user/index.html", users=users)
+
+
+@admin_required
+def search_by_username():
+    """Busca usuarios por nombre de usuario.
+    Recibe status, que es un booleano, devuelve una lista de usuarios """
+    app.logger.info(request.form)
+    try:
+        username = request.args['username']
+    except BadRequestKeyError:
+        return render_template("user/index.html", users=[])
+
+    users = User.find_by_username(username)
+    return render_template("user/index.html", users=users)
+
+
+#####
+# Profile page
+@login_required
+def profile():
+    if session['user_id']:
+        user = User.get_by_id(session['user_id'])
+        return render_template("user/show.html", user=user)
+    abort(502, "Error al obtener datos del perfil")
+
+#####
