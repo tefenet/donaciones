@@ -1,7 +1,10 @@
+from app.models.sistema import Sistema
 from app.db import Base
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy import Column, Integer, String, Boolean, DateTime, SmallInteger
 from datetime import datetime
+
+from app.helpers.pagination import paginate
 
 
 class User(Base):
@@ -76,10 +79,27 @@ class User(Base):
         return list(cls.query.filter(User.username.contains(username)))
 
     @classmethod
+    def find_by_username_paginated(cls, username, page=1):
+        """Retorna una paginación con los usuarios que contengan username en su nombre de usuario"""
+        sys = Sistema.get_sistema()
+        query = User.query.filter(User.username.contains(username))
+        return paginate(query, page, sys.cant_por_pagina)
+
+
+    @classmethod
     def find_by_status(cls, status=True):
         """Recibe un booleano indicando el estado(activo/inactivo).
          Retorna una lista con los usuarios que esten activos/inactivos"""
         return list(cls.query.filter(User.active == status))
+
+    @classmethod
+    def find_by_status_paginated(cls, status=True, page=1):
+        """Recibe un booleano indicando el estado(activo/inactivo).
+         Retorna una lista con los usuarios que esten activos/inactivos"""
+        sys = Sistema.get_sistema()
+        query = cls.query.filter(User.active == status)
+        return paginate(query, page, sys.cant_por_pagina)
+
 
     @classmethod
     def delete_by_id(cls, id):

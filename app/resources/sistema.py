@@ -6,8 +6,6 @@ from app.helpers.auth import login_required, admin_required, administrator
 from app.helpers.handler import display_errors
 from app.resources.forms import SistemaForm
 from pymysql import escape_string as thwart
-from werkzeug.exceptions import BadRequestKeyError
-from pymysql import escape_string as thwart
 
 
 @admin_required
@@ -29,8 +27,6 @@ def config_sistema_post():
         sistema.email = thwart(form.email.data)
         sistema.cant_por_pagina = form.cant_por_pagina.data
         sistema.habilitado = form.habilitado.data
-
-        sistema.__update__()
 
         dbSession.commit()
 

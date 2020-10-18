@@ -1,0 +1,29 @@
+{% macro set(method, pagination, argument) -%}
+<nav aria-label="..." style="display:flex">
+    <ul class="pagination mx-auto">
+    <!-- previous page -->
+    {% if pagination.has_previous %}
+    <li class="page-item">
+        <a class="page-link" href="{{ url_for( method , status=argument, username=argument, page=pagination.previous_page) }}">Previous</a>
+    </li>
+    {% endif %}
+
+    {%- for page in range(1,pagination.pages) %}
+        {% if (page==pagination.page) %}
+        <li class="page-item active"> {{page}}</li>
+        {% else %}
+        <li class="page-item">
+            <a class="page-link" href="{{ url_for( method, status=argument, username=argument,page=page) }}">
+                {{ page }}
+            </a>
+        </li>
+        {% endif %}
+    {%- endfor %}
+    <!-- next page -->
+    {% if pagination.has_next %}
+    <li class="page-item">
+        <a class="page-link" href="{{ url_for( method ,status=argument, username=argument, page=pagination.next_page) }}">Next</a></li>
+    {% endif %}
+    </ul>
+</nav>
+{%- endmacro %}

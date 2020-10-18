@@ -38,8 +38,9 @@ def deactivate(user):
 #####
 # Index
 @admin_required
-def index(page):
+def index():
     sys = Sistema.get_sistema()
+    page = int(request.args['page'])
     res = paginate(User.query, page, sys.cant_por_pagina)  # check User.query
     user_is_admin = is_administator(session['user_id'])
     return render_template("user/index.html", pagination=res, user_is_admin=user_is_admin)
@@ -68,7 +69,7 @@ def create():
         display_errors(form.errors)  # si hay errores redirecciona a la pagina de crear usuario y muestra los errores.
         return redirect(url_for("user_new"))
 
-    return redirect(url_for("user_index"))
+    return redirect(url_for("user_index", page=1))
 
 
 #####
@@ -181,10 +182,12 @@ def search_by_status():
     Recibe status, que es un booleano, devuelve una lista de usuarios """
     try:
         status = False if request.args['status'] == "False" else True
-    except BadRequestKeyError:
+        page = int(request.args['page'])
+        user_is_admin = is_administator(session['user_id'])
+    except BadRequestKeyError: # no se que es este error pero la paginación es incorrecta
         return render_template("user/index.html", users=[])
-    users = User.find_by_status(status)
-    return render_template("user/index.html", users=users)
+    pagination = User.find_by_status_paginated(status, page)
+    return render_template("user/index.html", pagination=pagination,user_is_admin=user_is_admin)
 
 
 @admin_required
@@ -194,11 +197,12 @@ def search_by_username():
     app.logger.info(request.form)
     try:
         username = request.args['username']
-    except BadRequestKeyError:
-        return render_template("user/index.html", users=[])
-
-    users = User.find_by_username(username)
-    return render_template("user/index.html", users=users)
+        page = int(request.args['page'])
+        user_is_admin = is_administator(session['user_id'])
+    except BadRequestKeyError: # no se que es este error pero la paginación es incorrecta
+        return render_template("user/index.html", pagination=[])
+    pagination = User.find_by_username_paginated(username, page)
+    return render_template("user/index.html", pagination=pagination, user_is_admin=user_is_admin)
 
 
 #####

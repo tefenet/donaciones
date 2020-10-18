@@ -28,16 +28,19 @@ def create_app(environment="production"):
     app.config["SESSION_TYPE"] = "filesystem"
     Session(app)
 
+
+    """
     # conexion a la BD por pymsql
     def connection():
         db_conn = pymysql.connect(
-            host="localhost",
-            user="grupo56",
-            password="grupo56",
-            db="grupo56",
+            host=environ.get("DB_HOST", "localhost"),
+            user=environ.get("DB_USER"),
+            password=environ.get("DB_PASS"),
+            db=environ.get("DB_NAME"),
             cursorclass=pymysql.cursors.DictCursor,
         )
         return db_conn
+    """
 
     # Configure db, decorator cause callback cleanup, to release resources used by a session after request
     @app.teardown_appcontext
@@ -46,7 +49,10 @@ def create_app(environment="production"):
 
     # Funciones que se exportan al contexto de Jinja2
     app.jinja_env.globals.update(is_authenticated=helper_auth.authenticated)
+    app.jinja_env.globals.update(is_admin=helper_auth.administrator)
     app.add_template_global(name='site_variables', f=Sys.get_sistema())
+
+
     # Autenticación
     app.add_url_rule("/iniciar_sesion", "auth_login", auth.login)
     app.add_url_rule("/cerrar_sesion", "auth_logout", auth.logout)
@@ -58,12 +64,8 @@ def create_app(environment="production"):
     app.add_url_rule("/consultas/nueva", "issue_new", issue.new)
 
     # Rutas de Usuarios
-    @app.route('/users/', defaults={'page': 1})
-    @app.route('/users/page/<int:page>')
-    def user_index(page):
-        return user.index(page)
 
-    # app.add_url_rule("/usuarios?page=<int:page>", "user_index", user.index, defaults={'page': 1})
+    app.add_url_rule("/usuarios", "user_index", user.index)
     app.add_url_rule("/usuarios", "user_create", user.create, methods=["POST"])
     app.add_url_rule("/usuarios/nuevo", "user_new", user.new)
     app.add_url_rule("/usuarios/desactivar/<int:id>", "user_deactivate", user.deactive_account)
