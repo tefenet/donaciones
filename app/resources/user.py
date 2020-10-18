@@ -56,7 +56,7 @@ def index():
     sys = Sistema.get_sistema()
     try:
         page = int(request.args['page'])
-    except BadRequestKeyError:
+    except (BadRequestKeyError, ValueError):
         page = 1
     try:
         res = paginate(User.query, page, sys.cant_por_pagina)  # check User.query
@@ -202,8 +202,8 @@ def search_by_status():
         status = False if request.args['status'] == "False" else True
         page = int(request.args['page'])
         user_is_admin = is_administator(session['user_id'])
-    except BadRequestKeyError as e:  # no se que es este error pero la paginación es incorrecta
-        flash("ERROR: {}".format(e), e)
+    except (BadRequestKeyError, ValueError) as e:  # no se que es este error pero la paginación es incorrecta
+        # flash("ERROR: {}".format(e), e)
         return redirect(url_for('user_index'))
 
     try:
@@ -222,8 +222,8 @@ def search_by_username():
         username = request.args['username']
         page = int(request.args['page'])
         user_is_admin = is_administator(session['user_id'])
-    except BadRequestKeyError as e:  # no se que es este error pero la paginación es incorrecta
-        flash("ERROR: {}".format(e), e)
+    except (BadRequestKeyError, ValueError) as e:  # no se que es este error pero la paginación es incorrecta
+        # flash("ERROR: {}".format(e), e)
         return redirect(url_for('user_index'))
 
     try:
