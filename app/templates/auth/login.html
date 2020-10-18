@@ -1,13 +1,30 @@
 {% extends "layout.html" %}
 {% block title %}Login{% endblock %}
 {% block head %}
-  {{ super() }}
+{{ super() }}
 {% endblock %}
-{% block content %}
-  <h1>Iniciar sesión</h1>
+{% set content %}
+<div style="display:flex">
+  <h3 class="mx-auto">Iniciar sesión</h3>
+</div>
+<div class="container">
   <form action="{{ url_for('auth_authenticate') }}" method="POST">
-    <input name="email" placeholder="Correo" required/>
-    <input type="password" name="password" placeholder="Clave" required/>
-    <input type="submit" value="Login">
+    {{ form.hidden_tag() }}
+    <div class="row">
+      <div class="col-75">
+        {{form.username.label}}
+        {{form.username(style="max-width:400px", placeholder="Correo o nombre de usuario")}}
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-75">
+        {{form.password.label}}
+        {{form.password(placeholder="Clave")}}
+      </div>
+    </div>
+    <div class="row">
+      <input type="submit" value="Login">
+    </div>
   </form>
-{% endblock %}
+</div>
+{% endset %}

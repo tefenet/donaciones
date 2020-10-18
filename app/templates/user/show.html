@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+{% block title %}Perfil de Usuario{% endblock %}
+{% block head %}
+{{ super() }}
+{% endblock %}
+{% set content %}
+
+<div style="display:flex">
+    <h1 class="mx-auto">Perfil de usuario</h1>
+</div>
+<div style="display:flex">
+    <a href="{{ url_for('home') }}" class="link mx-auto">Volver</a>
+</div>
+<div class="container">
+    <h5>Usuario: {{user.username}}(rol) id={{user.id}}</h5>
+    <ul class="list-group-item" style="list-style:none">
+        <li>Nombre: {{user.first_name}}</li>
+        <li>Apellido: {{user.last_name}}</li>
+        <li>Email: {{user.email}}</li>
+    </ul>
+</div>
+{% endset %}

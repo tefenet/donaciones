@@ -1,4 +1,4 @@
-from flask import render_template
+from flask import render_template, flash
 
 
 def not_found_error(e):
@@ -21,5 +21,12 @@ def internal_server_error(e):
     kwargs = {
         "error_name": "500 Internal Server Error",
         "error_description": "algo salió mal, intente refrescar la página",
+        "error_message": e
     }
     return render_template("error.html", **kwargs), 500
+
+
+def display_errors(errors):
+    for fieldName, errorMessages in errors.items():
+        for err in errorMessages:
+            flash(err, "danger")
