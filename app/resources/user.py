@@ -75,9 +75,9 @@ def deactive_account(id=None):
         deactivate(user)
         user.updated()
         dbSession.commit()
-        return redirect(url_for("user_index"))
+        return redirect(url_for("user_index", page=1))
     flash("Usuario con id {} no encontrado".format(id), "danger")
-    return redirect(url_for("user_index"))
+    return redirect(url_for("user_index",page=1))
 
 
 @admin_required
@@ -88,9 +88,9 @@ def activate_account(id=None):
         activate(user)
         user.updated()
         dbSession.commit()
-        return redirect(url_for("user_index"))
+        return redirect(url_for("user_index",page=1))
     flash("Usuario con id {} no encontrado".format(id), "danger")
-    return redirect(url_for("user_index"))
+    return redirect(url_for("user_index", page=1))
 
 
 @admin_required
@@ -138,7 +138,7 @@ def update_user_render(user_id):
         form = EditUserForm(obj=user)
         return render_template('user/update.html', form=form, user_id=user_id)
     flash("ERROR: Error al obtener usuario", "danger")
-    return redirect(url_for("user_index"))
+    return redirect(url_for("user_index", page=1))
 
 
 @admin_required
@@ -160,12 +160,12 @@ def update_user(user_id):
                 flash("Ya existe un usuario con ese correo/username", "danger")
                 return render_template('user/update.html', form=form, user_id=user_id)
             flash("Usuario {} actualizado exitosamente.".format(u.username), "success")
-            return redirect(url_for("user_index"))
+            return redirect(url_for("user_index", page=1))
     if form.errors:
         display_errors(
             form.errors)  # si hay errores redirecciona a la pagina de crear usuario y muestra los errores.
     flash("Error al validar formulario", "danger")
-    return redirect(url_for("user_index"))
+    return redirect(url_for("user_index",page=1))
 
 
 @admin_required
