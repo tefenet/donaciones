@@ -109,6 +109,12 @@ class User(Base):
             return True
         return False
 
+    def roles(self):
+        return self.user_roles
+
+    def has_role(self, r): # podría pertenecer al controlador
+        return r in self.user_roles
+
     # def role():
     #     """Retorna el rol del user"""
     #     return ('Pendiente')

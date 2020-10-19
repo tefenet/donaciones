@@ -27,3 +27,15 @@ class Role(Base):
 
     def __repr__(self):
         return "<Role(name={}, id={})>".format(self.name, self.id)
+
+    def users(self):
+        self.role_users
+
+    def permissions(self):
+        self.role_permissions
+
+    def has_user(self, u):
+        return u in self.role_users
+
+    def has_permission(self, p):
+        return p in self.role_permissions

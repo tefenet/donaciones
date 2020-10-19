@@ -22,3 +22,9 @@ class Permission(Base):
 
     def __repr__(self):
         return "<Permission(name={}, id={})>".format(self.name, self.id)
+
+    def roles(self):
+        return self.permission_roles
+
+    def has_role(self, r):  # podría pertenecer al controlador
+        return r in self.permission_roles
