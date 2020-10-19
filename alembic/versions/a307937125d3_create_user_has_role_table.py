@@ -26,7 +26,7 @@ user_has_role = Table('user_has_role', Base.metadata,
 def upgrade():
     user_has_role = op.create_table('user_has_role',
                                     sa.Column('roles_id', sa.Integer, primary_key=True),
-                                    sa.Column('users_id', sa.String(100), primary_key=True),
+                                    sa.Column('users_id', sa.Integer, primary_key=True),
                                     )
 
     """Role 1 Admin

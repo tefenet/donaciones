@@ -1,7 +1,7 @@
 from app.db import Base
 from sqlalchemy import Table, Column, Integer, ForeignKey, String
 from sqlalchemy.orm import relationship
-from sqlalchemy.ext.declarative import declarative_base
+from app.models.permission import role_has_permission
 
 user_has_role = Table('user_has_role', Base.metadata,
                       Column('roles_id', Integer, ForeignKey('roles.id')),
@@ -17,6 +17,10 @@ class Role(Base):
         "User",
         secondary=user_has_role,
         back_populates="user_roles")
+    role_permissions = relationship(
+        "Permission",
+        secondary=role_has_permission,
+        back_populates="permission_roles")
 
     def __init__(self, name):
         self.name = name

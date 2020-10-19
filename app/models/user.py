@@ -6,8 +6,6 @@ from sqlalchemy.orm import relationship
 from datetime import datetime
 from app.models.role import user_has_role
 
-from app.helpers.pagination import paginate
-
 
 class User(Base):
     """

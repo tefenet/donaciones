@@ -33,7 +33,7 @@ def upgrade():
     op.bulk_insert(roles_table,
                    [
                        {
-                           'id': 'Administrador', 'name': '',
+                           'name': 'Administrador',
                        },
                        {
                            'name': 'Operador del Centro de Ayuda',
