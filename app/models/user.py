@@ -2,9 +2,9 @@ from app.models.sistema import Sistema
 from app.db import Base
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy import Column, Integer, String, Boolean, DateTime, SmallInteger
+from sqlalchemy.orm import relationship
 from datetime import datetime
-
-from app.helpers.pagination import paginate
+from app.models.role import user_has_role
 
 
 class User(Base):
@@ -24,6 +24,10 @@ class User(Base):
     account_type = Column(SmallInteger, default=2)
     create_date = Column(DateTime, default=datetime.now())
     update_date = Column(DateTime, default=None)
+    user_roles = relationship(
+        "Role",
+        secondary=user_has_role,
+        back_populates="role_users")
 
     def __init__(self, email=None, username=None, password=None, first_name=None, last_name=None, account_type=2,
                  active=None):
@@ -100,12 +104,18 @@ class User(Base):
         """Elimina un usuario de la base de datos de forma permanente"""
         return cls.query.filter(cls.id == id).delete()
 
-    #PENDIENTE: remplazar este chequeo y hacerlo sobre la tabla de roles
+    # PENDIENTE: remplazar este chequeo y hacerlo sobre la tabla de roles
     def is_admin(self):
         if self.account_type == 1:
             return True
         return False
 
-    # def role(self):
-    #     """Retorna el rol del user"""
-    #     return ('Pendiente')
+    def roles(self):
+        return self.user_roles
+
+    def has_role(self, r):  # podría pertenecer al controlador
+        return r in self.user_roles
+
+    # def role():
+#     """Retorna el rol del user"""
+#     return ('Pendiente')
