@@ -1,17 +1,16 @@
 """create system table
 
-Revision ID: ec5b784bec0d
-Revises: c80280ba772c
-Create Date: 2020-10-17 21:13:37.929102
+Revision ID: 54e1f29b4573
+Revises: 9b7544dca7ea
+Create Date: 2020-10-18 20:18:01.507596
 
 """
 from alembic import op
 import sqlalchemy as sa
-from datetime import datetime
 
 # revision identifiers, used by Alembic.
-revision = 'ec5b784bec0d'
-down_revision = 'c80280ba772c'
+revision = '54e1f29b4573'
+down_revision = '9b7544dca7ea'
 branch_labels = None
 depends_on = None
 
@@ -29,7 +28,7 @@ def upgrade():
     habilitado = Column(Boolean, default=True)
     """
 
-    users_table = op.create_table(
+    sistema_table = op.create_table(
         'sistema',
         sa.Column('id', sa.Integer, primary_key=True, autoincrement=True),
         sa.Column('titulo', sa.String(100), nullable=False),
@@ -43,7 +42,7 @@ def upgrade():
 
     # seed de usuarios de prueba:
 
-    op.bulk_insert(users_table,
+    op.bulk_insert(sistema_table,
                    [
                        {
                            'titulo': 'Centros de Ayuda BA',

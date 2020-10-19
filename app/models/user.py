@@ -2,7 +2,9 @@ from app.models.sistema import Sistema
 from app.db import Base
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy import Column, Integer, String, Boolean, DateTime, SmallInteger
+from sqlalchemy.orm import relationship
 from datetime import datetime
+from app.models.role import user_has_role
 
 from app.helpers.pagination import paginate
 
@@ -24,6 +26,10 @@ class User(Base):
     account_type = Column(SmallInteger, default=2)
     create_date = Column(DateTime, default=datetime.now())
     update_date = Column(DateTime, default=None)
+    user_roles = relationship(
+        "Role",
+        secondary=user_has_role,
+        back_populates="role_users")
 
     def __init__(self, email=None, username=None, password=None, first_name=None, last_name=None, account_type=2,
                  active=None):
