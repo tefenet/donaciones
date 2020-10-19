@@ -3,6 +3,7 @@ from app.helpers.auth import authenticated, login_required, clear_session
 from app.helpers.handler import display_errors
 from app.resources.forms import LoginForm
 from app.models.user import User
+from app.models.sistema import Sistema
 from pymysql import escape_string as thwart
 
 
@@ -29,6 +30,7 @@ def authenticate():
     """authenticate() realiza los chequeos necesarios para autorizar el ingreso del usuario al sistema.
     La funcion thwart del paquete pymsql se encarga de sanitizar el parametro para evitar posibles sql injections"""
 
+    sis_config = Sistema.get_sistema()
     form = LoginForm(request.form)
     if form.validate():
         username = thwart(form.username.data.lower())
@@ -56,6 +58,10 @@ def authenticate():
         if not user.active:
             flash("La cuenta que has ingresado se encuentra inactiva.", "danger")
             return redirect(url_for('auth_login'))
+
+        if not sis_config.habilitado and not user.is_admin():
+            flash("No puedes loguearte porque el sitio no esta disponible momentaneamente.", "danger")
+            return redirect(url_for('home'))
 
         app.logger.info("user: %s", user)
         set_session(user)

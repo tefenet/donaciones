@@ -100,11 +100,12 @@ class User(Base):
         """Elimina un usuario de la base de datos de forma permanente"""
         return cls.query.filter(cls.id == id).delete()
 
+    #PENDIENTE: remplazar este chequeo y hacerlo sobre la tabla de roles
     def is_admin(self):
         if self.account_type == 1:
             return True
         return False
 
-    # def role():
+    # def role(self):
     #     """Retorna el rol del user"""
     #     return ('Pendiente')
