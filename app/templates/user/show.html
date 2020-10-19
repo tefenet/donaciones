@@ -12,11 +12,18 @@
     <a href="{{ url_for('home') }}" class="link mx-auto">Volver</a>
 </div>
 <div class="container">
-    <h5>Usuario: {{user.username}}(rol) id={{user.id}}</h5>
+    <h5>Usuario: {{user.username}}</h5>
+    <ul class="list-group-item" style="list-style:none">
+        <p><b><span class="text-success text-danger">Rol/es</span></b></p>
+        {% for rol in user.roles() %}
+        <li><span class="text-danger"><b>*</b> {{rol.name}}</span></li>
+        {% endfor %}
+    </ul>
     <ul class="list-group-item" style="list-style:none">
         <li>Nombre: {{user.first_name}}</li>
         <li>Apellido: {{user.last_name}}</li>
         <li>Email: {{user.email}}</li>
+        <li>ID Cuenta: {{user.id}}</li>
     </ul>
 </div>
 {% endset %}
