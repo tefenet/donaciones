@@ -29,13 +29,35 @@ class Role(Base):
         return "<Role(name={}, id={})>".format(self.name, self.id)
 
     def users(self):
-        self.role_users
+        return self.role_users
 
     def permissions(self):
-        self.role_permissions
+        return self.role_permissions
 
     def has_user(self, u):
         return u in self.role_users
 
     def has_permission(self, p):
         return p in self.role_permissions
+
+    def add_user(self, user):
+        """Agrega un usuario a la relacion entre rol y usuario. También se agrega del lado del usuario"""
+        self.role_users.append(user)
+
+    def del_user(self, user):
+        """
+        Este metodo elimina un usaurio de la relacion de rol y usuario, tanto del lado del rol como del lado del usuario.
+        Tiene que llegar si o si un usuario que este en el rol, el chequeo debe estar en el controlador
+        """
+        self.role_users.remove(user)
+
+    def add_permission(self, user):
+        """Agrega un permiso a la relacion entre rol y permiso. También se agrega del lado del permiso"""
+        self.role_users.append(user)
+
+    def del_permission(self, user):
+        """
+        Este metodo elimina un permiso de la relacion de rol y permiso, tanto del lado del rol como del lado del permiso.
+        Tiene que llegar si o si un permiso que este en el rol, el chequeo debe estar en el controlador
+        """
+        self.role_users.remove(user)

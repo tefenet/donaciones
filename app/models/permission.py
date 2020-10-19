@@ -24,7 +24,20 @@ class Permission(Base):
         return "<Permission(name={}, id={})>".format(self.name, self.id)
 
     def roles(self):
+        """Retorna una lista con todos los roles del permiso"""
         return self.permission_roles
 
     def has_role(self, r):  # podría pertenecer al controlador
+        """Retorna True si el rol existe entre los roles del permiso"""
         return r in self.permission_roles
+
+    def add_role(self, role):
+        """Agrega un rol a la relacion entre permiso y roles. También se agrega del lado del rol"""
+        self.permission_roles.append(role)
+
+    def del_role(self, role):
+        """
+        Este metodo elimina un rol del permiso, tanto del lado del usuario como del lado del rol.
+        Tiene que llegar si o si un role que este en el permiso, el chequeo debe estar en el controlador
+        """
+        self.permission_roles.remove(role)
