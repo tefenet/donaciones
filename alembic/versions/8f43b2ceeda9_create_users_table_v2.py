@@ -60,8 +60,8 @@ def upgrade():
                            'first_name': 'John',
                            'last_name': 'Doe',
                            'email': 'john@donaciones.gov',
-                           'active': False,
-                           'account_type': 2,
+                           'active': True,
+                           'account_type': 1,
                        },
                        {
                            'username': 'ediaz',
