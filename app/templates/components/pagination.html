@@ -8,9 +8,14 @@
     </li>
     {% endif %}
 
-    {%- for page in range(1,pagination.pages) %}
-        {% if (page==pagination.page) %}
-        <li class="page-item active"> {{page}}</li>
+    {%- for page in range(1,pagination.pages+1) %}
+        {% if (page==pagination.current) %}
+        <!-- current page -->
+        <li class="page-item active">
+            <a class="page-link" href=#>
+                {{ pagination.current }}
+            </a>
+        </li>
         {% else %}
         <li class="page-item">
             <a class="page-link" href="{{ url_for( method, status=argument, username=argument,page=page) }}">
