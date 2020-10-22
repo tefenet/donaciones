@@ -2,7 +2,7 @@ from flask import redirect, render_template, request, url_for, session, abort, f
 from app.db import dbSession
 from app.models.sistema import Sistema
 from app.models.user import User
-from app.helpers.auth import login_required, admin_required, administrator
+from app.helpers.auth import login_required, admin_required, restricted
 from app.helpers.handler import display_errors
 from app.resources.forms import CreateUserForm, EditUserForm
 from werkzeug.exceptions import BadRequestKeyError
@@ -18,12 +18,14 @@ def is_administator(user_id):
     return user.is_admin()
 
 
+@restricted(perm='user_update')
 def activate(user):
     user.activate()
     flash("El usuario {} fue activado exitosamente".format(user.email), "success")
     return True
 
 
+@restricted(perm='user_update')
 def deactivate(user):
     if not is_administator(user.id):
         user.deactivate()
@@ -33,6 +35,7 @@ def deactivate(user):
     return False
 
 
+@restricted(perm='user_find')
 def find_by_username_paginated(username, page=1):
     """Retorna una paginación con los usuarios que contengan username en su nombre de usuario"""
     sys = Sistema.get_sistema()
@@ -40,6 +43,7 @@ def find_by_username_paginated(username, page=1):
     return paginate(query, page, sys.cant_por_pagina)
 
 
+@restricted(perm='user_find')
 def find_by_status_paginated(status=True, page=1):
     """Retornauna paginación con los usuarios con el estado recibido"""
     query = User.query_by_status(status)
@@ -51,7 +55,7 @@ def find_by_status_paginated(status=True, page=1):
 
 #####
 # Index
-@admin_required
+@restricted(perm='user_index')
 def index():
     sys = Sistema.get_sistema()
     try:
@@ -68,13 +72,13 @@ def index():
 
 #####
 # Create
-@admin_required
+@restricted(perm='user_new')
 def new():
     form = CreateUserForm()
     return render_template("user/new.html", form=form)
 
 
-@admin_required
+@restricted(perm='user_new')
 def create():
     """ Da de alta un usuario en la base de datos."""
     form = CreateUserForm(request.form)
@@ -95,7 +99,7 @@ def create():
 #####
 # Update user
 
-@admin_required
+@restricted(perm='user_update')
 def update_user_render(user_id):
     user = User.get_by_id(user_id)
     if user:
@@ -104,7 +108,7 @@ def update_user_render(user_id):
     abort(500, "ERROR: Error al obtener usuario. id = {}".format(user_id))
 
 
-@admin_required
+@restricted(perm='user_update')
 def update_user(user_id):
     form = EditUserForm(request.form)
     if form.validate():
@@ -134,7 +138,7 @@ def update_user(user_id):
 #####
 # Deactivate user accounts
 
-@admin_required
+@restricted(perm='user_update')
 def deactive_account(user_id=None):
     """Recibe un id de usuario. Si el usuario existe y su estado es activo, desactiva la cuenta seteando el campo active a False."""
     user = User.get_by_id(user_id)
@@ -147,7 +151,7 @@ def deactive_account(user_id=None):
     return redirect(url_for("user_index", page=1))
 
 
-@admin_required
+@restricted(perm='user_update')
 def activate_account(user_id=None):
     """Recibe un id de usuario. Si el usuario existe y su estado es inactivo, activa la cuenta seteando el campo active a True."""
     user = User.get_by_id(user_id)
@@ -163,7 +167,7 @@ def activate_account(user_id=None):
 #####
 # Delete User
 
-@admin_required
+@restricted(perm='user_destroy')
 def __delete(user_id):
     """Elimina un usuario del sistema de manera definitiva.
     Retorna True si pudo eliminar el usuario, caso contrario retorna false"""
@@ -177,7 +181,7 @@ def __delete(user_id):
     return False
 
 
-@admin_required
+@restricted(perm='user_destroy')
 def delete_user():
     try:
         user_id = request.args['user_id']
@@ -194,7 +198,7 @@ def delete_user():
 #####
 # Search users
 
-@admin_required
+@restricted(perm='user_find')
 def search_by_status():
     """Busca usuarios por estado(activo/inactivo).
     Recibe status, que es un booleano, devuelve una lista de usuarios """
@@ -214,7 +218,7 @@ def search_by_status():
     return render_template("user/index.html", pagination=pagination, user_is_admin=user_is_admin)
 
 
-@admin_required
+@restricted(perm='user_find')
 def search_by_username():
     """Busca usuarios por nombre de usuario.
     Recibe status, que es un booleano, devuelve una lista de usuarios """

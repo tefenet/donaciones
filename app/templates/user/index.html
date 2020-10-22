@@ -45,7 +45,7 @@
                         {% if user.active %}
                         <td><label class="badge badge-success decoration-none">
                             <a class="text-decoration-none"
-                               href="{{url_for('user_deactivate', user_id=user.id)}}">Desactivar</a></label>
+                               href="{{url_for('user_deactivate', user_id=user.id)}}">Bloquear</a></label>
                         </td>
                         {% else %}
                         <td><label class="badge badge-danger">
@@ -92,11 +92,11 @@
                 </table>
                 {% import 'components/pagination.html' as pag %}
                 {% if request.path == url_for('user_index') %}
-                {{ pag.set('user_index',pagination) }}
+                    {{ pag.set('user_index',pagination) }}
                 {% elif request.path == url_for('user_search_by_status') %}
-                {{ pag.set('user_search_by_status',pagination, request.args.get('status')) }}
+                    {{ pag.set('user_search_by_status',pagination, request.args.get('status')) }}
                 {% else %}
-                {{ pag.set('user_search_by_username',pagination,request.args.get('username')) }}
+                    {{ pag.set('user_search_by_username',pagination,request.args.get('username')) }}
                 {% endif %}
             </div>
         </div>

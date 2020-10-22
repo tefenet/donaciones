@@ -1,10 +1,9 @@
 from flask import redirect, render_template, request, url_for, session, flash, current_app as app
-from app.helpers.auth import authenticated, login_required, clear_session
+from app.helpers.auth import authenticated, login_required, clear_session, user_has_perm
 from app.helpers.handler import display_errors
 from app.resources.forms import LoginForm
 from app.models.user import User
 from app.models.sistema import Sistema
-from app.models.permission import Permission
 from pymysql import escape_string as thwart
 
 
@@ -87,7 +86,5 @@ def logout():
 
 def user_has_permission(permission_name):
     if session and session.get('logged_in'):
-        current_user = User.get_by_id(session.get('user_id'))
-        perm = Permission.get_by_name(permission_name)
-        return current_user.has_permission(perm)
+        return user_has_perm(permission_name)
     return False
