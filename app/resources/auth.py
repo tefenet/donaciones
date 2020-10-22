@@ -4,6 +4,7 @@ from app.helpers.handler import display_errors
 from app.resources.forms import LoginForm
 from app.models.user import User
 from app.models.sistema import Sistema
+from app.models.permission import Permission
 from pymysql import escape_string as thwart
 
 
@@ -13,6 +14,7 @@ def set_session(user):
     session['user_id'] = user.id
     session['user_email'] = user.email
     session['username'] = user.username
+    session['current_user'] = User.get_by_id(user.id)
     session['logged_in'] = True
     session['is_admin'] = True if (user.account_type == 1) else False
     session['perfil_activo'] = None
@@ -81,3 +83,11 @@ def logout():
     # clear_session()  # otra forma de limpiar la sesión puede ser recorriendo los items de la sesion y eliminarlos, similar al metodo session.clear() pero implementado por nosotros
     flash("La sesión se cerró correctamente.", "success")
     return redirect(url_for('home'))
+
+
+def user_has_permission(permission_name):
+    if session and session.get('logged_in'):
+        current_user = User.get_by_id(session.get('user_id'))
+        perm = Permission.get_by_name(permission_name)
+        return current_user.has_permission(perm)
+    return False

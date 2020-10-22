@@ -37,8 +37,8 @@ class Role(Base):
     def has_user(self, u):
         return u in self.role_users
 
-    def has_permission(self, p):
-        return p in self.role_permissions
+    def has_permission(self, perm):
+        return perm in self.role_permissions
 
     def add_user(self, user):
         """Agrega un usuario a la relacion entre rol y usuario. También se agrega del lado del usuario"""

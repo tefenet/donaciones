@@ -129,6 +129,7 @@ class User(Base):
         """
         self.user_roles.remove(role)
 
-    # def role():
-#     """Retorna el rol del user"""
-#     return ('Pendiente')
+    def has_permission(self, perm):
+        """Retorna el rol del user"""
+        my_roles = list(self.user_roles)
+        return any(role.has_permission(perm) for role in my_roles)
