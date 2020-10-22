@@ -104,12 +104,6 @@ class User(Base):
         """Elimina un usuario de la base de datos de forma permanente"""
         return cls.query.filter(cls.id == id).delete()
 
-    # PENDIENTE: remplazar este chequeo y hacerlo sobre la tabla de roles
-    def is_admin(self):
-        if self.account_type == 1:
-            return True
-        return False
-
     def roles(self):
         """Retorna una lista con todos los roles del usuario"""
         return self.user_roles
@@ -128,6 +122,10 @@ class User(Base):
         Tiene que llegar si o si un role que este en el usuario, el chequeo debe estar en el controlador
         """
         self.user_roles.remove(role)
+
+    def update_role(self, role):
+        self.user_roles.clear()
+        self.add_role(role)
 
     def has_permission(self, perm):
         """Retorna el rol del user"""

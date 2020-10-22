@@ -51,16 +51,16 @@ class Role(Base):
         """
         self.role_users.remove(user)
 
-    def add_permission(self, user):
+    def add_permission(self, perm):
         """Agrega un permiso a la relacion entre rol y permiso. También se agrega del lado del permiso"""
-        self.role_users.append(user)
+        self.role_permissions.append(perm)
 
-    def del_permission(self, user):
+    def del_permission(self, perm):
         """
         Este metodo elimina un permiso de la relacion de rol y permiso, tanto del lado del rol como del lado del permiso.
         Tiene que llegar si o si un permiso que este en el rol, el chequeo debe estar en el controlador
         """
-        self.role_users.remove(user)
+        self.role_permissions.remove(perm)
 
     @classmethod
     def get_role_by_name(cls, name):

@@ -34,6 +34,7 @@ def create_app(environment="production"):
         dbSession.remove()
 
     # Funciones que se exportan al contexto de Jinja2
+    app.jinja_env.globals.update(is_authenticated=helper_auth.authenticated)
     app.jinja_env.globals.update(has_perm=auth.user_has_permission)
     app.jinja_env.globals.update(site_variables=Sys.get_sistema)
 

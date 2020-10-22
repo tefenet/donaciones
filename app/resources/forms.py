@@ -3,10 +3,13 @@ from flask_wtf import FlaskForm, RecaptchaField
 from datetime import date
 from wtforms import StringField, SubmitField, PasswordField, BooleanField, IntegerField, FileField, \
     TextAreaField, RadioField, DateField
+from wtforms.ext.sqlalchemy.fields import QuerySelectField
 from wtforms.validators import ValidationError, DataRequired, Length, length, Email, EqualTo, required, Optional
 from wtforms.fields.html5 import EmailField
 from pymysql import escape_string as thwart  # escape_string para prevenir sql injections
 from datetime import date
+
+from app.models.role import Role
 from app.models.user import User
 
 
@@ -20,7 +23,12 @@ class LoginForm(FlaskForm):
     # Formulario para registro de usuarios
 
 
+def select_role():
+    return Role.query
+
+
 class CreateUserForm(FlaskForm):
+
     email = EmailField('Dirección de correo',
                        [DataRequired(), Email(message="Ingresá un correo electronico válido")],
                        render_kw={"placeholder": "my.email@mail.com"})
@@ -40,6 +48,8 @@ class CreateUserForm(FlaskForm):
                             [Length(message="El apellido  debe tener entre 2 y 20 caracteres", min=2, max=20),
                              DataRequired()], render_kw={"placeholder": "perez"})
     active = BooleanField('Estado(Activo/Inactivo)')
+    role = QuerySelectField('Rol', query_factory=select_role, get_label='name')
+
 
     def validate_username(self, username):
         """Compruebo que el nombre de usuario no exista en el sistema"""
@@ -73,6 +83,7 @@ class EditUserForm(FlaskForm):
                             [Length(message="El apellido  debe tener entre 2 y 20 caracteres", min=2, max=20),
                              DataRequired()])
     active = BooleanField('Estado(Activo/Inactivo)')
+    role = QuerySelectField('Rol', query_factory=select_role, get_label='name')
 
 
 # Formulario de configuración del sistema
