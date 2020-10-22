@@ -37,7 +37,7 @@
                         <td>{{user.email}}</td>
                         <td>{{user.username}}</td>
                         <td>{{user.first_name}} {{user.last_name}}</td>
-                        {% if user_is_admin %}
+                        {% if has_perm('user_update') %}
                         <td><label class="badge badge-alert">
                             <a class="text-decoration-none"
                                href="{{url_for('user_update_by_id', user_id=user.id)}}">Editar</a></label>
@@ -53,6 +53,8 @@
                                href="{{url_for('user_activate', user_id=user.id)}}">Activar</a></label>
                         </td>
                         {% endif %}
+                        {% endif %}
+                        {% if has_perm('user_destroy')%}
                         <td>
                             <a class="text-decoration-none"
                                href="{{url_for('user_delete_by_id', user_id=user.id)}}"><i
@@ -100,6 +102,7 @@
                 {% endif %}
             </div>
         </div>
+        {% if has_perm('user_find') %}
         <div class="m-3">
             <h5>Buscar por nombre de usuario </h5>
             <form class="form-inline my-2  mr-auto  "
@@ -117,6 +120,7 @@
             <a class="btn btn-outline-success my-2 my-sm-0"
                href="{{url_for('user_search_by_status', status=False, page=1)}}">Inactivos</a>
         </div>
+        {% endif %}
     </div>
 </div>
 {% endset %}

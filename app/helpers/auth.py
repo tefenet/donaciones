@@ -1,6 +1,6 @@
 from flask import session, url_for, flash, redirect, abort, render_template
 from functools import wraps
-
+from app.models.role import Role
 from app.models.permission import Permission
 from app.models.user import User
 
@@ -12,17 +12,6 @@ def login_required(f):
             return f(*args, **kwargs)
         else:
             flash("Tenes estar logueado para acceder a esta página!")
-            abort(401)
-
-    return wrap
-
-
-def admin_required(f):
-    @wraps(f)
-    def wrap(*args, **kwargs):
-        if administrator(session):
-            return f(*args, **kwargs)
-        else:
             abort(401)
 
     return wrap
@@ -57,6 +46,21 @@ def restricted(perm):
                 return f(*args, **kwargs)
             else:
                 abort(401)
+
+        return wrap
+
+    return decorator
+
+
+def is_not_admin():
+    def decorator(f):
+        @wraps(f)
+        def wrap(*args, **kwargs):
+            admin_role = Role.get_role_by_name('Administrador')
+            if not args[0].has_role(admin_role):
+                return f(*args, **kwargs)
+            else:
+                flash("ERROR: operación no permitida sobre usuario administrador".format())
 
         return wrap
 

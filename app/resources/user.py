@@ -1,21 +1,15 @@
 from flask import redirect, render_template, request, url_for, session, abort, flash, current_app as app
 from app.db import dbSession
+from app.models import role
 from app.models.sistema import Sistema
 from app.models.user import User
-from app.helpers.auth import login_required, admin_required, restricted
+from app.helpers.auth import login_required, restricted, is_not_admin
 from app.helpers.handler import display_errors
 from app.resources.forms import CreateUserForm, EditUserForm
 from werkzeug.exceptions import BadRequestKeyError
 from pymysql import escape_string as thwart
 from sqlalchemy.exc import IntegrityError
 from app.helpers.pagination import paginate
-
-
-def is_administator(user_id):
-    user = User.get_by_id(user_id)
-    if user is None:
-        return False
-    return user.is_admin()
 
 
 @restricted(perm='user_update')
@@ -26,13 +20,11 @@ def activate(user):
 
 
 @restricted(perm='user_update')
+@is_not_admin()
 def deactivate(user):
-    if not is_administator(user.id):
-        user.deactivate()
-        flash("El usuario {} fue desactivado exitosamente".format(user.email), "success")
-        return True
-    flash("Error al desactivar usuario. No podés desactivar a un administrador")
-    return False
+    user.deactivate()
+    flash("El usuario {} fue desactivado exitosamente".format(user.email), "success")
+    return True
 
 
 @restricted(perm='user_find')
@@ -66,8 +58,7 @@ def index():
         res = paginate(User.query, page, sys.cant_por_pagina)  # check User.query
     except AttributeError:  # AttributeError raise when page<1
         return redirect(url_for('user_index'))
-    user_is_admin = is_administator(session['user_id'])
-    return render_template("user/index.html", pagination=res, user_is_admin=user_is_admin)
+    return render_template("user/index.html", pagination=res)
 
 
 #####
@@ -168,24 +159,21 @@ def activate_account(user_id=None):
 # Delete User
 
 @restricted(perm='user_destroy')
-def __delete(user_id):
+@is_not_admin()
+def __delete(user):
     """Elimina un usuario del sistema de manera definitiva.
     Retorna True si pudo eliminar el usuario, caso contrario retorna false"""
-    u = User.get_by_id(user_id)
-    if u and not u.is_admin():
-        if User.delete_by_id(user_id):
-            dbSession.commit()
-            return True
-    if u.is_admin():
-        raise PermissionError
-    return False
+    if User.delete_by_id(user.id):
+        dbSession.commit()
+    return True
 
 
 @restricted(perm='user_destroy')
 def delete_user():
     try:
         user_id = request.args['user_id']
-        if __delete(user_id):
+        u = User.get_by_id(user_id)
+        if __delete(u):
             flash("Usuario id {} eliminado exitosamente".format(user_id), "success")
     except BadRequestKeyError:
         flash("ERROR: id usuario no recibido", "danger")
@@ -205,7 +193,6 @@ def search_by_status():
     try:
         status = False if request.args['status'] == "False" else True
         page = int(request.args['page'])
-        user_is_admin = is_administator(session['user_id'])
     except (BadRequestKeyError, ValueError) as e:  # no se que es este error pero la paginación es incorrecta
         # flash("ERROR: {}".format(e), e)
         return redirect(url_for('user_index'))
@@ -215,7 +202,7 @@ def search_by_status():
     except AttributeError:  # raised when page < 1
         page = 1
         pagination = find_by_status_paginated(status, page)
-    return render_template("user/index.html", pagination=pagination, user_is_admin=user_is_admin)
+    return render_template("user/index.html", pagination=pagination)
 
 
 @restricted(perm='user_find')
@@ -225,7 +212,6 @@ def search_by_username():
     try:
         username = request.args['username']
         page = int(request.args['page'])
-        user_is_admin = is_administator(session['user_id'])
     except (BadRequestKeyError, ValueError) as e:  # no se que es este error pero la paginación es incorrecta
         # flash("ERROR: {}".format(e), e)
         return redirect(url_for('user_index'))
@@ -235,7 +221,7 @@ def search_by_username():
     except AttributeError:  # raised when page < 1
         page = 1
         pagination = find_by_username_paginated(username, page)
-    return render_template("user/index.html", pagination=pagination, user_is_admin=user_is_admin)
+    return render_template("user/index.html", pagination=pagination)
 
 
 #####

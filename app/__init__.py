@@ -28,29 +28,13 @@ def create_app(environment="production"):
     app.config["SESSION_TYPE"] = "filesystem"
     Session(app)
 
-
-    """
-    # conexion a la BD por pymsql
-    def connection():
-        db_conn = pymysql.connect(
-            host=environ.get("DB_HOST", "localhost"),
-            user=environ.get("DB_USER"),
-            password=environ.get("DB_PASS"),
-            db=environ.get("DB_NAME"),
-            cursorclass=pymysql.cursors.DictCursor,
-        )
-        return db_conn
-    """
-
     # Configure db, decorator cause callback cleanup, to release resources used by a session after request
     @app.teardown_appcontext
     def cleanup(resp_or_exc):
         dbSession.remove()
 
     # Funciones que se exportan al contexto de Jinja2
-    app.jinja_env.globals.update(is_authenticated=helper_auth.authenticated)
     app.jinja_env.globals.update(has_perm=auth.user_has_permission)
-    app.jinja_env.globals.update(is_admin=helper_auth.administrator)
     app.jinja_env.globals.update(site_variables=Sys.get_sistema)
 
 
@@ -93,10 +77,10 @@ def create_app(environment="production"):
         return render_template("home.html")
 
     # Session
-    @app.route('/session')
-    @helper_auth.admin_required
-    def get_session():
-        return render_template('session.html', session=session)
+    # @app.route('/session') ESTA RUTA NO TIENE SENTIDO
+    # @helper_auth.restricted('session_show')
+    # def get_session():
+    #     return render_template('session.html', session=session)
 
     # Rutas de API-rest
     app.add_url_rule("/api/consultas", "api_issue_index", api_issue.index)

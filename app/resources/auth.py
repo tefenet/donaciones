@@ -60,7 +60,7 @@ def authenticate():
             flash("La cuenta que has ingresado se encuentra inactiva.", "danger")
             return redirect(url_for('auth_login'))
 
-        if not sis_config.habilitado and not user.is_admin():
+        if not sis_config.habilitado and not user_has_permission('system_modify_config'):
             flash("No puedes loguearte porque el sitio no esta disponible momentaneamente.", "danger")
             return redirect(url_for('home'))
 
