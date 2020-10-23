@@ -143,4 +143,4 @@ def upgrade():
 
 
 def downgrade():
-    pass
+    op.drop_table('role_has_permission')
