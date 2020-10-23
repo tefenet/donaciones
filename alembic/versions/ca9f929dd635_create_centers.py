@@ -40,8 +40,8 @@ def upgrade():
         sa.Column('web_site', sa.String(100)),
         sa.Column('published', sa.Boolean(), default=False),
         sa.Column('geo_location', sa.String(100)),
-        sa.Column('opening', sa.DateTime, default=datetime.now()),
-        sa.Column('closing', sa.DateTime, default=datetime.now()),
+        sa.Column('opening', sa.Time()),
+        sa.Column('closing', sa.Time()),
         sa.Column('protocol', sa.LargeBinary()),
         sa.Column('city_id', sa.Integer, ForeignKey('city.id')),
         sa.Column('type_id', sa.Integer, ForeignKey('centerType.id')),
@@ -113,6 +113,7 @@ def upgrade():
 
 
 def downgrade():
+    op.drop_table('centers')
     op.drop_table('centerType')
     op.drop_table('city')
-    op.drop_table('type')
+

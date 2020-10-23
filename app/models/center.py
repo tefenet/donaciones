@@ -1,7 +1,8 @@
+from MySQLdb import TIMESTAMP, TIME
 from sqlalchemy.orm import relationship
 
 from app.db import Base
-from sqlalchemy import Column, Integer, String, Boolean, DateTime, LargeBinary, ForeignKey
+from sqlalchemy import Column, Integer, String, Boolean, DateTime, LargeBinary, ForeignKey, Time
 from datetime import datetime
 
 
@@ -13,8 +14,8 @@ class Center(Base):
     phone = Column(String())
     email = Column(String(25), nullable=False)
     web_site = Column(String())
-    opening = Column(DateTime())
-    closing = Column(DateTime())
+    opening = Column(Time())
+    closing = Column(Time())
     published = Column(Boolean(), default=False)
     geo_location = Column(String(50))
     protocol = Column(LargeBinary())

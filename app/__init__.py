@@ -1,9 +1,11 @@
 from os import environ
 from flask import Flask, render_template, session
 from flask_session import Session
+
+from app.models import center, centertype, city
 from config import config
 from app.db import dbSession, init_db
-from app.resources import issue
+from app.resources import issue, center
 from app.resources import user
 from app.resources import auth
 from app.resources import sistema
@@ -65,6 +67,9 @@ def create_app(environment="production"):
     app.add_url_rule("/usuarios/editar/<int:user_id>", "user_update_by_id", user.update_user_render)
     app.add_url_rule("/usuarios/editar/<int:user_id>", "user_update_by_id_post", user.update_user, methods=["POST"])
 
+    # Rutas de Centros
+    app.add_url_rule("/center", "center_create", center.create, methods=['POST'])
+    app.add_url_rule("/center/new", "center_new", center.new)
     # Rutas de Sistema
     app.add_url_rule("/sistema/configurar", "system_configure", sistema.config_sistema_get)
     app.add_url_rule("/sistema/configurar", "system_configure_post", sistema.config_sistema_post, methods=["POST"])

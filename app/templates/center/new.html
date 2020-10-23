@@ -1,0 +1,39 @@
+{% extends "layout.html" %}
+{% block title %}Usuarios{% endblock %}
+{% block head %}
+{{ super() }}
+{% endblock %}
+{% set content %}
+<div style="display:flex">
+  <h3 class="mx-auto">Crear un centro</h3>
+</div>
+
+
+  <div style="display:flex">
+  <a href="{{ url_for('user_index', page=1) }}" class="link mx-auto">Volver</a>
+  </div>
+
+<div class="container">
+<form method=post action="{{url_for('center_create')}}">
+  {{ form.hidden_tag() }}
+
+    {% for field in form %}
+    {% if field.name != "csrf_token" %}
+    <div class="row">
+      <div class="col-25">
+        {{ field.label() }}
+      </div>
+      <div class="col-75">
+        {{ field(class="js-scroll-trigger") }}
+      </div>
+    </div>
+    {% endif %}
+    {% endfor %}
+    <div class="row">
+      <button type="reset" class="btn btn-primary js-scroll-trigger">Limpiar</button>
+    <input type="submit" value="Crear" class="btn btn-primary js-scroll-trigger">
+
+  </div>
+</form>
+</div>
+{% endset %}
