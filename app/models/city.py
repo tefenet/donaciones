@@ -7,13 +7,13 @@ from sqlalchemy import Column, Integer, String
 class City(Base):
     __tablename__ = 'city'
     id = Column(Integer, primary_key=True)
-    description = Column(String(50))
+    name = Column(String(50))
     city_centers = relationship(
         'Center',
         backref="city")
 
     def __init__(self, description):
-        self.description = description
+        self.name = description
 
     def __repr__(self):
-        return "<City(description={}, id={})>".format(self.description, self.id)
+        return "<City(name={}, id={})>".format(self.name, self.id)

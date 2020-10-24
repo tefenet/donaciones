@@ -30,11 +30,15 @@ class Center(Base):
         self.opening = opening
         self.closing = closing
 
-    def __update__(self):
-        self.update_date = datetime.now()
-
-    def register_update(self):
-        self.__update__()
-
     def __repr__(self):
         return "<Center(name='{}')'>".format(self.name, self.id)
+
+    @classmethod
+    def delete_by_id(cls, id):
+        """Elimina un centro de la base de datos de forma permanente"""
+        return cls.query.filter(cls.id == id).delete()
+
+    @classmethod
+    def get_by_id(cls, centro_id):
+        """Retorna el centro con id centro_id"""
+        return cls.query.get(centro_id)

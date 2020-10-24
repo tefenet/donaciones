@@ -1,0 +1,108 @@
+{% extends "layout.html" %}
+{% block title %}Centros{% endblock %}
+{% block head %}
+{{ super() }}
+{% endblock %}
+{% set content %}
+<div style="display:flex">
+    <h1 class="mx-auto">Centros</h1>
+</div>
+<div style="display:flex">
+    <a href="{{ url_for('home') }}" class="link mx-auto">Volver</a>
+    <a href="{{ url_for('center_new') }}" class="link mx-auto">Nuevo</a>
+</div>
+<div class="container">
+
+    <div class="card">
+        <div class="card-body">
+            <p class="card-description">
+                Lista de centros
+            </p>
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                    <tr align="center">
+
+                        <th>Nombre</th>
+                        <th>Telefono</th>
+                        <th>sitio web</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for center in pagination.items %}
+                    <tr align="center">
+                        <td>{{center.name}}</td>
+                        <td>{{center.phone}}</td>
+                        <td>{{center.web_site}}</td>
+                        {% if has_perm('centro_update') %}
+                        <td><label class="badge badge-alert">
+                            <a class="text-decoration-none"
+                               href=#>Editar</a></label>
+                        </td>
+                        {% endif %}
+                        {% if has_perm('user_destroy')%}
+
+                        <td>
+                            <button type="button" class="btn btn-danger btn-xs" data-toggle="modal"
+                                    data-target="#modalDeleteCenter{{loop.index}}">Eliminar
+                            </button>
+                        </td>
+                        {% endif %}
+                    </tr>
+
+                    {# modal delete user #}
+                    <div id="confirm-deletion-center-{{loop.index}}">
+                        <div id="modalDeleteCenter{{loop.index}}" class="modal fade" role="dialog">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">Eliminar Centro</div>
+                                    <div class="modal-body">
+                                        <b>{{center.name}}</b><br/> Este cambio
+                                        es irreversible
+                                    </div>
+                                    <div class="modal-footer">
+                                        <form action="{{url_for('center_delete', center_id=center.id)}}" method="post">
+                                            <button type="submit" class="btn btn-danger">Eliminar</button>
+                                            <button class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% endfor %}
+                    </tbody>
+                </table>
+                {% import 'components/pagination.html' as pag %}
+                {% if request.path == url_for('center_index') %}
+                    {{ pag.set('center_index',pagination) }}
+                {% elif request.path == url_for('user_search_by_status') %}
+                    {{ pag.set('user_search_by_status',pagination, request.args.get('status')) }}
+                {% else %}
+                    {{ pag.set('user_search_by_username',pagination,request.args.get('username')) }}
+                {% endif %}
+            </div>
+        </div>
+        {% if has_perm('user_find') %}
+        <div class="m-3">
+            <h5>Buscar por nombre de usuario </h5>
+            <form class="form-inline my-2  mr-auto  "
+                  action="{{url_for('user_search_by_username')}}">
+                <input class="form-control mr-sm-2" type="text" id="username" name="username" placeholder="Username"
+                       aria-label="Username">
+                <input id="page" name="page" type="hidden" value="1">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Buscar</button>
+            </form>
+        </div>
+        <div class="m-3">
+            <h5>Buscar por estado</h5>
+            <a class="btn btn-outline-success my-2 my-sm-0"
+               href="{{url_for('user_search_by_status', status=True, page=1)}}">Activos</a>
+            <a class="btn btn-outline-success my-2 my-sm-0"
+               href="{{url_for('user_search_by_status', status=False, page=1)}}">Inactivos</a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endset %}

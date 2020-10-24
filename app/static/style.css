@@ -102,3 +102,7 @@ color:blue}
   line-height: .5;
   border-radius: .2rem;
 }
+.alert{
+    max-width:50%;
+    margin: 0 auto;
+    }

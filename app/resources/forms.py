@@ -1,13 +1,15 @@
-from flask import flash
-from flask_wtf import FlaskForm, RecaptchaField
-from datetime import date
-from wtforms import StringField, SubmitField, PasswordField, BooleanField, IntegerField, FileField, \
-    TextAreaField, RadioField, DateField
+
+from flask_wtf import FlaskForm
+
+from wtforms import StringField, SubmitField, PasswordField, BooleanField, IntegerField,\
+     RadioField
 from wtforms.ext.sqlalchemy.fields import QuerySelectField
-from wtforms.validators import ValidationError, DataRequired, Length, length, Email, EqualTo, required, Optional
-from wtforms.fields.html5 import EmailField, TimeField
+from wtforms.validators import ValidationError, DataRequired, Length, length, Email, EqualTo, Optional
+
+from wtforms.fields.html5 import EmailField, TimeField, URLField
+
 from pymysql import escape_string as thwart  # escape_string para prevenir sql injections
-from datetime import date
+
 
 from app.models.centertype import CenterType
 from app.models.city import City
@@ -110,11 +112,14 @@ class SistemaForm(FlaskForm):
 
 
 class CreateCenterForm(FlaskForm):
-    name = StringField('nombre')
+    name = StringField('nombre', validators=[DataRequired(), Length(max=55)])
     address = StringField('direccion')
-    phone = StringField('telefono')
-    email = StringField('email')
+    phone = StringField('telefono', validators=[])
+    email = StringField('email', validators=[DataRequired(), Length(max=25)])
     opening = TimeField('apertura')
     closing = TimeField('cierre')
-    city = QuerySelectField('ciudad', query_factory=select_city, get_label='description')
+    city = QuerySelectField('ciudad', query_factory=select_city, get_label='name')
     type = QuerySelectField('tipo', query_factory=select_type, get_label='description')
+    web_site = URLField('sitio web',render_kw={"placeholder": "https://www.site.com"})
+    geo_location = StringField('coordenadas')
+    published = RadioField('publicado', coerce=int, choices=[(0, "no"), (1, "si")], default=1)
