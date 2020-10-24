@@ -37,7 +37,7 @@
                         {% if has_perm('centro_update') %}
                         <td><label class="badge badge-alert">
                             <a class="text-decoration-none"
-                               href=#>Editar</a></label>
+                               href="{{ url_for('center_update_form', center_id=center.id) }}">Editar</a></label>
                         </td>
                         {% endif %}
                         {% if has_perm('user_destroy')%}

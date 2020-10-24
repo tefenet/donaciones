@@ -1,0 +1,39 @@
+{% extends "layout.html" %}
+{% block title %}Editar Centro{% endblock %}
+{% block head %}
+{{ super() }}
+{% endblock %}
+{% set content %}
+<div style="display:flex">
+  <h3 class="mx-auto">Editar un centro</h3>
+</div>
+
+
+  <div style="display:flex">
+  <a href="{{ url_for('center_index') }}" class="link mx-auto">Volver</a>
+  </div>
+
+<div class="container">
+<form method=post action="{{url_for('center_update', center_id=center_id)}}">
+  {{ form.hidden_tag() }}
+
+    {% for field in form %}
+    {% if field.name != "csrf_token" %}
+    <div class="row">
+      <div class="col-25">
+        {{ field.label() }}
+      </div>
+      <div class="col-75">
+        {{ field(class="js-scroll-trigger") }}
+      </div>
+    </div>
+    {% endif %}
+    {% endfor %}
+    <div class="row">
+      <button type="reset" class="btn btn-primary js-scroll-trigger">Limpiar</button>
+    <input type="submit" value="Guardar" class="btn btn-primary js-scroll-trigger">
+
+  </div>
+</form>
+</div>
+{% endset %}

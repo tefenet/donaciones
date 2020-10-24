@@ -1,4 +1,5 @@
 from flask import redirect, render_template, request, url_for, session, abort, flash, current_app as app
+from sqlalchemy.exc import IntegrityError
 from werkzeug.exceptions import BadRequestKeyError
 
 from app import dbSession
@@ -59,3 +60,29 @@ def delete_center():
         flash("ERROR: id Centro no recibido", "danger")
     finally:
         return redirect(url_for('center_index'))
+
+
+def update_center_form(center_id):
+    center = Center.get_by_id(center_id)
+    if center:
+        form = CreateCenterForm(obj=center)
+        return render_template('center/update.html', form=form, center_id=center_id)
+    abort(500, "ERROR: Error al obtener centro id = {}".format(center_id))
+
+
+def update_center(center_id):
+    form = CreateCenterForm(request.form)
+    if form.validate():
+        center = Center.get_by_id(center_id)
+        form.populate_obj(center)
+        try:
+            dbSession.commit()
+        except IntegrityError:
+            flash("Ya existe un Centro con ese correo/username", "danger")
+            return render_template('center/update.html', form=form, center_id=center.id)
+    if form.errors:
+        display_errors(form.errors)  # si hay errores redirecciona a la pagina de crear usuario y muestra los errores.
+        flash("Error al validar formulario", "danger")
+        return redirect(url_for("center_index"))
+    flash("se guardaron los cambios", "info")
+    return redirect(url_for("center_index"))
