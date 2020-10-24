@@ -1,9 +1,11 @@
 from os import environ
 from flask import Flask, render_template, session
 from flask_session import Session
+
+from app.models import center, centertype, city
 from config import config
 from app.db import dbSession, init_db
-from app.resources import issue
+from app.resources import issue, center
 from app.resources import user
 from app.resources import auth
 from app.resources import sistema
@@ -64,6 +66,14 @@ def create_app(environment="production"):
     app.add_url_rule("/usuarios/deleteById", "user_delete_by_id", user.delete_user, methods=["POST"])  # recibe id(int)
     app.add_url_rule("/usuarios/editar/<int:user_id>", "user_update_by_id", user.update_user_render)
     app.add_url_rule("/usuarios/editar/<int:user_id>", "user_update_by_id_post", user.update_user, methods=["POST"])
+
+    # Rutas de Centros
+    app.add_url_rule("/center", "center_index", center.index)
+    app.add_url_rule("/center", "center_create", center.create, methods=['POST'])
+    app.add_url_rule("/center/new", "center_new", center.new)
+    app.add_url_rule("/center/delete", "center_delete", center.delete_center, methods=["POST"])
+    app.add_url_rule("/center/edit/<int:center_id>", "center_update_form", center.update_center_form)
+    app.add_url_rule("/center/edit/<int:center_id>", "center_update", center.update_center, methods=["POST"])
 
     # Rutas de Sistema
     app.add_url_rule("/sistema/configurar", "system_configure", sistema.config_sistema_get)

@@ -1,14 +1,18 @@
-from flask import flash
-from flask_wtf import FlaskForm, RecaptchaField
-from datetime import date
-from wtforms import StringField, SubmitField, PasswordField, BooleanField, IntegerField, FileField, \
-    TextAreaField, RadioField, DateField
-from wtforms.ext.sqlalchemy.fields import QuerySelectField
-from wtforms.validators import ValidationError, DataRequired, Length, length, Email, EqualTo, required, Optional
-from wtforms.fields.html5 import EmailField
-from pymysql import escape_string as thwart  # escape_string para prevenir sql injections
-from datetime import date
 
+from flask_wtf import FlaskForm
+
+from wtforms import StringField, SubmitField, PasswordField, BooleanField, IntegerField,\
+     RadioField
+from wtforms.ext.sqlalchemy.fields import QuerySelectField
+from wtforms.validators import ValidationError, DataRequired, Length, length, Email, EqualTo, Optional
+
+from wtforms.fields.html5 import EmailField, TimeField, URLField
+
+from pymysql import escape_string as thwart  # escape_string para prevenir sql injections
+
+
+from app.models.centertype import CenterType
+from app.models.city import City
 from app.models.role import Role
 from app.models.user import User
 
@@ -27,8 +31,15 @@ def select_role():
     return Role.query
 
 
-class CreateUserForm(FlaskForm):
+def select_city():
+    return City.query
 
+
+def select_type():
+    return CenterType.query
+
+
+class CreateUserForm(FlaskForm):
     email = EmailField('Dirección de correo',
                        [DataRequired(), Email(message="Ingresá un correo electronico válido")],
                        render_kw={"placeholder": "my.email@mail.com"})
@@ -49,7 +60,6 @@ class CreateUserForm(FlaskForm):
                              DataRequired()], render_kw={"placeholder": "perez"})
     active = BooleanField('Estado(Activo/Inactivo)')
     role = QuerySelectField('Rol', query_factory=select_role, get_label='name')
-
 
     def validate_username(self, username):
         """Compruebo que el nombre de usuario no exista en el sistema"""
@@ -74,7 +84,7 @@ class EditUserForm(FlaskForm):
                             DataRequired()])
     password = PasswordField('Contraseña', [Optional(),
                                             length(message="La contraseña debe tener entre 6 y 20 caracteres", min=6,
-                                                   max=20),],
+                                                   max=20), ],
                              render_kw={"placeholder": "entre 6 y 20 caracteres"})
     first_name = StringField('Nombre',
                              [Length(message="El nombre  debe tener entre 4 y 20 caracteres", min=4, max=20),
@@ -99,3 +109,17 @@ class SistemaForm(FlaskForm):
     habilitado = RadioField('Estado de la página', coerce=int, choices=[(0, "Deshabilitado."),
                                                                         (1, "Habilitado")], default=1)
     # habilitado = BooleanField('Estado de la página')
+
+
+class CreateCenterForm(FlaskForm):
+    name = StringField('nombre', validators=[DataRequired(), Length(max=55)])
+    address = StringField('direccion')
+    phone = StringField('telefono', validators=[])
+    email = StringField('email', validators=[DataRequired(), Length(max=25)])
+    opening = TimeField('apertura')
+    closing = TimeField('cierre')
+    city = QuerySelectField('ciudad', query_factory=select_city, get_label='name')
+    type = QuerySelectField('tipo', query_factory=select_type, get_label='description')
+    web_site = URLField('sitio web',render_kw={"placeholder": "https://www.site.com"})
+    geo_location = StringField('coordenadas')
+    published = RadioField('publicado', coerce=int, choices=[(0, "no"), (1, "si")], default=1)
