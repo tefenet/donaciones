@@ -15,7 +15,7 @@ def set_session(user):
     session['username'] = user.username
     session['current_user'] = User.get_by_id(user.id)
     session['logged_in'] = True
-    session['is_admin'] = True if (user.account_type == 1) else False
+    session['is_admin'] = True if (user.has_role("Administrador")) else False
     session['perfil_activo'] = None
 
 
