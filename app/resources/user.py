@@ -77,7 +77,7 @@ def create():
         user = User(email=thwart(form.email.data), username=thwart(form.username.data),
                     first_name=thwart(form.first_name.data), last_name=thwart(form.last_name.data),
                     active=form.active.data)
-        user.add_role(form.role.data)
+        user.set_roles(list(form.user_roles.data))
         user.set_password(thwart(form.password.data))  # envio la pw para guardar el hash en la db.
         dbSession.add(user)
         dbSession.commit()
@@ -112,7 +112,7 @@ def update_user(user_id):
                 u.set_password(thwart(form.password.data))
             if form.active.data != u.active:
                 activate(u) if form.active.data else deactivate(u)
-            u.update_role(form.role.data)
+            u.set_roles(list(form.user_roles.data))
             try:
                 u.updated()
                 dbSession.commit()

@@ -123,9 +123,9 @@ class User(Base):
         """
         self.user_roles.remove(role)
 
-    def update_role(self, role):
-        self.user_roles.clear()
-        self.add_role(role)
+    def set_roles(self, roles):
+        self.user_roles = roles
+
 
     def has_permission(self, perm):
         """Retorna el rol del user"""
