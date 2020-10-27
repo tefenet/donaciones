@@ -26,7 +26,7 @@ class Center(Base):
     published = Column(Boolean(), default=False)
     state = Column(STATE_ENUM, default=STATES[0])
     geo_location = Column(String(30))
-    protocol = Column(LargeBinary())
+    protocol = Column(LargeBinary(length=2048))
     city_id = Column(Integer, ForeignKey('city.id'))
     type = Column(CENTER_TYPES_ENUM)
 
@@ -40,6 +40,10 @@ class Center(Base):
 
     def __repr__(self):
         return "<Center(name='{}')'>".format(self.name, self.id)
+
+    def __attrs__(self):
+        return list(map(lambda s: s[0] + ' : ' + s[1].__str__(), self.__dict__.items()))[1:]
+
 
     @classmethod
     def delete_by_id(cls, id):

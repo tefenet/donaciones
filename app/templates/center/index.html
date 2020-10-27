@@ -33,7 +33,9 @@
                     <tbody>
                     {% for center in pagination.items %}
                     <tr align="center">
-                        <td>{{center.name}}</td>
+                        <td><button type="button" class="btn btn-xs" data-toggle="modal"
+                                    data-target="#modalShowCenter{{loop.index}}">{{center.name}}
+                            </button></td>
                         <td>{{center.phone}}</td>
                         <td>{{center.web_site}}</td>
                         <td>{{center.state}}</td>
@@ -68,6 +70,29 @@
                                         <form action="{{url_for('center_delete', center_id=center.id)}}" method="post">
                                             <button type="submit" class="btn btn-danger">Eliminar</button>
                                             <button class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="show-center-{{loop.index}}">
+                        <div id="modalShowCenter{{loop.index}}" class="modal fade" role="dialog">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">Centro {{center.name}}</div>
+                                    <div class="modal-body">
+                                        {% for tuple in center.__attrs__() %}
+                                         <b>{{ tuple }}</b><br/>
+                                        {% endfor %}
+                                    </div>
+                                    <div class="modal-footer">
+                                        <form action="{{url_for('center_reject', center_id=center.id)}}" method="post">
+                                            <button type="submit" class="btn btn-danger">Rechazar</button>
+                                        </form>
+                                        <form action="{{url_for('center_approve', center_id=center.id)}}" method="post">
+                                            <button type="submit" class="btn btn-success">Aprobar</button>
                                         </form>
                                     </div>
                                 </div>

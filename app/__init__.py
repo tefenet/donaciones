@@ -77,7 +77,8 @@ def create_app(environment="production"):
     app.add_url_rule("/center/searchByName", "centro_search_by_name", center.search_by_name)
     app.add_url_rule("/center/searchByState", "centro_search_by_state", center.search_by_state)
     app.add_url_rule("/center/searchByPublished", "centro_search_by_published", center.search_by_published)
-
+    app.add_url_rule("/center/approve", "center_approve", center.approve_center, methods=["POST"])
+    app.add_url_rule("/center/reject", "center_reject", center.reject_center, methods=["POST"])
     # Rutas de Sistema
     app.add_url_rule("/sistema/configurar", "system_configure", sistema.config_sistema_get)
     app.add_url_rule("/sistema/configurar", "system_configure_post", sistema.config_sistema_post, methods=["POST"])
