@@ -2,7 +2,7 @@
 from flask_wtf import FlaskForm
 
 from wtforms import StringField, SubmitField, PasswordField, BooleanField, IntegerField, \
-    RadioField, widgets
+    RadioField, widgets, SelectField
 from wtforms.ext.sqlalchemy.fields import QuerySelectField, QuerySelectMultipleField
 from wtforms.validators import ValidationError, DataRequired, Length, length, Email, EqualTo, Optional
 
@@ -10,8 +10,7 @@ from wtforms.fields.html5 import EmailField, TimeField, URLField
 
 from pymysql import escape_string as thwart  # escape_string para prevenir sql injections
 
-
-from app.models.centertype import CenterType
+from app.models.center import CENTER_TYPES_ENUM, CENTER_TYPES
 from app.models.city import City
 from app.models.role import Role
 from app.models.user import User
@@ -36,7 +35,7 @@ def select_city():
 
 
 def select_type():
-    return CenterType.query
+    return CENTER_TYPES_ENUM
 
 
 class CreateUserForm(FlaskForm):
@@ -121,7 +120,7 @@ class CreateCenterForm(FlaskForm):
     opening = TimeField('apertura')
     closing = TimeField('cierre')
     city = QuerySelectField('ciudad', query_factory=select_city, get_label='name')
-    type = QuerySelectField('tipo', query_factory=select_type, get_label='description')
+    type = SelectField(label='tipo', choices=[(g, g)for g in CENTER_TYPES])
     web_site = URLField('sitio web',render_kw={"placeholder": "https://www.site.com"})
     geo_location = StringField('coordenadas')
     published = RadioField('publicado', coerce=int, choices=[(0, "no"), (1, "si")], default=1)

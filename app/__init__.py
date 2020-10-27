@@ -2,7 +2,7 @@ from os import environ
 from flask import Flask, render_template, session
 from flask_session import Session
 
-from app.models import center, centertype, city
+from app.models import center, city
 from config import config
 from app.db import dbSession, init_db
 from app.resources import issue, center
@@ -74,6 +74,9 @@ def create_app(environment="production"):
     app.add_url_rule("/center/delete", "center_delete", center.delete_center, methods=["POST"])
     app.add_url_rule("/center/edit/<int:center_id>", "center_update_form", center.update_center_form)
     app.add_url_rule("/center/edit/<int:center_id>", "center_update", center.update_center, methods=["POST"])
+    app.add_url_rule("/center/searchByName", "centro_search_by_name", center.search_by_name)
+    app.add_url_rule("/center/searchByState", "centro_search_by_state", center.search_by_state)
+    app.add_url_rule("/center/searchByPublished", "centro_search_by_published", center.search_by_published)
 
     # Rutas de Sistema
     app.add_url_rule("/sistema/configurar", "system_configure", sistema.config_sistema_get)

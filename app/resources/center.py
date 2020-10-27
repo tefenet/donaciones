@@ -86,3 +86,55 @@ def update_center(center_id):
         return redirect(url_for("center_index"))
     flash("se guardaron los cambios", "info")
     return redirect(url_for("center_index"))
+
+
+def search_by_name():
+    """Busca centros por nombre.
+        Recibe status, que es un booleano, devuelve una lista paginada de centros """
+    try:
+        name = request.args['name']
+        page = int(request.args['page'])
+    except (BadRequestKeyError, ValueError) as e:  # no se que es este error pero la paginación es incorrecta
+        # flash("ERROR: {}".format(e), e)
+        return redirect(url_for('center_index'))
+    sys = Sistema.get_sistema()
+    query = Center.query_by_name(name)
+    try:
+        pagination = paginate(query, page, sys.cant_por_pagina)
+    except AttributeError:  # raised when page < 1
+        pagination = paginate(query, 1, sys.cant_por_pagina)
+    return render_template("center/index.html", pagination=pagination)
+
+
+def search_by_state():
+    try:
+        state = request.args['state']
+        page = int(request.args['page'])
+    except (BadRequestKeyError, ValueError) as e:  # no se que es este error pero la paginación es incorrecta
+        # flash("ERROR: {}".format(e), e)
+        return redirect(url_for('center_index'))
+    sys = Sistema.get_sistema()
+    query = Center.query_by_state(state)
+    try:
+        pagination = paginate(query, page, sys.cant_por_pagina)
+    except AttributeError:  # raised when page < 1
+        pagination = paginate(query, 1, sys.cant_por_pagina)
+    return render_template("center/index.html", pagination=pagination)
+
+
+def search_by_published():
+    try:
+        published = False if request.args['published'] == "False" else True
+    except (BadRequestKeyError, ValueError) as e:
+        flash("ERROR: {}".format(e), e)
+        return redirect(url_for('center_index'))
+    sys = Sistema.get_sistema()
+    query = Center.query_by_published(published)
+    try:
+        page = int(request.args['page'])
+        pagination = paginate(query, page, sys.cant_por_pagina)
+    except (BadRequestKeyError, ValueError) as e:
+        pagination = paginate(query, 1, sys.cant_por_pagina)
+    except AttributeError:  # raised when page < 1
+        pagination = paginate(query, 1, sys.cant_por_pagina)
+    return render_template("center/index.html", pagination=pagination)
