@@ -1,17 +1,16 @@
-
 from flask_wtf import FlaskForm
+from flask_wtf.file import FileField
 
-from wtforms import StringField, SubmitField, PasswordField, BooleanField, IntegerField,\
-     RadioField
-from wtforms.ext.sqlalchemy.fields import QuerySelectField
+from wtforms import StringField, SubmitField, PasswordField, BooleanField, IntegerField, \
+    RadioField, widgets, SelectField
+from wtforms.ext.sqlalchemy.fields import QuerySelectField, QuerySelectMultipleField
 from wtforms.validators import ValidationError, DataRequired, Length, length, Email, EqualTo, Optional
 
 from wtforms.fields.html5 import EmailField, TimeField, URLField
 
 from pymysql import escape_string as thwart  # escape_string para prevenir sql injections
 
-
-from app.models.centertype import CenterType
+from app.models.center import CENTER_TYPES_ENUM, CENTER_TYPES
 from app.models.city import City
 from app.models.role import Role
 from app.models.user import User
@@ -28,7 +27,7 @@ class LoginForm(FlaskForm):
 
 
 def select_role():
-    return Role.query
+    return Role.query.all()
 
 
 def select_city():
@@ -36,7 +35,7 @@ def select_city():
 
 
 def select_type():
-    return CenterType.query
+    return CENTER_TYPES_ENUM
 
 
 class CreateUserForm(FlaskForm):
@@ -59,7 +58,9 @@ class CreateUserForm(FlaskForm):
                             [Length(message="El apellido  debe tener entre 2 y 20 caracteres", min=2, max=20),
                              DataRequired()], render_kw={"placeholder": "perez"})
     active = BooleanField('Estado(Activo/Inactivo)')
-    role = QuerySelectField('Rol', query_factory=select_role, get_label='name')
+    role = QuerySelectMultipleField('Rol', query_factory=select_role, get_label='name',
+                                    widget=widgets.ListWidget(prefix_label=False),
+                                    option_widget=widgets.CheckboxInput())
 
     def validate_username(self, username):
         """Compruebo que el nombre de usuario no exista en el sistema"""
@@ -93,7 +94,9 @@ class EditUserForm(FlaskForm):
                             [Length(message="El apellido  debe tener entre 2 y 20 caracteres", min=2, max=20),
                              DataRequired()])
     active = BooleanField('Estado(Activo/Inactivo)')
-    role = QuerySelectField('Rol', query_factory=select_role, get_label='name')
+    user_roles = QuerySelectMultipleField('Rol', query_factory=select_role, get_label='name',
+                                          widget=widgets.ListWidget(prefix_label=False),
+                                          option_widget=widgets.CheckboxInput())
 
 
 # Formulario de configuración del sistema
@@ -119,7 +122,8 @@ class CreateCenterForm(FlaskForm):
     opening = TimeField('apertura')
     closing = TimeField('cierre')
     city = QuerySelectField('ciudad', query_factory=select_city, get_label='name')
-    type = QuerySelectField('tipo', query_factory=select_type, get_label='description')
-    web_site = URLField('sitio web',render_kw={"placeholder": "https://www.site.com"})
+    type = SelectField(label='tipo', choices=[(g, g) for g in CENTER_TYPES])
+    web_site = URLField('sitio web', render_kw={"placeholder": "https://www.site.com"})
     geo_location = StringField('coordenadas')
     published = RadioField('publicado', coerce=int, choices=[(0, "no"), (1, "si")], default=1)
+    protocol = FileField('protocolo')

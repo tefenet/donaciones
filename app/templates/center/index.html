@@ -26,14 +26,20 @@
                         <th>Nombre</th>
                         <th>Telefono</th>
                         <th>sitio web</th>
+                        <th>Estado</th>
+                        <th>Publicado</th>
                     </tr>
                     </thead>
                     <tbody>
                     {% for center in pagination.items %}
                     <tr align="center">
-                        <td>{{center.name}}</td>
+                        <td><button type="button" class="btn btn-xs" data-toggle="modal"
+                                    data-target="#modalShowCenter{{loop.index}}">{{center.name}}
+                            </button></td>
                         <td>{{center.phone}}</td>
                         <td>{{center.web_site}}</td>
+                        <td>{{center.state}}</td>
+                        <td>{{ 'Si' if center.published else 'No' }}</td>
                         {% if has_perm('centro_update') %}
                         <td><label class="badge badge-alert">
                             <a class="text-decoration-none"
@@ -50,7 +56,7 @@
                         {% endif %}
                     </tr>
 
-                    {# modal delete user #}
+                    {# modal delete centro #}
                     <div id="confirm-deletion-center-{{loop.index}}">
                         <div id="modalDeleteCenter{{loop.index}}" class="modal fade" role="dialog">
                             <div class="modal-dialog">
@@ -71,26 +77,49 @@
                         </div>
                     </div>
 
+                    <div id="show-center-{{loop.index}}">
+                        <div id="modalShowCenter{{loop.index}}" class="modal fade" role="dialog">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">Centro {{center.name}}</div>
+                                    <div class="modal-body">
+                                        {% for tuple in center.__attrs__() %}
+                                         <b>{{ tuple }}</b><br/>
+                                        {% endfor %}
+                                    </div>
+                                    <div class="modal-footer">
+                                        <form action="{{url_for('center_reject', center_id=center.id)}}" method="post">
+                                            <button type="submit" class="btn btn-danger">Rechazar</button>
+                                        </form>
+                                        <form action="{{url_for('center_approve', center_id=center.id)}}" method="post">
+                                            <button type="submit" class="btn btn-success">Aprobar</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                     {% endfor %}
                     </tbody>
                 </table>
                 {% import 'components/pagination.html' as pag %}
                 {% if request.path == url_for('center_index') %}
                     {{ pag.set('center_index',pagination) }}
-                {% elif request.path == url_for('user_search_by_status') %}
-                    {{ pag.set('user_search_by_status',pagination, request.args.get('status')) }}
+                {% elif request.path == url_for('centro_search_by_published') %}
+                    {{ pag.set('centro_search_by_published',pagination, request.args.get('published')) }}
                 {% else %}
-                    {{ pag.set('user_search_by_username',pagination,request.args.get('username')) }}
+                    {{ pag.set('centro_search_by_name',pagination,request.args.get('name')) }}
                 {% endif %}
             </div>
         </div>
-        {% if has_perm('user_find') %}
+        {% if has_perm('centro_index') %}
         <div class="m-3">
-            <h5>Buscar por nombre de usuario </h5>
+            <h5>Buscar por nombre de centro </h5>
             <form class="form-inline my-2  mr-auto  "
-                  action="{{url_for('user_search_by_username')}}">
-                <input class="form-control mr-sm-2" type="text" id="username" name="username" placeholder="Username"
-                       aria-label="Username">
+                  action="{{url_for('centro_search_by_name')}}">
+                <input class="form-control mr-sm-2" type="text" id="name" name="name" placeholder="nombre del centro"
+                       aria-label="name">
                 <input id="page" name="page" type="hidden" value="1">
                 <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Buscar</button>
             </form>
@@ -98,9 +127,9 @@
         <div class="m-3">
             <h5>Buscar por estado</h5>
             <a class="btn btn-outline-success my-2 my-sm-0"
-               href="{{url_for('user_search_by_status', status=True, page=1)}}">Activos</a>
+               href="{{url_for('centro_search_by_published', published=True)}}" >Publicados</a>
             <a class="btn btn-outline-success my-2 my-sm-0"
-               href="{{url_for('user_search_by_status', status=False, page=1)}}">Inactivos</a>
+               href="{{url_for('centro_search_by_published', published=False)}}">Despublicados</a>
         </div>
         {% endif %}
     </div>
