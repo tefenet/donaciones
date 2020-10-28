@@ -14,7 +14,7 @@
   </div>
 
 <div class="container">
-<form method=post action="{{url_for('center_update', center_id=center_id)}}">
+<form method=post action="{{url_for('center_update', object_id=center_id)}}">
   {{ form.hidden_tag() }}
 
     {% for field in form %}

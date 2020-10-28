@@ -50,7 +50,7 @@ def create():
 def delete_center():
     """Elimina un centro de manera definitiva"""
     try:
-        center_id = request.args['center_id']
+        center_id = request.args['object_id']
         center_name = Center.get_by_id(center_id).name
         if Center.delete_by_id(center_id):
             dbSession.commit()
@@ -62,33 +62,33 @@ def delete_center():
 
 
 @restricted('centro_update')
-def update_center_form(center_id):
+def update_center_form(object_id):
     """ renderiza el formulario para editar un centro """
-    center = Center.get_by_id(center_id)
+    center = Center.get_by_id(object_id)
     if center:
         form = CreateCenterForm(obj=center)
-        return render_template('center/update.html', form=form, center_id=center_id)
-    abort(500, "ERROR: Error al obtener centro id = {}".format(center_id))
+        return render_template('center/update.html', form=form, center_id=object_id)
+    abort(500, "ERROR: Error al obtener centro id = {}".format(object_id))
 
 
 @restricted('centro_update')
-def update_center(center_id):
+def update_center(object_id):
     """ edita los atributos del centro con los datos obtenidos del formulario """
     form = CreateCenterForm(request.form)
     if form.validate():
-        center = Center.get_by_id(center_id)
+        center = Center.get_by_id(object_id)
         if form.published.data:
             try:
                 center.publish()
             except AttributeError as e:
                 flash(e, 'danger')
-                return update_center_form(center_id)
+                return update_center_form(object_id)
         form.populate_obj(center)
         dbSession.commit()
     elif form.errors:
         display_errors(form.errors)
         flash("Error al validar formulario", "danger")
-        return update_center_form(center_id)
+        return update_center_form(object_id)
     flash("se guardaron los cambios", "info")
     return redirect(url_for("center_index"))
 

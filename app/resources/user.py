@@ -92,19 +92,19 @@ def create():
 # Update user
 
 @restricted(perm='user_update')
-def update_user_render(user_id):
-    user = User.get_by_id(user_id)
+def update_user_render(object_id):
+    user = User.get_by_id(object_id)
     if user:
         form = EditUserForm(obj=user)
-        return render_template('user/update.html', form=form, user_id=user_id)
-    abort(500, "ERROR: Error al obtener usuario. id = {}".format(user_id))
+        return render_template('user/update.html', form=form, user_id=object_id)
+    abort(500, "ERROR: Error al obtener usuario. id = {}".format(object_id))
 
 
 @restricted(perm='user_update')
-def update_user(user_id):
+def update_user(object_id):
     form = EditUserForm(request.form)
     if form.validate():
-        u = User.get_by_id(user_id)
+        u = User.get_by_id(object_id)
         if u:
             u.update(email=thwart(form.email.data), username=thwart(form.username.data),
                      first_name=thwart(form.first_name.data), last_name=thwart(form.last_name.data))
@@ -118,7 +118,7 @@ def update_user(user_id):
                 dbSession.commit()
             except IntegrityError:
                 flash("Ya existe un usuario con ese correo/username", "danger")
-                return render_template('user/update.html', form=form, user_id=user_id)
+                return render_template('user/update.html', form=form, user_id=object_id)
             flash("Usuario {} actualizado exitosamente.".format(u.username), "success")
             return redirect(url_for("user_index"))
     if form.errors:
@@ -173,7 +173,7 @@ def __delete(user):
 @restricted(perm='user_destroy')
 def delete_user():
     try:
-        user_id = request.args['user_id']
+        user_id = request.args['object_id']
         u = User.get_by_id(user_id)
         if __delete(u):
             flash("Usuario id {} eliminado exitosamente".format(user_id), "success")

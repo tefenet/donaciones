@@ -40,57 +40,25 @@
                         <td>{{center.web_site}}</td>
                         <td>{{center.state}}</td>
                         <td>{{ 'Si' if center.published else 'No' }}</td>
+
                         {% if has_perm('centro_update') %}
-
-
                         <td>
-                            <form action="{{url_for('center_update_form', center_id=center.id)}}">
-                            <button class="btn btn-outline-primary" type="submit">
-                                <svg class="bi bi-pencil-square" fill="currentColor" height="1em" viewBox="0 0 16 16"
-                                     width="1em" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456l-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"></path>
-                                    <path d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"
-                                          fill-rule="evenodd"></path>
-                                </svg>
-                            </button>
-                            </form>
+                            {% import 'components/editButton.html' as editButton %}
+                            {{ editButton.set('center_update_form',center.id) }}
                         </td>
                         {% endif %}
-                        {% if has_perm('centro_destroy')%}
 
+                        {% if has_perm('centro_destroy')%}
                         <td>
-                            <button class="btn btn-outline-primary" data-target="#modalDeleteCenter{{loop.index}}"
-                                    data-toggle="modal" type="button">
-                                <svg class="bi bi-trash" fill="currentColor" height="1em" viewBox="0 0 16 16"
-                                     width="1em" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"></path>
-                                    <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"
-                                          fill-rule="evenodd"></path>
-                                </svg>
-                            </button>
+                            {% import 'components/deleteButton.html' as deleteButton %}
+                            {% set header = '<div>Eliminar centro <b class="mr-auto" style="padding-left:1vh">{}</b></div>'.format(center.name) %}
+                            {% set body = '<b>Este cambio es irreversible</b>' %}
+                            {{ deleteButton.set('center_delete',center.id, header, body, loop.index ) }}
+
                         </td>
                         {% endif %}
                     </tr>
 
-                    {# modal delete centro #}
-                    <div id="confirm-deletion-center-{{loop.index}}">
-                        <div id="modalDeleteCenter{{loop.index}}" class="modal fade" role="dialog">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">Eliminar Centro<b class="mr-auto" style="padding-left:1vh">{{center.name}}</b></div>
-                                    <div class="modal-body">
-                                        <b>Este cambio es irreversible</b>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <form action="{{url_for('center_delete', center_id=center.id)}}" method="post">
-                                            <button type="submit" class="btn btn-danger">Eliminar</button>
-                                            <button class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
 
                     <div id="show-center-{{loop.index}}">
                         <div id="modalShowCenter{{loop.index}}" class="modal fade" role="dialog">
