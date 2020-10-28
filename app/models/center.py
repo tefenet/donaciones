@@ -37,6 +37,7 @@ class Center(Base):
         self.email = email
         self.opening = opening
         self.closing = closing
+        self.published = False
 
     def __repr__(self):
         return "<Center(name='{}')'>".format(self.name, self.id)
@@ -44,6 +45,11 @@ class Center(Base):
     def __attrs__(self):
         return list(map(lambda s: s[0] + ' : ' + s[1].__str__(), self.__dict__.items()))[1:]
 
+    def publish(self):
+        if self.state == STATES[1]:
+            self.published = True
+        else:
+            raise AttributeError('no se puede publicar si no está aprobado')
 
     @classmethod
     def delete_by_id(cls, id):

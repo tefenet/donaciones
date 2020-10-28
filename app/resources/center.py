@@ -1,10 +1,6 @@
-from os.path import join
-
-from flask import redirect, render_template, request, url_for, session, abort, flash, current_app as app
+from flask import redirect, render_template, request, url_for, abort, flash
 from sqlalchemy.exc import IntegrityError
 from werkzeug.exceptions import BadRequestKeyError
-from werkzeug.utils import secure_filename
-
 from app import dbSession
 from app.helpers.auth import restricted
 from app.helpers.handler import display_errors
@@ -22,8 +18,8 @@ def index():
     except (BadRequestKeyError, ValueError):
         page = 1
     try:
-        res = paginate(Center.query, page, sys.cant_por_pagina)  # check User.query
-    except AttributeError:  # AttributeError raise when page<1
+        res = paginate(Center.query, page, sys.cant_por_pagina)
+    except AttributeError:
         return redirect(url_for('center_index'))
     return render_template("center/index.html", pagination=res)
 
@@ -31,6 +27,7 @@ def index():
 @restricted(perm='centro_new')
 def new():
     form = CreateCenterForm()
+    del form.published
     return render_template("center/new.html", form=form)
 
 
@@ -45,8 +42,7 @@ def create():
         dbSession.commit()
     if form.errors:
         display_errors(form.errors)
-        return redirect(url_for("center_new"))
-
+        return new()
     return redirect(url_for("center_index", page=1))
 
 
@@ -67,6 +63,7 @@ def delete_center():
 
 @restricted('centro_update')
 def update_center_form(center_id):
+    """ renderiza el formulario para editar un centro """
     center = Center.get_by_id(center_id)
     if center:
         form = CreateCenterForm(obj=center)
@@ -76,26 +73,29 @@ def update_center_form(center_id):
 
 @restricted('centro_update')
 def update_center(center_id):
+    """ edita los atributos del centro con los datos obtenidos del formulario """
     form = CreateCenterForm(request.form)
     if form.validate():
         center = Center.get_by_id(center_id)
+        if form.published.data:
+            try:
+                center.publish()
+            except AttributeError as e:
+                flash(e, 'danger')
+                return update_center_form(center_id)
         form.populate_obj(center)
-        try:
-            dbSession.commit()
-        except IntegrityError:
-            flash("Ya existe un Centro con ese correo/username", "danger")
-            return render_template('center/update.html', form=form, center_id=center.id)
-    if form.errors:
+        dbSession.commit()
+    elif form.errors:
         display_errors(form.errors)
         flash("Error al validar formulario", "danger")
-        return redirect(url_for("center_index"))
+        return update_center_form(center_id)
     flash("se guardaron los cambios", "info")
     return redirect(url_for("center_index"))
 
 
 def search_by_name():
     """Busca centros por nombre.
-        Recibe status, que es un booleano, devuelve una lista paginada de centros """
+        Recibe name, que es un string, devuelve una lista paginada de centros """
     try:
         name = request.args['name']
         page = int(request.args['page'])
@@ -138,7 +138,7 @@ def search_by_published():
     try:
         page = int(request.args['page'])
         pagination = paginate(query, page, sys.cant_por_pagina)
-    except (BadRequestKeyError, ValueError) as e:
+    except (BadRequestKeyError, ValueError):
         pagination = paginate(query, 1, sys.cant_por_pagina)
     except AttributeError:
         pagination = paginate(query, 1, sys.cant_por_pagina)
@@ -150,6 +150,7 @@ def approve_center():
     center_id = request.args['center_id']
     center = Center.get_by_id(center_id)
     center.state = STATES[1]
+    center.published = True
     try:
         dbSession.commit()
     except IntegrityError:
@@ -163,6 +164,7 @@ def reject_center():
     center_id = request.args['center_id']
     center = Center.get_by_id(center_id)
     center.state = STATES[2]
+    center.published = False
     try:
         dbSession.commit()
     except IntegrityError:
