@@ -1,6 +1,6 @@
-from flask import redirect, render_template, request, url_for, session, abort, flash, current_app as app
+from flask import redirect, render_template, request, url_for, session, abort, flash
 from app.db import dbSession
-from app.models import role
+
 from app.models.sistema import Sistema
 from app.models.user import User
 from app.helpers.auth import login_required, restricted, is_not_admin
@@ -133,7 +133,8 @@ def update_user(object_id):
 
 @restricted(perm='user_update')
 def deactive_account(user_id=None):
-    """Recibe un id de usuario. Si el usuario existe y su estado es activo, desactiva la cuenta seteando el campo active a False."""
+    """Recibe un id de usuario. Si el usuario existe y su estado es activo,
+     desactiva la cuenta seteando el campo active a False."""
     user = User.get_by_id(user_id)
     if user and user.active:
         deactivate(user)
@@ -146,7 +147,8 @@ def deactive_account(user_id=None):
 
 @restricted(perm='user_update')
 def activate_account(user_id=None):
-    """Recibe un id de usuario. Si el usuario existe y su estado es inactivo, activa la cuenta seteando el campo active a True."""
+    """Recibe un id de usuario. Si el usuario existe y su estado es inactivo,
+     activa la cuenta seteando el campo active a True."""
     user = User.get_by_id(user_id)
     if user and user.active is False:
         activate(user)
@@ -195,8 +197,8 @@ def search_by_status():
     try:
         status = False if request.args['status'] == "False" else True
         page = int(request.args['page'])
-    except (BadRequestKeyError, ValueError) as e:  # no se que es este error pero la paginación es incorrecta
-        # flash("ERROR: {}".format(e), e)
+    except (BadRequestKeyError, ValueError) as e:
+        flash("ERROR: {}".format(e), e)
         return redirect(url_for('user_index'))
 
     try:
@@ -214,8 +216,8 @@ def search_by_username():
     try:
         username = request.args['username']
         page = int(request.args['page'])
-    except (BadRequestKeyError, ValueError) as e:  # no se que es este error pero la paginación es incorrecta
-        # flash("ERROR: {}".format(e), e)
+    except (BadRequestKeyError, ValueError) as e:
+        flash("ERROR: {}".format(e), e)
         return redirect(url_for('user_index'))
 
     try:

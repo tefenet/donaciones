@@ -14,7 +14,7 @@
   </div>
 
 <div class="container">
-<form method=post action="{{url_for('center_create')}}">
+<form method=post action="{{url_for('center_create')}}" enctype=multipart/form-data>
   {{ form.hidden_tag() }}
 
     {% for field in form %}

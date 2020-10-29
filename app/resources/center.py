@@ -38,6 +38,7 @@ def create():
     if form.validate():
         center = Center()
         form.populate_obj(center)
+        center.protocol = request.files['protocol'].read()
         dbSession.add(center)
         dbSession.commit()
     if form.errors:

@@ -1,0 +1,38 @@
+{% macro set(center,index) -%}
+<button class="btn btn-xs" data-target="#modalShowCenter{{index}}" data-toggle="modal"
+        type="button">{{center.name}}
+</button>
+<div id="show-center-{{index}}">
+    <div class="modal fade" id="modalShowCenter{{index}}" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">Centro {{center.name}}</div>
+                <div class="modal-body" >
+                    <b>{{ 'name : ' + center.name }}</b><br/>
+                    <b>{{ 'dirección : ' + center.address }}</b><br/>
+                    <b>{{ 'Teléfono : ' + center.phone }}</b><br/>
+                    <b>{{ 'e-mail : ' + center.email }}</b><br/>
+                    <b>{{ 'sitio web :' + center.web_site }}</b><br/>
+                    <b>{{ 'horario de apertura :' + center.opening.strftime('%H:%M') }}</b><br/>
+                    <b>{{ 'horario de cierre :' + center.closing.strftime('%H:%M') }}</b><br/>
+                    <b>{{ 'ciudad :' + center.city.name }}</b><br/>
+                    <b>{{ 'tipo :' + center.type }}</b><br/>
+                    <b>{{ 'e-mail :' + center.email }}</b><br/>
+                    <b>{{ 'coordenadas :' + center.geo_location }}</b><br/>
+                    <b>{{ 'protocolo :' + 'boton que dispare un get para descargar el pdf' }}</b><br/>
+<!--    published = Column(Boolean(), default=False)-->
+<!--    state = Column(STATE_ENUM, default=STATES[0])-->
+                </div>
+                <div class="modal-footer">
+                    <form action="{{url_for('center_reject', center_id=center.id)}}" method="post">
+                        <button class="btn btn-danger" type="submit">Rechazar</button>
+                    </form>
+                    <form action="{{url_for('center_approve', center_id=center.id)}}" method="post">
+                        <button class="btn btn-success" type="submit">Aprobar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{%- endmacro %}
