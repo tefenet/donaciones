@@ -40,42 +40,25 @@
                         <td>{{center.web_site}}</td>
                         <td>{{center.state}}</td>
                         <td>{{ 'Si' if center.published else 'No' }}</td>
+
                         {% if has_perm('centro_update') %}
-                        <td><label class="badge badge-alert">
-                            <a class="text-decoration-none"
-                               href="{{ url_for('center_update_form', center_id=center.id) }}">Editar</a></label>
+                        <td>
+                            {% import 'components/editButton.html' as editButton %}
+                            {{ editButton.set('center_update_form',center.id) }}
                         </td>
                         {% endif %}
-                        {% if has_perm('user_destroy')%}
 
+                        {% if has_perm('centro_destroy')%}
                         <td>
-                            <button type="button" class="btn btn-danger btn-xs" data-toggle="modal"
-                                    data-target="#modalDeleteCenter{{loop.index}}">Eliminar
-                            </button>
+                            {% import 'components/deleteButton.html' as deleteButton %}
+                            {% set header = '<div>Eliminar centro <b class="mr-auto" style="padding-left:1vh">{}</b></div>'.format(center.name) %}
+                            {% set body = '<b>Este cambio es irreversible</b>' %}
+                            {{ deleteButton.set('center_delete',center.id, header, body, loop.index ) }}
+
                         </td>
                         {% endif %}
                     </tr>
 
-                    {# modal delete centro #}
-                    <div id="confirm-deletion-center-{{loop.index}}">
-                        <div id="modalDeleteCenter{{loop.index}}" class="modal fade" role="dialog">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">Eliminar Centro</div>
-                                    <div class="modal-body">
-                                        <b>{{center.name}}</b><br/> Este cambio
-                                        es irreversible
-                                    </div>
-                                    <div class="modal-footer">
-                                        <form action="{{url_for('center_delete', center_id=center.id)}}" method="post">
-                                            <button type="submit" class="btn btn-danger">Eliminar</button>
-                                            <button class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
 
                     <div id="show-center-{{loop.index}}">
                         <div id="modalShowCenter{{loop.index}}" class="modal fade" role="dialog">

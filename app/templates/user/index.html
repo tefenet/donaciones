@@ -38,9 +38,9 @@
                         <td>{{user.username}}</td>
                         <td>{{user.first_name}} {{user.last_name}}</td>
                         {% if has_perm('user_update') %}
-                        <td><label class="badge badge-alert">
-                            <a class="text-decoration-none"
-                               href="{{url_for('user_update_by_id', user_id=user.id)}}">Editar</a></label>
+                        <td>
+                            {% import 'components/editButton.html' as editButton %}
+                            {{ editButton.set('user_update_by_id',user.id) }}
                         </td>
                         {% if user.active %}
                         <td><label class="badge badge-success decoration-none">
@@ -55,39 +55,18 @@
                         {% endif %}
                         {% endif %}
                         {% if has_perm('user_destroy')%}
+
                         <td>
-                            <a class="text-decoration-none"
-                               href="{{url_for('user_delete_by_id', user_id=user.id)}}"><i
-                                    class="fa fa-trash-alt text-danger"></i></a>
-                        </td>
-                        <td>
-                            <button type="button" class="btn btn-danger btn-xs" data-toggle="modal"
-                                    data-target="#modalDeleteUser{{loop.index}}">Eliminar
-                            </button>
+                            {% import 'components/deleteButton.html' as deleteButton %}
+                            {% set body = '¿Estás seguro que queres eliminar al usuario
+                                        <b>{}</b>? Este cambios
+                                        es irreversible'.format(user.username) %}
+                            {% set header = 'Eliminar Usuario' %}
+                            {{ deleteButton.set('user_delete_by_id',user.id, header, body, loop.index ) }}
                         </td>
                         {% endif %}
                     </tr>
 
-                    {# modal delete user #}
-                    <div id="confirm-deletion-user-{{loop.index}}">
-                        <div id="modalDeleteUser{{loop.index}}" class="modal fade" role="dialog">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">Eliminar Usuario</div>
-                                    <div class="modal-body">¿Estás seguro que queres eliminar al usuario
-                                        <b>{{user.username}}</b>? Este cambios
-                                        es irreversible
-                                    </div>
-                                    <div class="modal-footer">
-                                        <form action="{{url_for('user_delete_by_id', user_id=user.id)}}" method="post">
-                                            <button type="submit" class="btn btn-danger">Eliminar</button>
-                                            <button class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
 
                     {% endfor %}
                     </tbody>
