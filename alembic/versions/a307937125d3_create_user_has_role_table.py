@@ -92,7 +92,9 @@ def upgrade():
                        {
                            'roles_id': 2, 'users_id': 17,
                        },
-
+                       {
+                           'roles_id': 2, 'users_id': 18,
+                       },
                    ]
                    )
 
