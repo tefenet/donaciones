@@ -52,7 +52,7 @@ class CreateUserForm(FlaskForm):
                              render_kw={"placeholder": "entre 6 y 20 caracteres"})
     confirm = PasswordField('Confirmar Contraseña')
     first_name = StringField('Nombre',
-                             [Length(message="El nombre  debe tener entre 4 y 20 caracteres", min=4, max=20),
+                             [Length(message="El nombre debe tener entre 2 y 20 caracteres", min=2, max=20),
                               DataRequired()], render_kw={"placeholder": "bob"})
     last_name = StringField('Apellido',
                             [Length(message="El apellido  debe tener entre 2 y 20 caracteres", min=2, max=20),
@@ -88,7 +88,7 @@ class EditUserForm(FlaskForm):
                                                    max=20), ],
                              render_kw={"placeholder": "entre 6 y 20 caracteres"})
     first_name = StringField('Nombre',
-                             [Length(message="El nombre  debe tener entre 4 y 20 caracteres", min=4, max=20),
+                             [Length(message="El nombre  debe tener entre 2 y 20 caracteres", min=2, max=20),
                               DataRequired()])
     last_name = StringField('Apellido',
                             [Length(message="El apellido  debe tener entre 2 y 20 caracteres", min=2, max=20),
