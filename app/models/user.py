@@ -8,10 +8,6 @@ from app.models.role import user_has_role
 
 
 class User(Base):
-    """
-    account type = 1 --> administrator
-    account type != 1 --> user
-    """
 
     __tablename__ = 'users'
     id = Column(Integer, primary_key=True, autoincrement=True)
@@ -21,7 +17,6 @@ class User(Base):
     first_name = Column(String)
     last_name = Column(String)
     active = Column(Boolean, index=True)
-    account_type = Column(SmallInteger, default=2)
     create_date = Column(DateTime, default=datetime.now())
     update_date = Column(DateTime, default=None)
     user_roles = relationship(
@@ -29,14 +24,12 @@ class User(Base):
         secondary=user_has_role,
         back_populates="role_users")
 
-    def __init__(self, email=None, username=None, password=None, first_name=None, last_name=None, account_type=2,
-                 active=None):
+    def __init__(self, email=None, username=None, password=None, first_name=None, last_name=None, active=None):
         self.email = email
         self.username = username
         self.password_hash = password
         self.first_name = first_name
         self.last_name = last_name
-        self.account_type = account_type
         self.active = active
 
     def __repr__(self):
