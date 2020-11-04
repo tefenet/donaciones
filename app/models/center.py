@@ -2,7 +2,7 @@ from MySQLdb import TIMESTAMP, TIME
 from sqlalchemy.dialects.mysql import ENUM
 from sqlalchemy.orm import relationship
 
-from app.db import Base
+from app.db import Base, dbSession
 from sqlalchemy import Column, Integer, String, Boolean, DateTime, LargeBinary, ForeignKey, Time, Enum
 from datetime import datetime
 import enum
@@ -44,6 +44,13 @@ class Center(Base):
 
     def __attrs__(self):
         return list(map(lambda s: s[0] + ' : ' + s[1].__str__(), self.__dict__.items()))[1:]
+
+    def toogle_published(self):
+        if self.published:
+            self.published=False
+        else:
+            self.publish()
+        dbSession.commit()
 
     def publish(self):
         if self.state == STATES[1]:

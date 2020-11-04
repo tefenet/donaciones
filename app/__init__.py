@@ -74,6 +74,7 @@ def create_app(environment="production"):
     app.add_url_rule("/center/delete", "center_delete", center.delete_center, methods=["POST"])
     app.add_url_rule("/center/edit/<int:object_id>", "center_update_form", center.update_center_form)
     app.add_url_rule("/center/edit/<int:object_id>", "center_update", center.update_center, methods=["POST"])
+    app.add_url_rule("/center/publish", "center_publish", center.toogle_publish_center, methods=["POST"])
     app.add_url_rule("/center/searchByName", "centro_search_by_name", center.search_by_name)
     app.add_url_rule("/center/searchByState", "centro_search_by_state", center.search_by_state)
     app.add_url_rule("/center/searchByPublished", "centro_search_by_published", center.search_by_published)

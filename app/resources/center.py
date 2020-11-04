@@ -27,7 +27,6 @@ def index():
 @restricted(perm='centro_new')
 def new():
     form = CreateCenterForm()
-    del form.published
     return render_template("center/new.html", form=form)
 
 
@@ -63,6 +62,23 @@ def delete_center():
 
 
 @restricted('centro_update')
+def toogle_publish_center():
+    """ edita los atributos del centro con los datos obtenidos del formulario """
+    try:
+        center_id = request.args['object_id']
+    except BadRequestKeyError:
+        flash("ERROR: id Centro no recibido", "danger")
+    center = Center.get_by_id(center_id)
+    try:
+        center.toogle_published()
+    except AttributeError as e:
+        flash(e, 'danger')
+        return redirect(url_for("center_index"))
+    flash("el centro {} ha sido {}".format(center.name, "publicado" if center.published else "despublicado"), "info")
+    return redirect(url_for("center_index"))
+
+
+@restricted('centro_update')
 def update_center_form(object_id):
     """ renderiza el formulario para editar un centro """
     center = Center.get_by_id(object_id)
@@ -78,12 +94,6 @@ def update_center(object_id):
     form = CreateCenterForm(request.form)
     if form.validate():
         center = Center.get_by_id(object_id)
-        if form.published.data:
-            try:
-                center.publish()
-            except AttributeError as e:
-                flash(e, 'danger')
-                return update_center_form(object_id)
         form.populate_obj(center)
         dbSession.commit()
     elif form.errors:

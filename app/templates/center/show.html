@@ -6,20 +6,19 @@
     <div class="modal fade" id="modalShowCenter{{index}}" role="dialog">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header">Centro {{center.name}}</div>
-                <div class="modal-body" >
-                    <b>{{ 'name : ' + center.name }}</b><br/>
+                <div class="modal-header">Centro <b style="color:blue">{{center.name}}</b> en <b style="color:brown">{{center.city.name}}</b></div>
+                <div class="modal-body"  >
+                    <section style="display:table">
                     <b>{{ 'dirección : ' + center.address }}</b><br/>
                     <b>{{ 'Teléfono : ' + center.phone }}</b><br/>
                     <b>{{ 'e-mail : ' + center.email }}</b><br/>
                     <b>{{ 'sitio web :' + center.web_site }}</b><br/>
                     <b>{{ 'horario de apertura :' + center.opening.strftime('%H:%M') }}</b><br/>
                     <b>{{ 'horario de cierre :' + center.closing.strftime('%H:%M') }}</b><br/>
-                    <b>{{ 'ciudad :' + center.city.name }}</b><br/>
                     <b>{{ 'tipo :' + center.type }}</b><br/>
-                    <b>{{ 'e-mail :' + center.email }}</b><br/>
                     <b>{{ 'coordenadas :' + center.geo_location }}</b><br/>
-                    <b>{{ 'protocolo :' + 'boton que dispare un get para descargar el pdf' }}</b><br/>
+                    <b>{{ 'protocolo :' + 'aca falta un boton que dispare un get para descargar el pdf' }}</b><br/>
+                    </section>
 <!--    published = Column(Boolean(), default=False)-->
 <!--    state = Column(STATE_ENUM, default=STATES[0])-->
                 </div>

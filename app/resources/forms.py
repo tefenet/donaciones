@@ -125,5 +125,4 @@ class CreateCenterForm(FlaskForm):
     type = SelectField(label='tipo', choices=[(g, g) for g in CENTER_TYPES])
     web_site = URLField('sitio web', render_kw={"placeholder": "https://www.site.com"})
     geo_location = StringField('coordenadas')
-    published = RadioField('publicado', coerce=int, choices=[(0, "no"), (1, "si")], default=0)
     protocol = FileField('protocolo')
