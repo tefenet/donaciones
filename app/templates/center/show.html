@@ -1,12 +1,12 @@
 {% macro set(center,index) -%}
-<button class="btn btn-xs" data-target="#modalShowCenter{{index}}" data-toggle="modal"
-        type="button">{{center.name}}
+<button class="btn btn-xs {{'btn-primary' if center.published else 'btn-dark'}}" data-target="#modalShowCenter{{index}}" data-toggle="modal"
+        type="button" >{{center.name}}
 </button>
 <div id="show-center-{{index}}">
     <div class="modal fade" id="modalShowCenter{{index}}" role="dialog">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header">Centro <b style="color:blue">{{center.name}}</b> en <b style="color:brown">{{center.city.name}}</b>
+                <div class="modal-header" style="background-color:{{'darkseagreen' if center.published else 'cornsilk'}}">Centro <b style="color:#27279f">{{center.name}}</b> en <b style="color:#880202">{{center.city.name}}</b>
                 </div>
                 <div class="modal-body">
                     <section style="display:table">
@@ -28,15 +28,23 @@
                         {% endif %}
                     </section>
                     <!--    published = Column(Boolean(), default=False)-->
-                    <!--    state = Column(STATE_ENUM, default=STATES[0])-->
                 </div>
                 <div class="modal-footer">
+                    {% if center.state!='rejected'%}
                     <form action="{{url_for('center_reject', center_id=center.id)}}" method="post">
                         <button class="btn btn-danger" type="submit">Rechazar</button>
                     </form>
+                    {% endif %}
+                    {% if center.state!='approved'%}
                     <form action="{{url_for('center_approve', center_id=center.id)}}" method="post">
                         <button class="btn btn-success" type="submit">Aprobar</button>
                     </form>
+                    {% endif %}
+                    {% if center.state!='pending'%}
+                    <form action="{{url_for('center_review', center_id=center.id)}}" method="post">
+                        <button class="btn btn-warning" type="submit">Revisar</button>
+                    </form>
+                    {% endif %}
                 </div>
             </div>
         </div>

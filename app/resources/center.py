@@ -188,6 +188,20 @@ def reject_center():
     return redirect(url_for("center_index"))
 
 
+@restricted('centro_update')
+def review_center():
+    center_id = request.args['center_id']
+    center = Center.get_by_id(center_id)
+    center.state = STATES[0]
+    center.published = False
+    try:
+        dbSession.commit()
+    except IntegrityError:
+        return redirect(url_for("center_index"))
+    flash("el centro {} está pendiente de revisión".format(center.name), "warning")
+    return redirect(url_for("center_index"))
+
+
 def get_protocol(object_id):
     try:
         center = Center.get_by_id(object_id)
