@@ -1,6 +1,9 @@
-from flask import redirect, render_template, request, url_for, abort, flash
+import io
+
+from flask import redirect, render_template, request, url_for, abort, flash, send_file
 from sqlalchemy.exc import IntegrityError
 from werkzeug.exceptions import BadRequestKeyError
+
 from app import dbSession
 from app.helpers.auth import restricted
 from app.helpers.handler import display_errors
@@ -95,6 +98,7 @@ def update_center(object_id):
     if form.validate():
         center = Center.get_by_id(object_id)
         form.populate_obj(center)
+        center.protocol = request.files['protocol'].read()
         dbSession.commit()
     elif form.errors:
         display_errors(form.errors)
@@ -181,4 +185,14 @@ def reject_center():
     except IntegrityError:
         return redirect(url_for("center_index"))
     flash("el centro {} fue rechazado".format(center.name), "info")
+    return redirect(url_for("center_index"))
+
+
+def get_protocol(object_id):
+    try:
+        center = Center.get_by_id(object_id)
+        return send_file(io.BytesIO(center.protocol), mimetype='pdf', as_attachment=True,
+                         attachment_filename='{} protocol.pdf'.format(center.name))
+    except BadRequestKeyError:
+        flash("ERROR: id Centro no recibido", "danger")
     return redirect(url_for("center_index"))
