@@ -10,6 +10,7 @@ from app.resources import user
 from app.resources import auth
 from app.resources import sistema
 from app.resources.api import issue as api_issue
+from app.resources.api import center as api_center
 from app.helpers import handler
 from app.helpers import auth as helper_auth
 from app.models.sistema import Sistema as Sys
@@ -87,6 +88,7 @@ def create_app(environment="production"):
     app.add_url_rule("/sistema/configurar", "system_configure", sistema.config_sistema_get)
     app.add_url_rule("/sistema/configurar", "system_configure_post", sistema.config_sistema_post, methods=["POST"])
 
+
     # app.add_url_rule("/usuarios", "system_configure", user.index)
     # app.add_url_rule("/usuarios", "system", user.index)
 
@@ -95,14 +97,24 @@ def create_app(environment="production"):
     def home():
         return render_template("home.html")
 
-    # Session
-    # @app.route('/session') ESTA RUTA NO TIENE SENTIDO
-    # @helper_auth.restricted('session_show')
-    # def get_session():
-    #     return render_template('session.html', session=session)
 
     # Rutas de API-rest
     app.add_url_rule("/api/consultas", "api_issue_index", api_issue.index)
+
+    # Rutas de API-rest centros
+    app.add_url_rule("/centros", "api_center_index", api_center.index)
+    app.add_url_rule("/centros", "api_center_create", api_center.create, methods=["POST"])
+
+
+    #app.add_url_rule("/centros/<int:centro_id>", "centros", api.show)
+
+    #idealmente esta ruta deberia estar implementada mayormente en el controlador api_center
+    """
+    @app.route('/centros/<int:centro_id>')
+        def show_centro(centro_id):
+            centro;
+            return (centro)
+    """
 
     # Ruta de configuración del sistema
     app.add_url_rule("/sistema/config-sistema", 'config_sistema_get', sistema.config_sistema_get)
