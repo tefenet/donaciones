@@ -52,6 +52,7 @@ def upgrade():
                        {'id': 26, 'name': 'shifts_destroy'},
                        {'id': 27, 'name': 'shifts_update'},
                        {'id': 28, 'name': 'shifts_show'},
+                       {'id': 29, 'name': 'shifts_search'},
                    ]
                    )
 

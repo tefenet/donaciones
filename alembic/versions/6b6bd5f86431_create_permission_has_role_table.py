@@ -119,6 +119,30 @@ def upgrade():
                            'permissions_id': 23,
                        },
                        {
+                           'roles_id': 1,
+                           'permissions_id': 24,
+                       },
+                       {
+                           'roles_id': 1,
+                           'permissions_id': 25,
+                       },
+                       {
+                           'roles_id': 1,
+                           'permissions_id': 26,
+                       },
+                       {
+                           'roles_id': 1,
+                           'permissions_id': 27,
+                       },
+                       {
+                           'roles_id': 1,
+                           'permissions_id': 28,
+                       },
+                       {
+                           'roles_id': 1,
+                           'permissions_id': 29,
+                       },
+                       {
                            'roles_id': 2,
                            'permissions_id': 19,
                        },
@@ -137,6 +161,30 @@ def upgrade():
                        {
                            'roles_id': 2,
                            'permissions_id': 23,
+                       },
+                       {
+                           'roles_id': 2,
+                           'permissions_id': 24,
+                       },
+                       {
+                           'roles_id': 2,
+                           'permissions_id': 25,
+                       },
+                       {
+                           'roles_id': 2,
+                           'permissions_id': 26,
+                       },
+                       {
+                           'roles_id': 2,
+                           'permissions_id': 27,
+                       },
+                       {
+                           'roles_id': 2,
+                           'permissions_id': 28,
+                       },
+                       {
+                           'roles_id': 2,
+                           'permissions_id': 29,
                        },
                    ]
                    )
