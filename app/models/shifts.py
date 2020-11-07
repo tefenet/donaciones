@@ -1,9 +1,9 @@
 from app.db import Base
 from sqlalchemy import Column, Integer, ForeignKey, String, Time, Date
-from sqlalchemy.orm import relationship
+
 from app.models.center import Center
 from datetime import datetime, date, timedelta, time
-import json
+
 
 shift_time_blocks = [time(9), time(9, 30), time(10), time(10, 30), time(11), time(11, 30), time(12), time(12, 30),
                      time(13), time(13, 30), time(14), time(14, 30), time(15), time(15, 30)]
@@ -31,7 +31,6 @@ class Shifts(Base):
     end_time = Column(Time, nullable=False)
     date = Column(Date, nullable=False)
     center_id = Column(Integer, ForeignKey('centers.id'))
-    center = relationship("Center", back_populates="shifts")
 
     def __init__(self, donor_email, donor_phone, start_time, end_time, date, center_id):
         self.donor_email = donor_email
@@ -42,8 +41,8 @@ class Shifts(Base):
         self.center_id = center_id
 
     def __repr__(self):
-        return "<Shift(id='{}', start_time='{}', end_time='{}', center_id={})'>".format(self.id, self.start_time,
-                                                                                        self.end_time, self.center.id)
+        return "<Shift(id='{}', start_time='{}', end_time='{}', center={})'>".format(self.id, self.start_time,
+                                                                                        self.end_time, self.center.name)
 
     @classmethod
     def all(cls):
@@ -124,7 +123,7 @@ class Shifts(Base):
             'start_time': self.start_time.__str__(),
             'end_time': self.end_time.__str__(),
             'date': self.date.__str__(),
-            'center_id': self.center_id,
+            'center': self.center.name,
         }
 
     # def serialize(self):

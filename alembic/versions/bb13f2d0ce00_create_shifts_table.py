@@ -9,6 +9,8 @@ from alembic import op
 import sqlalchemy as sa
 
 # revision identifiers, used by Alembic.
+from sqlalchemy import ForeignKey
+
 revision = 'bb13f2d0ce00'
 down_revision = '7ea45a8121d7'
 branch_labels = None
@@ -24,7 +26,7 @@ def upgrade():
         sa.Column('start_time', sa.Time(), nullable=False),
         sa.Column('end_time', sa.Time(), nullable=False),
         sa.Column('date', sa.Date(), nullable=False),
-        sa.Column('center_id', sa.Integer, primary_key=True),
+        sa.Column('center_id', sa.Integer, ForeignKey('centers.id')),
     )
 
 

@@ -29,7 +29,7 @@ class Center(Base):
     protocol = Column(LargeBinary())
     city_id = Column(Integer, ForeignKey('city.id'))
     type = Column(CENTER_TYPES_ENUM)
-    shifts = relationship("Shifts", back_populates="center")
+    shifts = relationship("Shifts", backref="center")
 
     def __init__(self, name=None, address=None, phone=None, email=None, opening=None, closing=None):
         self.name = name

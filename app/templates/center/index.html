@@ -89,11 +89,11 @@
                 </table>
                 {% import 'components/pagination.html' as pag %}
                 {% if request.path == url_for('center_index') %}
-                {{ pag.set('center_index',pagination) }}
+                    {{ pag.set('center_index',pagination) }}
                 {% elif request.path == url_for('centro_search_by_published') %}
-                {{ pag.set('centro_search_by_published',pagination, request.args.get('published')) }}
+                    {{ pag.set('centro_search_by_published',pagination, request.args.get('published')) }}
                 {% else %}
-                {{ pag.set('centro_search_by_name',pagination,request.args.get('name')) }}
+                    {{ pag.set('centro_search_by_name',pagination,request.args.get('name')) }}
                 {% endif %}
             </div>
         </div>
