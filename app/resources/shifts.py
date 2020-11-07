@@ -122,7 +122,6 @@ def create_view(center_id):
 @restricted(perm='shifts_index')
 def index(date_start=date.today(), date_end=(datetime.now() + timedelta(2)).date()):
     shifts = Shifts.get_shifts_between()
-    app.logger.info(shifts)
     sys = Sistema.get_sistema()
     try:
         page = int(request.args['page'])
@@ -134,3 +133,57 @@ def index(date_start=date.today(), date_end=(datetime.now() + timedelta(2)).date
         app.logger.info(err)
         return redirect(url_for('turnos_index'))
     return render_template("shifts/index.html", pagination=res, date_start=date_start, date_end=date_end, shifts=shifts)
+
+
+def search_by_donor_email_paginated(donor_email, page=1):
+    """Retorna una paginación con los usuarios que contengan username en su nombre de usuario"""
+    sys = Sistema.get_sistema()
+    query = Shifts.query_donor_email(donor_email)
+    return paginate(query, page, sys.cant_por_pagina)
+
+
+@restricted(perm='shifts_search')
+def search_by_donor_email():
+    """Busca turnos por email donante.
+    Recibe email, que es un string, devuelve una lista de turnos(Shifts) """
+    try:
+        donor_email = request.args['donor_email']
+        page = int(request.args['page'])
+    except (BadRequestKeyError, ValueError) as e:
+        flash("ERROR: {}".format(e), e)
+        return redirect(url_for('turnos_index'))
+
+    try:
+        pagination = search_by_donor_email_paginated(donor_email, page)
+    except AttributeError:  # raised when page < 1
+        page = 1
+        pagination = search_by_donor_email_paginated(donor_email, page)
+    return render_template("shifts/index.html", pagination=pagination, shifts=True, donor_email=donor_email)
+
+
+def search_by_center_name_paginated(center_name, page=1):
+    """Retorna una paginación con los turnos pertenecientes al centro 'center_name'"""
+    sys = Sistema.get_sistema()
+    query = Shifts.query_center_name(center_name)
+    app.logger.info(query.all())
+    app.logger.info("-------")
+    return paginate(query, page, sys.cant_por_pagina)
+
+
+@restricted(perm='shifts_search')
+def search_by_center_name():
+    """Busca turnos por nombre de centro.
+    Recibe center_name(string), y numero de pagina, devuelve un template de lista de turnos(Shifts)"""
+    try:
+        center_name = request.args['center_name']
+        page = int(request.args['page'])
+    except (BadRequestKeyError, ValueError) as e:
+        flash("ERROR: {}".format(e), e)
+        return redirect(url_for('turnos_index'))
+
+    try:
+        pagination = search_by_center_name_paginated(center_name, page)
+    except AttributeError:  # raised when page < 1
+        page = 1
+        pagination = search_by_center_name_paginated(center_name, page)
+    return render_template("shifts/index.html", pagination=pagination, shifts=True, center_name=center_name)

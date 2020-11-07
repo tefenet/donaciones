@@ -87,10 +87,12 @@ def create_app(environment="production"):
     app.add_url_rule("/turnos", "turnos_index", shifts.index)
     app.add_url_rule("/turnos/new/<int:center_id>", "turnos_new", shifts.new_view)
     app.add_url_rule("/turnos/create/<int:center_id>", "turnos_create", shifts.create_view, methods=["POST"])
+    app.add_url_rule("/turnos/search_by", "turnos_search_by_donor", shifts.search_by_donor_email)
+    app.add_url_rule("/turnos/search_by_cn", "turnos_search_by_center_name", shifts.search_by_center_name)
 
     # Rutas de Sistema
     app.add_url_rule("/sistema/configurar", "system_configure", sistema.config_sistema_get)
-    app.add_url_rule("/sistema/configurar", "system_configure_post", sistema.config_sistema_post, methods=["POST"])
+    app.add_url_rule("/sistema/configurar", "system_configure_post", sistema.config_sistema_post)
 
     # app.add_url_rule("/usuarios", "system_configure", user.index)
     # app.add_url_rule("/usuarios", "system", user.index)

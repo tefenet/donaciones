@@ -15,7 +15,13 @@
     <div class="card">
         <div class="card-body">
             <p class="card-description">
-                Lista de turnos entre <b>{{ date_start }}</b> y <b>{{ date_end }}</b>
+                {% if date_start %}
+                    Lista de turnos entre <b>{{ date_start }}</b> y <b>{{ date_end }}</b>
+                {% elif donor_email %}
+                    Lista de turnos del donante {{ donor_email }}
+                {% else %}
+                    Lista de turnos del centro {{ center_name }}
+                {% endif %}
             </p>
             {% if shifts %}
                 <div class="table-responsive">
@@ -42,12 +48,37 @@
                         </tbody>
                     </table>
                     {% import 'components/pagination.html' as pag %}
-                    {% if request.path == url_for('turnos_index') %}
+                    {% if request.path == url_for('turnos_index') or request.path == url_for('turnos_search_by_donor')
+                    or request.path == url_for('turnos_search_by_center_name') %}
                         {{ pag.set('turnos_index',pagination) }}
                     {% endif %}
                 </div>
             {% endif %}
         </div>
+        {% if has_perm('shifts_search') %}
+            <div class="m-3">
+                <h5>Buscar por correo donante </h5>
+                <form class="form-inline my-2  mr-auto  "
+                      action="{{ url_for('turnos_search_by_donor') }}">
+                    <input class="form-control mr-sm-2" type="text" id="donor_email" name="donor_email"
+                           placeholder="Email"
+                           aria-label="Email">
+                    <input id="page" name="page" type="hidden" value="1">
+                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Buscar</button>
+                </form>
+            </div>
+            <div class="m-3">
+                <h5>Buscar por nombre de centro </h5>
+                <form class="form-inline my-2  mr-auto  "
+                      action="{{ url_for('turnos_search_by_center_name') }}">
+                    <input class="form-control mr-sm-2" type="text" id="center_name" name="center_name"
+                           placeholder="Nombre del centro" aria-label="Nombre del centro">
+                    <input id="page" name="page" type="hidden" value="1">
+                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Buscar</button>
+                </form>
+            </div>
+        {% endif %}
     </div>
+
 </div>
 {% endset %}
