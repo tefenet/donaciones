@@ -2,6 +2,7 @@ from app.db import Base
 from sqlalchemy import Column, Integer, ForeignKey, String, Time, Date
 from sqlalchemy.orm import relationship
 from app.models.center import Center
+from datetime import datetime, date, timedelta
 import json
 
 
@@ -60,6 +61,20 @@ class Shifts(Base):
         """Este método devuelve una lista con todos los turnos pertenecientes a una persona con email 'donor_email'
         Si no se encuentran turnos devuelve una lista vacía"""
         return cls.query.filter(cls.donor_email == donor_email).all()
+
+    @classmethod
+    def get_shifts_between(cls, date1=None, date2=None):
+        """
+        Devuelve los turnos con fechas entre date1 y date2.
+        Si no se reciben fechas devuelve los turnos de hoy y los siguientes 2 días
+        Valores por defecto: date1=date.today(), date2=date.today()+ 2 days
+        """
+        if date1 is None:
+            date1 = date.today()
+        if date2 is None:
+            date2 = datetime.now() + timedelta(2)
+
+        return cls.query.filter(cls.date >= date1).filter(cls.date <= date2).all()
 
     def serialize(self):
         return {

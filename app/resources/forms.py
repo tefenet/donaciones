@@ -6,7 +6,7 @@ from wtforms import StringField, SubmitField, PasswordField, BooleanField, Integ
 from wtforms.ext.sqlalchemy.fields import QuerySelectField, QuerySelectMultipleField
 from wtforms.validators import ValidationError, DataRequired, Length, length, Email, EqualTo, Optional
 
-from wtforms.fields.html5 import EmailField, TimeField, URLField
+from wtforms.fields.html5 import EmailField, TimeField, URLField, DateField
 
 from pymysql import escape_string as thwart  # escape_string para prevenir sql injections
 
@@ -61,6 +61,9 @@ class CreateUserForm(FlaskForm):
     role = QuerySelectMultipleField('Rol', query_factory=select_role, get_label='name',
                                     widget=widgets.ListWidget(prefix_label=False),
                                     option_widget=widgets.CheckboxInput())
+    user_roles = QuerySelectMultipleField('Rol', query_factory=select_role, get_label='name',
+                                          widget=widgets.ListWidget(prefix_label=False),
+                                          option_widget=widgets.CheckboxInput())
 
     def validate_username(self, username):
         """Compruebo que el nombre de usuario no exista en el sistema"""
@@ -126,3 +129,11 @@ class CreateCenterForm(FlaskForm):
     web_site = URLField('sitio web', render_kw={"placeholder": "https://www.site.com"})
     geo_location = StringField('coordenadas')
     protocol = FileField('protocolo')
+
+
+class CreateShiftForm(FlaskForm):
+    donor_email = StringField('Email Donante', validators=[DataRequired(), Length(max=55)])
+    donor_phone = StringField('Telefono Donante', validators=[DataRequired(), Length(max=55)])
+    start_time = TimeField('Hora Inicio', DataRequired())
+    end_time = TimeField('Hora Fin', DataRequired())
+    date = DateField('Día', DataRequired())

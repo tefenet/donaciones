@@ -9,6 +9,7 @@ from app.resources import issue, center
 from app.resources import user
 from app.resources import auth
 from app.resources import sistema
+from app.resources import shifts
 from app.resources.api import issue as api_issue
 from app.resources.api import shifts as api_shifts
 from app.helpers import handler
@@ -81,6 +82,11 @@ def create_app(environment="production"):
     app.add_url_rule("/center/reject", "center_reject", center.reject_center, methods=["POST"])
     app.add_url_rule("/center/review", "center_review", center.review_center, methods=["POST"])
     app.add_url_rule("/center/protocol/<int:object_id>", "get_protocol", center.get_protocol)
+
+    # Rutas de Turnos
+    app.add_url_rule("/turnos", "turnos_index", shifts.index)
+
+
 
     # Rutas de Sistema
     app.add_url_rule("/sistema/configurar", "system_configure", sistema.config_sistema_get)

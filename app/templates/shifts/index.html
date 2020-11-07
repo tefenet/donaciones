@@ -1,0 +1,56 @@
+{% extends "layout.html" %}
+{% block title %}Turnos{% endblock %}
+{% block head %}
+    {{ super() }}
+{% endblock %}
+{% set content %}
+<div style="display:flex">
+    <h1 class="mx-auto">Turnos</h1>
+</div>
+<div style="display:flex">
+    <a href="#" class="link mx-auto">Nuevo</a>
+</div>
+<div class="container">
+
+    <div class="card">
+        <div class="card-body">
+            <p class="card-description">
+                Lista de turnos entre <b>{{ date_start }}</b> y <b>{{ date_end }}</b>
+            </p>
+            {% if shifts %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                        <tr align="center">
+                            <th></th>
+                            <th>Correo</th>
+                            <th>Telefono</th>
+                            <th>Horario</th>
+                            <th>Día</th>
+                            <th>Centro</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for shift in pagination.items %}
+                            <tr align="center">
+                                <td>{{ shift.donor_email }}</td>
+                                <td>{{ shift.donor_phone }}</td>
+                                <td>({{ shift.start_time }} - {{ shift.end_time }})</td>
+                                <td>{{ center.date }}</td>
+                                <td>{{ center.name }}</td>
+                            </tr>
+
+
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                    {% import 'components/pagination.html' as pag %}
+                    {% if request.path == url_for('shifts_index') %}
+                        {{ pag.set('shifts_index',pagination) }}
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endset %}

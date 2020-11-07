@@ -4,7 +4,7 @@ from sqlalchemy.orm import relationship
 
 from app.db import Base, dbSession
 from sqlalchemy import Column, Integer, String, Boolean, DateTime, LargeBinary, ForeignKey, Time, Enum
-from datetime import datetime
+from datetime import datetime, date
 import enum
 
 STATES = ('pending', 'approved', 'rejected')
@@ -48,7 +48,7 @@ class Center(Base):
 
     def toogle_published(self):
         if self.published:
-            self.published=False
+            self.published = False
         else:
             self.publish()
         dbSession.commit()
@@ -84,3 +84,9 @@ class Center(Base):
         """Recibe un string indicando el estado. Retorna una Query"""
 
         return cls.query.filter(cls.published == published)
+
+    def get_shifts_by_date(self, dt=date.today()):
+        """Retorna los turnos asociados al día recibido.
+        Si no se recibe un día, retorna los turnos del día actual"""
+
+        return list(filter(lambda s: s.date == dt, self.shifts))
