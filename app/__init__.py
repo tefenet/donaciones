@@ -10,6 +10,7 @@ from app.resources import user
 from app.resources import auth
 from app.resources import sistema
 from app.resources.api import issue as api_issue
+from app.resources.api import shifts as api_shifts
 from app.helpers import handler
 from app.helpers import auth as helper_auth
 from app.models.sistema import Sistema as Sys
@@ -39,8 +40,6 @@ def create_app(environment="production"):
     app.jinja_env.globals.update(is_authenticated=helper_auth.authenticated)
     app.jinja_env.globals.update(has_perm=auth.user_has_permission)
     app.jinja_env.globals.update(site_variables=Sys.get_sistema)
-
-
 
     # Autenticación
     app.add_url_rule("/iniciar_sesion", "auth_login", auth.login)
@@ -91,14 +90,18 @@ def create_app(environment="production"):
     def home():
         return render_template("home.html")
 
-    # Session
+    # Session -- la agregué para ver la session desde el navegador en debug. Sí, es innecesaria.
     # @app.route('/session') ESTA RUTA NO TIENE SENTIDO
     # @helper_auth.restricted('session_show')
     # def get_session():
     #     return render_template('session.html', session=session)
 
-    # Rutas de API-rest
+    # Rutas de API-rest v1.0
+    # api issue
     app.add_url_rule("/api/consultas", "api_issue_index", api_issue.index)
+
+    # api shifts
+    app.add_url_rule("/api/v1.0/turnos", "api_shifts_index", api_shifts.index)
 
     # Ruta de configuración del sistema
     app.add_url_rule("/sistema/config-sistema", 'config_sistema_get', sistema.config_sistema_get)

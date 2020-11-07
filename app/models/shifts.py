@@ -2,6 +2,7 @@ from app.db import Base
 from sqlalchemy import Column, Integer, ForeignKey, String, Time, Date
 from sqlalchemy.orm import relationship
 from app.models.center import Center
+import json
 
 
 class Shifts(Base):
@@ -28,6 +29,14 @@ class Shifts(Base):
                                                                                         self.end_time, self.center.id)
 
     @classmethod
+    def all(cls):
+        return cls.query.all()
+
+    @classmethod
+    def get_by_id(cls, shift_id):
+        return cls.query.get(shift_id)
+
+    @classmethod
     def search_by_center_name(cls, center_name):
         """Este método devuelve una lista con todos los turnos pertenecientes a un centro 'center_name'
         Si no se encuentran turnos devuelve una lista vacía"""
@@ -51,3 +60,17 @@ class Shifts(Base):
         """Este método devuelve una lista con todos los turnos pertenecientes a una persona con email 'donor_email'
         Si no se encuentran turnos devuelve una lista vacía"""
         return cls.query.filter(cls.donor_email == donor_email).all()
+
+    def serialize(self):
+        return {
+            'id': self.id,
+            'donor_email': self.donor_email,
+            'donor_phone': self.donor_phone,
+            'start_time': self.start_time.__str__(),
+            'end_time': self.end_time.__str__(),
+            'date': self.date.__str__(),
+            'center_id': self.center_id,
+        }
+
+    # def serialize(self):
+    #     return json.dumps(self._to_dict(), default=str, indent=4, sort_keys=True)
