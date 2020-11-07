@@ -5,15 +5,14 @@ from wtforms import StringField, SubmitField, PasswordField, BooleanField, Integ
     RadioField, widgets, SelectField
 from wtforms.ext.sqlalchemy.fields import QuerySelectField, QuerySelectMultipleField
 from wtforms.validators import ValidationError, DataRequired, Length, length, Email, EqualTo, Optional
-
 from wtforms.fields.html5 import EmailField, TimeField, URLField, DateField
-
-from pymysql import escape_string as thwart  # escape_string para prevenir sql injections
 
 from app.models.center import CENTER_TYPES_ENUM, CENTER_TYPES
 from app.models.city import City
 from app.models.role import Role
 from app.models.user import User
+from app.models.shifts import get_shifts_blocks_avalaible
+from datetime import time, date
 
 
 class LoginForm(FlaskForm):
@@ -130,10 +129,16 @@ class CreateCenterForm(FlaskForm):
     geo_location = StringField('coordenadas')
     protocol = FileField('protocolo')
 
+    # shifts_blocks = [time(9), time(9, 30), time(10), time(10, 30), time(11), time(11, 30), time(12), time(12, 30),
+    # time(13), time(13, 30), time(14), time(14, 30), time(15), time(15, 30)]
+
 
 class CreateShiftForm(FlaskForm):
-    donor_email = StringField('Email Donante', validators=[DataRequired(), Length(max=55)])
-    donor_phone = StringField('Telefono Donante', validators=[DataRequired(), Length(max=55)])
-    start_time = TimeField('Hora Inicio', DataRequired())
-    end_time = TimeField('Hora Fin', DataRequired())
-    date = DateField('Día', DataRequired())
+    # shifts_blocks = get_shifts_blocks_avalaible(1, date1=date(2020, 11, 3))
+    donor_email = StringField('Email Donante', validators=[DataRequired("El email es obligatorio"), Length(max=55)])
+    donor_phone = StringField('Telefono Donante',
+                              validators=[DataRequired("El telefono es obligatorio"), Length(max=55)])
+    start_time = SelectField("Horario(Bloques de 30 min)", choices=[], coerce=str)
+    date = DateField("Día", validators=[DataRequired("El día es obligatorio")], render_kw={"readonly": True})
+
+    # date = DateField('Día', DataRequired())
