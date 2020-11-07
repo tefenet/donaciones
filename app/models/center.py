@@ -59,6 +59,12 @@ class Center(Base):
         else:
             raise AttributeError('no se puede publicar si no está aprobado')
 
+    def get_shifts_by_date(self, dt=date.today()):
+        """Retorna los turnos asociados al día recibido.
+        Si no se recibe un día, retorna los turnos del día actual"""
+
+        return list(filter(lambda s: s.date == dt, self.shifts))
+
     @classmethod
     def delete_by_id(cls, id):
         """Elimina un centro de la base de datos de forma permanente"""
@@ -84,9 +90,3 @@ class Center(Base):
         """Recibe un string indicando el estado. Retorna una Query"""
 
         return cls.query.filter(cls.published == published)
-
-    def get_shifts_by_date(self, dt=date.today()):
-        """Retorna los turnos asociados al día recibido.
-        Si no se recibe un día, retorna los turnos del día actual"""
-
-        return list(filter(lambda s: s.date == dt, self.shifts))

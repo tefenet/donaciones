@@ -85,8 +85,8 @@ def create_app(environment="production"):
 
     # Rutas de Turnos
     app.add_url_rule("/turnos", "turnos_index", shifts.index)
-
-
+    app.add_url_rule("/turnos/new/<int:center_id>", "turnos_new", shifts.new_view)
+    app.add_url_rule("/turnos/create/<int:center_id>", "turnos_create", shifts.create_view, methods=["POST"])
 
     # Rutas de Sistema
     app.add_url_rule("/sistema/configurar", "system_configure", sistema.config_sistema_get)

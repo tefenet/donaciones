@@ -2,8 +2,24 @@ from app.db import Base
 from sqlalchemy import Column, Integer, ForeignKey, String, Time, Date
 from sqlalchemy.orm import relationship
 from app.models.center import Center
-from datetime import datetime, date, timedelta
+from datetime import datetime, date, timedelta, time
 import json
+
+shift_time_blocks = [time(9), time(9, 30), time(10), time(10, 30), time(11), time(11, 30), time(12), time(12, 30),
+                     time(13), time(13, 30), time(14), time(14, 30), time(15), time(15, 30)]
+
+
+def get_shifts_blocks_avalaible(center_id, date1=date.today()):
+    """Retorna los bloques de horario disponibles para el día date1, para un centro dado"""
+
+    center = Center.get_by_id(center_id)
+    if center is None:
+        raise ValueError("Error al obtener el centro id={}".format(center_id))
+    shifts = center.get_shifts_by_date(date1)
+    if shifts:
+        not_avalaible = list(map(lambda s: (s.start_time if s.start_time in shift_time_blocks else None), shifts))
+        return [t for t in shift_time_blocks if t not in not_avalaible]  # shift_time_blocks - not_avalaible
+    return shift_time_blocks
 
 
 class Shifts(Base):
@@ -72,9 +88,23 @@ class Shifts(Base):
         if date1 is None:
             date1 = date.today()
         if date2 is None:
-            date2 = datetime.now() + timedelta(2)
+            date2 = (datetime.now() + timedelta(2)).date()
 
         return cls.query.filter(cls.date >= date1).filter(cls.date <= date2).all()
+
+    @classmethod
+    def query_shifts_between(cls, date1=None, date2=None):
+        """
+        Devuelve una Query con los turnos con fechas entre date1 y date2.
+        Si no se reciben fechas devuelve una Query con turnos de hoy y los siguientes 2 días
+        Valores por defecto: date1=date.today(), date2=date.today()+ 2 days
+        """
+        if date1 is None:
+            date1 = date.today()
+        if date2 is None:
+            date2 = (datetime.now() + timedelta(2)).date()
+
+        return cls.query.filter(cls.date >= date1).filter(cls.date <= date2)
 
     def serialize(self):
         return {
