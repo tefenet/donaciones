@@ -1,6 +1,9 @@
-from flask import redirect, render_template, request, url_for, abort, flash
+import io
+
+from flask import redirect, render_template, request, url_for, abort, flash, send_file
 from sqlalchemy.exc import IntegrityError
 from werkzeug.exceptions import BadRequestKeyError
+
 from app import dbSession
 from app.helpers.auth import restricted
 from app.helpers.handler import display_errors
@@ -27,7 +30,6 @@ def index():
 @restricted(perm='centro_new')
 def new():
     form = CreateCenterForm()
-    del form.published
     return render_template("center/new.html", form=form)
 
 
@@ -38,6 +40,7 @@ def create():
     if form.validate():
         center = Center()
         form.populate_obj(center)
+        center.protocol = request.files['protocol'].read()
         dbSession.add(center)
         dbSession.commit()
     if form.errors:
@@ -62,6 +65,23 @@ def delete_center():
 
 
 @restricted('centro_update')
+def toogle_publish_center():
+    """ edita los atributos del centro con los datos obtenidos del formulario """
+    try:
+        center_id = request.args['object_id']
+    except BadRequestKeyError:
+        flash("ERROR: id Centro no recibido", "danger")
+    center = Center.get_by_id(center_id)
+    try:
+        center.toogle_published()
+    except AttributeError as e:
+        flash(e, 'danger')
+        return redirect(url_for("center_index"))
+    flash("el centro {} ha sido {}".format(center.name, "publicado" if center.published else "despublicado"), "info")
+    return redirect(url_for("center_index"))
+
+
+@restricted('centro_update')
 def update_center_form(object_id):
     """ renderiza el formulario para editar un centro """
     center = Center.get_by_id(object_id)
@@ -77,13 +97,8 @@ def update_center(object_id):
     form = CreateCenterForm(request.form)
     if form.validate():
         center = Center.get_by_id(object_id)
-        if form.published.data:
-            try:
-                center.publish()
-            except AttributeError as e:
-                flash(e, 'danger')
-                return update_center_form(object_id)
         form.populate_obj(center)
+        center.protocol = request.files['protocol'].read()
         dbSession.commit()
     elif form.errors:
         display_errors(form.errors)
@@ -170,4 +185,28 @@ def reject_center():
     except IntegrityError:
         return redirect(url_for("center_index"))
     flash("el centro {} fue rechazado".format(center.name), "info")
+    return redirect(url_for("center_index"))
+
+
+@restricted('centro_update')
+def review_center():
+    center_id = request.args['center_id']
+    center = Center.get_by_id(center_id)
+    center.state = STATES[0]
+    center.published = False
+    try:
+        dbSession.commit()
+    except IntegrityError:
+        return redirect(url_for("center_index"))
+    flash("el centro {} está pendiente de revisión".format(center.name), "warning")
+    return redirect(url_for("center_index"))
+
+
+def get_protocol(object_id):
+    try:
+        center = Center.get_by_id(object_id)
+        return send_file(io.BytesIO(center.protocol), mimetype='pdf', as_attachment=True,
+                         attachment_filename='{} protocol.pdf'.format(center.name))
+    except BadRequestKeyError:
+        flash("ERROR: id Centro no recibido", "danger")
     return redirect(url_for("center_index"))

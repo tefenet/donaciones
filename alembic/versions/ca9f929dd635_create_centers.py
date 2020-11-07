@@ -43,7 +43,7 @@ def upgrade():
         sa.Column('opening', sa.Time()),
         sa.Column('closing', sa.Time()),
         sa.Column('state', STATE_ENUM),
-        sa.Column('protocol', sa.LargeBinary(length=2048)),
+        sa.Column('protocol', sa.dialects.mysql.LONGBLOB()),
         sa.Column('city_id', sa.Integer, ForeignKey('city.id')),
         sa.Column('type', CENTER_TYPES_ENUM),
     )

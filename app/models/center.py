@@ -2,7 +2,7 @@ from MySQLdb import TIMESTAMP, TIME
 from sqlalchemy.dialects.mysql import ENUM
 from sqlalchemy.orm import relationship
 
-from app.db import Base
+from app.db import Base, dbSession
 from sqlalchemy import Column, Integer, String, Boolean, DateTime, LargeBinary, ForeignKey, Time, Enum
 from datetime import datetime
 import enum
@@ -19,14 +19,14 @@ class Center(Base):
     name = Column(String(40), nullable=False)
     address = Column(String(100), nullable=True)
     phone = Column(String(20))
-    email = Column(String(60), nullable=False)
+    email = Column(String(60))
     web_site = Column(String(40))
     opening = Column(Time())
     closing = Column(Time())
     published = Column(Boolean(), default=False)
     state = Column(STATE_ENUM, default=STATES[0])
     geo_location = Column(String(30))
-    protocol = Column(LargeBinary(length=2048))
+    protocol = Column(LargeBinary())
     city_id = Column(Integer, ForeignKey('city.id'))
     type = Column(CENTER_TYPES_ENUM)
     shifts = relationship("Shifts", back_populates="center")
@@ -45,6 +45,13 @@ class Center(Base):
 
     def __attrs__(self):
         return list(map(lambda s: s[0] + ' : ' + s[1].__str__(), self.__dict__.items()))[1:]
+
+    def toogle_published(self):
+        if self.published:
+            self.published=False
+        else:
+            self.publish()
+        dbSession.commit()
 
     def publish(self):
         if self.state == STATES[1]:

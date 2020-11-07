@@ -2,14 +2,20 @@
 {% block title %}Centros{% endblock %}
 {% block head %}
 {{ super() }}
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"></script>
+<link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
 {% endblock %}
 {% set content %}
+
 <div style="display:flex">
     <h1 class="mx-auto">Centros</h1>
 </div>
 <div style="display:flex">
-    <a href="{{ url_for('home') }}" class="link mx-auto">Volver</a>
-    <a href="{{ url_for('center_new') }}" class="link mx-auto">Nuevo</a>
+    <a class="link mx-auto" href="{{ url_for('home') }}">Volver</a>
+    <a class="link mx-auto" href="{{ url_for('center_new') }}">Nuevo</a>
 </div>
 <div class="container">
 
@@ -30,17 +36,35 @@
                         <th>Publicado</th>
                     </tr>
                     </thead>
+                    <br/>
                     <tbody>
                     {% for center in pagination.items %}
-                    <tr align="center">
-                        <td><button type="button" class="btn btn-xs" data-toggle="modal"
-                                    data-target="#modalShowCenter{{loop.index}}">{{center.name}}
-                            </button></td>
+                    <tr align="center" class="{{'oddRow' if loop.index%2==0 else 'evenRow'}}" >
+                        <td>
+                            {% import 'center/show.html' as show_center %}
+                            {{ show_center.set(center, loop.index) }}
+                        </td>
                         <td>{{center.phone}}</td>
                         <td>{{center.web_site}}</td>
-                        <td>{{center.state}}</td>
-                        <td>{{ 'Si' if center.published else 'No' }}</td>
+                        <td><b class="{{center.state}}">{{center.state}}</b></td>
+                        <td>
+                            <form action="{{url_for('center_publish', object_id=center.id)}}" id="form-{{center.id}}"
+                                  method="post">
+                                {% if center.published %}
+                                <input checked class="toggle" data-toggle="toggle" type="checkbox"
+                                       value="{{center.id}}">
+                                {% else %}
+                                <input class="toggle" data-toggle="toggle" type="checkbox" value="{{center.id}}">
+                                {% endif %}
+                            </form>
 
+                        </td>
+                        <script>
+                            $(document).ready(function() {
+                              $('.toggle').click(function() {
+                              document.getElementById('form-'+ this.childNodes[0].value).submit()
+                            })});
+                        </script>
                         {% if has_perm('centro_update') %}
                         <td>
                             {% import 'components/editButton.html' as editButton %}
@@ -51,58 +75,35 @@
                         {% if has_perm('centro_destroy')%}
                         <td>
                             {% import 'components/deleteButton.html' as deleteButton %}
-                            {% set header = '<div>Eliminar centro <b class="mr-auto" style="padding-left:1vh">{}</b></div>'.format(center.name) %}
+                            {% set header = '
+                            <div>Eliminar centro <b class="mr-auto" style="padding-left:1vh">{}</b></div>
+                            '.format(center.name) %}
                             {% set body = '<b>Este cambio es irreversible</b>' %}
                             {{ deleteButton.set('center_delete',center.id, header, body, loop.index ) }}
 
                         </td>
                         {% endif %}
                     </tr>
-
-
-                    <div id="show-center-{{loop.index}}">
-                        <div id="modalShowCenter{{loop.index}}" class="modal fade" role="dialog">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">Centro {{center.name}}</div>
-                                    <div class="modal-body">
-                                        {% for tuple in center.__attrs__() %}
-                                         <b>{{ tuple }}</b><br/>
-                                        {% endfor %}
-                                    </div>
-                                    <div class="modal-footer">
-                                        <form action="{{url_for('center_reject', center_id=center.id)}}" method="post">
-                                            <button type="submit" class="btn btn-danger">Rechazar</button>
-                                        </form>
-                                        <form action="{{url_for('center_approve', center_id=center.id)}}" method="post">
-                                            <button type="submit" class="btn btn-success">Aprobar</button>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
                     {% endfor %}
                     </tbody>
                 </table>
                 {% import 'components/pagination.html' as pag %}
                 {% if request.path == url_for('center_index') %}
-                    {{ pag.set('center_index',pagination) }}
+                {{ pag.set('center_index',pagination) }}
                 {% elif request.path == url_for('centro_search_by_published') %}
-                    {{ pag.set('centro_search_by_published',pagination, request.args.get('published')) }}
+                {{ pag.set('centro_search_by_published',pagination, request.args.get('published')) }}
                 {% else %}
-                    {{ pag.set('centro_search_by_name',pagination,request.args.get('name')) }}
+                {{ pag.set('centro_search_by_name',pagination,request.args.get('name')) }}
                 {% endif %}
             </div>
         </div>
         {% if has_perm('centro_index') %}
         <div class="m-3">
             <h5>Buscar por nombre de centro </h5>
-            <form class="form-inline my-2  mr-auto  "
-                  action="{{url_for('centro_search_by_name')}}">
-                <input class="form-control mr-sm-2" type="text" id="name" name="name" placeholder="nombre del centro"
-                       aria-label="name">
+            <form action="{{url_for('centro_search_by_name')}}"
+                  class="form-inline my-2  mr-auto  ">
+                <input aria-label="name" class="form-control mr-sm-2" id="name" name="name" placeholder="nombre del centro"
+                       type="text">
                 <input id="page" name="page" type="hidden" value="1">
                 <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Buscar</button>
             </form>
@@ -110,11 +111,12 @@
         <div class="m-3">
             <h5>Buscar por estado</h5>
             <a class="btn btn-outline-success my-2 my-sm-0"
-               href="{{url_for('centro_search_by_published', published=True)}}" >Publicados</a>
+               href="{{url_for('centro_search_by_published', published=True)}}">Publicados</a>
             <a class="btn btn-outline-success my-2 my-sm-0"
                href="{{url_for('centro_search_by_published', published=False)}}">Despublicados</a>
         </div>
         {% endif %}
     </div>
 </div>
+
 {% endset %}

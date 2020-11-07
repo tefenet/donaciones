@@ -87,6 +87,24 @@ color:blue}
   padding: 10px;
   height:20vh;
 }
+.approved{
+    color:#35600c;
+}
+.pending{
+    color:blue;
+}
+.rejected{
+    color:red;
+}
+.modal-header > approved{
+    background-color:#35600c;
+}
+.modal-header > pending{
+    background-color:#blue;
+}
+.modal-header > rejected{
+    background-color:red;
+}
 /* Responsive layout - when the screen is less than 600px wide, make the two columns stack on top of each other instead of next to each other */
 @media screen and (max-width: 600px) {
   .col-25, .col-75, input[type=submit] {
