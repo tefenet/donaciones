@@ -4,10 +4,19 @@ from sqlalchemy import Column, Integer, ForeignKey, String, Time, Date
 from app.models.center import Center
 from datetime import datetime, date, timedelta, time
 
-
 shift_time_blocks = [time(9), time(9, 30), time(10), time(10, 30), time(11), time(11, 30), time(12), time(12, 30),
                      time(13), time(13, 30), time(14), time(14, 30), time(15), time(15, 30)]
 
+
+def shift_time_block(center):
+    shifts = [center.opening]
+
+    def fo(t):
+        return (datetime.datetime(1, 1, 1, t.hour, t.minute) + timedelta(minutes=30)).time()
+
+    while shifts[-1] != center.closing:
+        shifts.append(fo(shifts[-1]))
+    return shifts
 
 def get_shifts_blocks_avalaible(center_id, date1=date.today()):
     """Retorna los bloques de horario disponibles para el día date1, para un centro dado"""
@@ -42,7 +51,7 @@ class Shifts(Base):
 
     def __repr__(self):
         return "<Shift(id='{}', start_time='{}', end_time='{}', center={})'>".format(self.id, self.start_time,
-                                                                                        self.end_time, self.center.name)
+                                                                                     self.end_time, self.center.name)
 
     @classmethod
     def all(cls):
