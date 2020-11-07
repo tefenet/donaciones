@@ -8,7 +8,7 @@
     <h1 class="mx-auto">Turnos</h1>
 </div>
 <div style="display:flex">
-    <a href="#" class="link mx-auto">Nuevo</a>
+    <a href="{{ url_for("turnos_new", center_id=1) }}" class="link mx-auto">Nuevo</a>
 </div>
 <div class="container">
 
@@ -22,7 +22,6 @@
                     <table class="table table-hover">
                         <thead>
                         <tr align="center">
-                            <th></th>
                             <th>Correo</th>
                             <th>Telefono</th>
                             <th>Horario</th>
@@ -36,17 +35,15 @@
                                 <td>{{ shift.donor_email }}</td>
                                 <td>{{ shift.donor_phone }}</td>
                                 <td>({{ shift.start_time }} - {{ shift.end_time }})</td>
-                                <td>{{ center.date }}</td>
-                                <td>{{ center.name }}</td>
+                                <td>{{ shift.date }}</td>
+                                <td>{{ shift.center.name }}</td>
                             </tr>
-
-
                         {% endfor %}
                         </tbody>
                     </table>
                     {% import 'components/pagination.html' as pag %}
-                    {% if request.path == url_for('shifts_index') %}
-                        {{ pag.set('shifts_index',pagination) }}
+                    {% if request.path == url_for('turnos_index') %}
+                        {{ pag.set('turnos_index',pagination) }}
                     {% endif %}
                 </div>
             {% endif %}
