@@ -57,7 +57,7 @@ class CreateUserForm(FlaskForm):
     last_name = StringField('Apellido',
                             [Length(message="El apellido  debe tener entre 2 y 20 caracteres", min=2, max=20),
                              DataRequired()], render_kw={"placeholder": "perez"})
-    active = BooleanField('Estado(Activo/Inactivo)')
+    active = BooleanField('Estado (Activo/Inactivo)', default="checked")
     role = QuerySelectMultipleField('Rol', query_factory=select_role, get_label='name',
                                     widget=widgets.ListWidget(prefix_label=False),
                                     option_widget=widgets.CheckboxInput())
