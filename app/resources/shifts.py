@@ -65,8 +65,8 @@ def new_view(center_id, date1=date.today()):
     center = Center.get_by_id(center_id)
     date1 = date(2020, 11, 3)
     if center:
-        form = CreateShiftForm(center=center)
-        form.center = center
+        form = CreateShiftForm()
+
         # form.date.data = date1
         # choices_blocks = list(map(lambda d: (i, str(d)), get_shifts_blocks_avalaible(center_id, date1)))
         # choices_blocks = [(i + 1, str(d)) for i, d in enumerate(get_shifts_blocks_avalaible(center_id, date1))]
@@ -82,16 +82,14 @@ def create_view(center_id):
     y cuando haya disponibilidad en el día elegido."""
     date1 = date(2020, 11, 3)
     center = Center.get_by_id(center_id)
-    form = CreateShiftForm(center=center)
-    form.center = center
+    form = CreateShiftForm()
     date1 = form.date.data
     # form['start_time'] = QuerySelectField("Horario",
     #                                       query_factory=center.data.get_shifts_blocks_avalaible(form.date.data))
     # form.start_time.choices = center.get_shifts_blocks_avalaible(date1)
-    app.logger.info(form.start_time.data)
+
     if form.validate() and center:
-        app.logger.info('form')
-        start_time = form.start_time.data.start_time
+        start_time = datetime.strptime(form.start_time.data, '%H:%M:%S').time()
         params = {'donor_email': thwart(form.donor_email.data), 'donor_phone': thwart(form.donor_phone.data),
                   'start_time': start_time, 'date': date1, 'center': center}
         try:
@@ -184,5 +182,5 @@ def search_by_center_name():
 def update_form():
     form_date = request.args['date']
     center = Center.get_by_id(request.args['center_id'])
-    d=datetime.strptime(form_date, "%Y-%m-%d").date()
-    return jsonify(list(map(lambda s: s.serialize(), center.get_shifts_blocks_avalaible(d))))
+    d = datetime.strptime(form_date, "%Y-%m-%d").date()
+    return jsonify(list(map(lambda t: t.isoformat(), center.get_shifts_blocks_avalaible(d))))

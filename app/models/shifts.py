@@ -1,8 +1,10 @@
 from datetime import datetime, date, timedelta
 
-from flask import app, current_app as ap
 from sqlalchemy import Column, Integer, ForeignKey, String, Time, Date
+
 from app.db import Base
+
+
 # from app.models.center import Center
 
 
@@ -16,7 +18,8 @@ class Shifts(Base):
     date = Column(Date, nullable=False)
     center_id = Column(Integer, ForeignKey('centers.id'))
 
-    def __init__(self, donor_email=None, donor_phone=None, start_time=None, end_time=None, shift_date=None, center_id=None):
+    def __init__(self, donor_email=None, donor_phone=None, start_time=None, end_time=None, shift_date=None,
+                 center_id=None):
         self.donor_email = donor_email
         self.donor_phone = donor_phone
         self.start_time = start_time
@@ -26,31 +29,25 @@ class Shifts(Base):
 
     def __repr__(self):
         return "<Shift(id='{}', start_time='{}', end_time='{}', center_id={})'>".format(self.id, self.start_time,
-                                                                                     self.end_time, self.center_id)
+                                                                                        self.end_time, self.center_id)
 
     @classmethod
     def available_shifts(cls, center, shifts=[]):
-        ap.logger.info('macana')
         if shifts:
-            ap.logger.info('mocono')
             start_not_available = list(map(lambda s: s.start_time, shifts))
-            return list(filter(lambda sh: sh.start_time not in start_not_available, cls.shift_time_block(center)))
-            # not_avalaible = list(
-            #     map(lambda s: (s.start_time if s.start_time in cls.shift_time_block(center) else None), shifts))
-            # return [t for t in cls.shift_time_block(center) if
-            #         t not in not_avalaible]  # shift_time_blocks - not_avalaible
+            return list(filter(lambda sh: sh not in start_not_available, cls.shift_time_block(center)))
         return cls.shift_time_block(center)
 
     @classmethod
     def shift_time_block(cls, center):
 
-        shifts = [Shifts(start_time=center.opening)]
+        shifts = [center.opening]
 
         def add_30_minutes(t):
             return (datetime(1, 1, 1, t.hour, t.minute) + timedelta(minutes=30)).time()
 
-        while shifts[-1].start_time < center.closing:
-            shifts.append(Shifts(start_time=add_30_minutes(shifts[-1].start_time)))
+        while shifts[-1] < center.closing:
+            shifts.append(add_30_minutes(shifts[-1]))
         return shifts[:-1]
 
     @classmethod

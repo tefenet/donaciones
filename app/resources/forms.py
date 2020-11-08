@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, time
 
 from flask import current_app
 from flask_wtf import FlaskForm
@@ -130,25 +130,20 @@ class CreateCenterForm(FlaskForm):
     geo_location = StringField('coordenadas')
     protocol = FileField('protocolo')
 
-    # shifts_blocks = [time(9), time(9, 30), time(10), time(10, 30), time(11), time(11, 30), time(12), time(12, 30),
-    # time(13), time(13, 30), time(14), time(14, 30), time(15), time(15, 30)]
+
+shifts_blocks = [time(9), time(9, 30), time(10), time(10, 30), time(11), time(11, 30), time(12), time(12, 30),
+    time(13), time(13, 30), time(14), time(14, 30), time(15), time(15, 30)]
 
 
 class CreateShiftForm(FlaskForm):
 
-    center = HiddenField('center', default=Center())
-    # shifts_blocks = get_shifts_blocks_avalaible(1, date1=date(2020, 11, 3))
     donor_email = StringField('Email Donante', validators=[DataRequired("El email es obligatorio"), Length(max=55)])
     donor_phone = StringField('Telefono Donante',
                               validators=[DataRequired("El telefono es obligatorio"), Length(max=55)])
     date = DateField("Día", validators=[DataRequired("El día es obligatorio")])
-    start_time = QuerySelectField("Horario", query_factory=[], get_label='start_time')
+    start_time = SelectField("Horario", choices=shifts_blocks)
 
-    def __init__(self, center, *args, **kwargs):
-        super(CreateShiftForm, self).__init__(*args, **kwargs)
-        self.center = center
-        self.start_time.query_factory = self.update_choices
+    # def __init__(self, *args, **kwargs):
+    #     super(CreateShiftForm, self).__init__(*args, **kwargs)
+    #     self.start_time.choices = self.update_choices()
 
-    def update_choices(self):
-        current_app.logger.info(self.date.data)
-        return self.center.get_shifts_blocks_avalaible(self.date.data)
