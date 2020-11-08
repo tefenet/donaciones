@@ -106,14 +106,13 @@ def create_app(environment="production"):
     app.add_url_rule("/centros", "api_center_create", api_center.create, methods=["POST"])
 
 
-    #app.add_url_rule("/centros/<int:centro_id>", "centros", api.show)
+    app.add_url_rule("/centros/<int:centro_id>", "centros", api_center.show)
 
-    #idealmente esta ruta deberia estar implementada mayormente en el controlador api_center
     """
+    #definicion equivalente con decorator
     @app.route('/centros/<int:centro_id>')
-        def show_centro(centro_id):
-            centro;
-            return (centro)
+    def show_centro(centro_id):
+        return 'ruta de centros/%d ' %centro_id
     """
 
     # Ruta de configuración del sistema
