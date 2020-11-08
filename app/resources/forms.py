@@ -1,18 +1,19 @@
+from datetime import date
+
+from flask import current_app
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField
 
 from wtforms import StringField, SubmitField, PasswordField, BooleanField, IntegerField, \
-    RadioField, widgets, SelectField
+    RadioField, widgets, SelectField, HiddenField
 from wtforms.ext.sqlalchemy.fields import QuerySelectField, QuerySelectMultipleField
 from wtforms.validators import ValidationError, DataRequired, Length, length, Email, EqualTo, Optional
 from wtforms.fields.html5 import EmailField, TimeField, URLField, DateField
 
-from app.models.center import CENTER_TYPES_ENUM, CENTER_TYPES
+from app.models.center import CENTER_TYPES_ENUM, CENTER_TYPES, Center
 from app.models.city import City
 from app.models.role import Role
 from app.models.user import User
-from app.models.shifts import get_shifts_blocks_avalaible
-from datetime import time, date
 
 
 class LoginForm(FlaskForm):
@@ -134,11 +135,20 @@ class CreateCenterForm(FlaskForm):
 
 
 class CreateShiftForm(FlaskForm):
+
+    center = HiddenField('center', default=Center())
     # shifts_blocks = get_shifts_blocks_avalaible(1, date1=date(2020, 11, 3))
     donor_email = StringField('Email Donante', validators=[DataRequired("El email es obligatorio"), Length(max=55)])
     donor_phone = StringField('Telefono Donante',
                               validators=[DataRequired("El telefono es obligatorio"), Length(max=55)])
-    start_time = SelectField("Horario(Bloques de 30 min)", choices=[], coerce=str)
-    date = DateField("Día", validators=[DataRequired("El día es obligatorio")], render_kw={"readonly": True})
+    date = DateField("Día", validators=[DataRequired("El día es obligatorio")])
+    start_time = QuerySelectField("Horario", query_factory=[], get_label='start_time')
 
-    # date = DateField('Día', DataRequired())
+    def __init__(self, center, *args, **kwargs):
+        super(CreateShiftForm, self).__init__(*args, **kwargs)
+        self.center = center
+        self.start_time.query_factory = self.update_choices
+
+    def update_choices(self):
+        current_app.logger.info(self.date.data)
+        return self.center.get_shifts_blocks_avalaible(self.date.data)

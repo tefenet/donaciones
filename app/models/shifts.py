@@ -1,34 +1,9 @@
-from app.db import Base
+from datetime import datetime, date, timedelta
+
+from flask import app, current_app as ap
 from sqlalchemy import Column, Integer, ForeignKey, String, Time, Date
-
-from app.models.center import Center
-from datetime import datetime, date, timedelta, time
-
-shift_time_blocks = [time(9), time(9, 30), time(10), time(10, 30), time(11), time(11, 30), time(12), time(12, 30),
-                     time(13), time(13, 30), time(14), time(14, 30), time(15), time(15, 30)]
-
-
-def shift_time_block(center):
-    shifts = [center.opening]
-
-    def fo(t):
-        return (datetime.datetime(1, 1, 1, t.hour, t.minute) + timedelta(minutes=30)).time()
-
-    while shifts[-1] != center.closing:
-        shifts.append(fo(shifts[-1]))
-    return shifts
-
-def get_shifts_blocks_avalaible(center_id, date1=date.today()):
-    """Retorna los bloques de horario disponibles para el día date1, para un centro dado"""
-
-    center = Center.get_by_id(center_id)
-    if center is None:
-        raise ValueError("Error al obtener el centro id={}".format(center_id))
-    shifts = center.get_shifts_by_date(date1)
-    if shifts:
-        not_avalaible = list(map(lambda s: (s.start_time if s.start_time in shift_time_blocks else None), shifts))
-        return [t for t in shift_time_blocks if t not in not_avalaible]  # shift_time_blocks - not_avalaible
-    return shift_time_blocks
+from app.db import Base
+# from app.models.center import Center
 
 
 class Shifts(Base):
@@ -41,17 +16,42 @@ class Shifts(Base):
     date = Column(Date, nullable=False)
     center_id = Column(Integer, ForeignKey('centers.id'))
 
-    def __init__(self, donor_email, donor_phone, start_time, end_time, date, center_id):
+    def __init__(self, donor_email=None, donor_phone=None, start_time=None, end_time=None, shift_date=None, center_id=None):
         self.donor_email = donor_email
         self.donor_phone = donor_phone
         self.start_time = start_time
         self.end_time = end_time
-        self.date = date
+        self.date = shift_date
         self.center_id = center_id
 
     def __repr__(self):
-        return "<Shift(id='{}', start_time='{}', end_time='{}', center={})'>".format(self.id, self.start_time,
-                                                                                     self.end_time, self.center.name)
+        return "<Shift(id='{}', start_time='{}', end_time='{}', center_id={})'>".format(self.id, self.start_time,
+                                                                                     self.end_time, self.center_id)
+
+    @classmethod
+    def available_shifts(cls, center, shifts=[]):
+        ap.logger.info('macana')
+        if shifts:
+            ap.logger.info('mocono')
+            start_not_available = list(map(lambda s: s.start_time, shifts))
+            return list(filter(lambda sh: sh.start_time not in start_not_available, cls.shift_time_block(center)))
+            # not_avalaible = list(
+            #     map(lambda s: (s.start_time if s.start_time in cls.shift_time_block(center) else None), shifts))
+            # return [t for t in cls.shift_time_block(center) if
+            #         t not in not_avalaible]  # shift_time_blocks - not_avalaible
+        return cls.shift_time_block(center)
+
+    @classmethod
+    def shift_time_block(cls, center):
+
+        shifts = [Shifts(start_time=center.opening)]
+
+        def add_30_minutes(t):
+            return (datetime(1, 1, 1, t.hour, t.minute) + timedelta(minutes=30)).time()
+
+        while shifts[-1].start_time < center.closing:
+            shifts.append(Shifts(start_time=add_30_minutes(shifts[-1].start_time)))
+        return shifts[:-1]
 
     @classmethod
     def all(cls):
@@ -61,18 +61,18 @@ class Shifts(Base):
     def get_by_id(cls, shift_id):
         return cls.query.get(shift_id)
 
-    @classmethod
-    def search_by_center_name(cls, center_name):
-        """Este método devuelve una lista con todos los turnos pertenecientes a un centro 'center_name'
-        Si no se encuentran turnos devuelve una lista vacía"""
-        return cls.query.filter(Center.name == center_name).all()
+    # @classmethod
+    # def search_by_center_name(cls, center_name):
+    #     """Este método devuelve una lista con todos los turnos pertenecientes a un centro 'center_name'
+    #     Si no se encuentran turnos devuelve una lista vacía"""
+    #     return cls.query.filter(Center.name == center_name).all()
 
-    @classmethod
-    def search_by_center_name_like(cls, search_name):
-        """Este método devuelve una lista con todos los turnos pertenecientes a un centro, o centros que
-        contengan 'search_name' en su nombre. Si no se encuentran turnos devuelve una lista vacía"""
-
-        return cls.query.filter(Center.name.like("%{}%".format(search_name))).all()
+    # @classmethod
+    # def search_by_center_name_like(cls, search_name):
+    #     """Este método devuelve una lista con todos los turnos pertenecientes a un centro, o centros que
+    #     contengan 'search_name' en su nombre. Si no se encuentran turnos devuelve una lista vacía"""
+    #
+    #     return cls.query.filter(Center.name.like("%{}%".format(search_name))).all()
 
     @classmethod
     def search_by_center_id(cls, center_id):
@@ -94,7 +94,7 @@ class Shifts(Base):
     @classmethod
     def query_center_name(cls, center_name):
         """Este método devuelve una Shift.query con todos los turnos pertenecientes a una persona con email 'donor_email'"""
-        return cls.query.filter(Center.name == center_name)
+        return cls.query.filter(cls.center.name == center_name)
 
     @classmethod
     def get_shifts_between(cls, date1=None, date2=None):
@@ -132,7 +132,7 @@ class Shifts(Base):
             'start_time': self.start_time.__str__(),
             'end_time': self.end_time.__str__(),
             'date': self.date.__str__(),
-            'center': self.center.name,
+            'center_id': self.center_id,
         }
 
     # def serialize(self):

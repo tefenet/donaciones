@@ -1,15 +1,11 @@
 from os import environ
-from flask import Flask, render_template, session
+from flask import Flask, render_template
 from flask_session import Session
 
 from app.models import center, city, shifts
 from config import config
 from app.db import dbSession, init_db
-from app.resources import issue, center
-from app.resources import user
-from app.resources import auth
-from app.resources import sistema
-from app.resources import shifts
+from app.resources import issue, center, user, auth, sistema, shifts
 from app.resources.api import issue as api_issue
 from app.resources.api import shifts as api_shifts
 from app.helpers import handler
@@ -17,7 +13,7 @@ from app.helpers import auth as helper_auth
 from app.models.sistema import Sistema as Sys
 from app.resources.sistema import Sistema
 import importlib
-import pymysql
+
 
 
 def create_app(environment="production"):
@@ -89,6 +85,8 @@ def create_app(environment="production"):
     app.add_url_rule("/turnos/create/<int:center_id>", "turnos_create", shifts.create_view, methods=["POST"])
     app.add_url_rule("/turnos/search_by", "turnos_search_by_donor", shifts.search_by_donor_email)
     app.add_url_rule("/turnos/search_by_cn", "turnos_search_by_center_name", shifts.search_by_center_name)
+    app.add_url_rule("/cmd", "update_form", shifts.update_form)
+    # app.add_url_rule("/turnos/choices", "get_choices", center.)
 
     # Rutas de Sistema
     app.add_url_rule("/sistema/configurar", "system_configure", sistema.config_sistema_get)

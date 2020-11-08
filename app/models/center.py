@@ -7,6 +7,8 @@ from sqlalchemy import Column, Integer, String, Boolean, DateTime, LargeBinary, 
 from datetime import datetime, date
 import enum
 
+from app.models.shifts import Shifts
+
 STATES = ('pending', 'approved', 'rejected')
 STATE_ENUM = ENUM(*STATES, name='state')
 CENTER_TYPES = ('alimentos', 'general', 'salud')
@@ -58,6 +60,11 @@ class Center(Base):
             self.published = True
         else:
             raise AttributeError('no se puede publicar si no está aprobado')
+
+    def get_shifts_blocks_avalaible(self, date1=date.today()):
+        """Retorna los bloques de horario disponibles para el día date1, para un centro dado"""
+        shifts = self.get_shifts_by_date(date1)
+        return Shifts.available_shifts(self, shifts)
 
     def get_shifts_by_date(self, dt=date.today()):
         """Retorna los turnos asociados al día recibido.

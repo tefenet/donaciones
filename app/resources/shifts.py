@@ -1,32 +1,18 @@
-from flask import redirect, render_template, request, url_for, session, abort, flash, current_app as app
-from app.db import dbSession
-from app.models.sistema import Sistema
-from app.models.shifts import Shifts
-from app.models.center import Center
-from app.helpers.auth import login_required, restricted, is_not_admin
-from app.helpers.handler import display_errors
-from app.resources.forms import CreateShiftForm
-from werkzeug.exceptions import BadRequestKeyError
-from pymysql import escape_string as thwart
-from sqlalchemy.exc import IntegrityError
-from app.helpers.pagination import paginate
 from datetime import datetime, timedelta, date, time
 
-shift_time_blocks = [time(9), time(9, 30), time(10), time(10, 30), time(11), time(11, 30), time(12), time(12, 30),
-                     time(13), time(13, 30), time(14), time(14, 30), time(15), time(15, 30)]
+from flask import redirect, render_template, request, url_for, flash, current_app as app
+from flask.json import jsonify
+from pymysql import escape_string as thwart
+from werkzeug.exceptions import BadRequestKeyError
 
-
-def get_shifts_blocks_avalaible(center_id, date1=date.today()):
-    """Retorna los bloques de horario disponibles para el día date1, para un centro dado"""
-
-    center = Center.get_by_id(center_id)
-    if center is None:
-        raise ValueError("Error al obtener el centro id={}".format(center_id))
-    shifts = center.get_shifts_by_date(date1)
-    if shifts:
-        not_avalaible = list(map(lambda s: (s.start_time if s.start_time in shift_time_blocks else None), shifts))
-        return [t for t in shift_time_blocks if t not in not_avalaible]  # shift_time_blocks - not_avalaible
-    return shift_time_blocks
+from app.db import dbSession
+from app.helpers.auth import restricted
+from app.helpers.handler import display_errors
+from app.helpers.pagination import paginate
+from app.models.center import Center
+from app.models.shifts import Shifts
+from app.models.sistema import Sistema
+from app.resources.forms import CreateShiftForm
 
 
 def shift_avalaible(start_time, shifts_day):
@@ -55,7 +41,7 @@ def create_shift(params):
             center = params['center']
             end_time = get_end_time(params['start_time'])
             shift = Shifts(donor_email=params['donor_email'], donor_phone=params['donor_phone'],
-                           start_time=params['start_time'], end_time=end_time, date=params['date'],
+                           start_time=params['start_time'], end_time=end_time, shift_date=params['date'],
                            center_id=params['center'].id)
 
             shifts_day = center.get_shifts_by_date(params['date'])
@@ -77,13 +63,14 @@ def create_shift(params):
 @restricted(perm='user_new')
 def new_view(center_id, date1=date.today()):
     center = Center.get_by_id(center_id)
-    # date1 = date(2020, 11, 3)
+    date1 = date(2020, 11, 3)
     if center:
-        form = CreateShiftForm()
-        form.date.data = date1
+        form = CreateShiftForm(center=center)
+        form.center = center
+        # form.date.data = date1
         # choices_blocks = list(map(lambda d: (i, str(d)), get_shifts_blocks_avalaible(center_id, date1)))
         # choices_blocks = [(i + 1, str(d)) for i, d in enumerate(get_shifts_blocks_avalaible(center_id, date1))]
-        form.start_time.choices = get_shifts_blocks_avalaible(center_id, date1)
+
         return render_template("shifts/new.html", form=form, center=center, shift_date=date1)
     flash("Error al obtener el centro id={}".format(center_id))
     return redirect(url_for("turnos_index"))
@@ -93,26 +80,31 @@ def new_view(center_id, date1=date.today()):
 def create_view(center_id):
     """Recibe el id del centro al que pertenece el turno. Crea un turno siempre
     y cuando haya disponibilidad en el día elegido."""
-
+    date1 = date(2020, 11, 3)
     center = Center.get_by_id(center_id)
-
-    form = CreateShiftForm(request.form)
+    form = CreateShiftForm(center=center)
+    form.center = center
     date1 = form.date.data
-    form.start_time.choices = get_shifts_blocks_avalaible(center_id, date1)
-
+    # form['start_time'] = QuerySelectField("Horario",
+    #                                       query_factory=center.data.get_shifts_blocks_avalaible(form.date.data))
+    # form.start_time.choices = center.get_shifts_blocks_avalaible(date1)
+    app.logger.info(form.start_time.data)
     if form.validate() and center:
-        start_time = datetime.strptime(form.start_time.data, '%H:%M:%S').time()
+        app.logger.info('form')
+        start_time = form.start_time.data.start_time
         params = {'donor_email': thwart(form.donor_email.data), 'donor_phone': thwart(form.donor_phone.data),
                   'start_time': start_time, 'date': date1, 'center': center}
         try:
             create_shift(params)
             flash("Turno agregado exitosamente", "success")
         except ValueError as err:
+            app.logger.info(params)
             flash(err, "danger")
 
     if not center:
         flash("Error al obtener el Centro con ID {}".format(center_id), "success")
     if form.errors:
+        app.logger.info('por aqui pasó el aguila')
         display_errors(form.errors)
         return redirect(url_for("turnos_new", center_id=center_id))
 
@@ -187,3 +179,10 @@ def search_by_center_name():
         page = 1
         pagination = search_by_center_name_paginated(center_name, page)
     return render_template("shifts/index.html", pagination=pagination, shifts=True, center_name=center_name)
+
+
+def update_form():
+    form_date = request.args['date']
+    center = Center.get_by_id(request.args['center_id'])
+    d=datetime.strptime(form_date, "%Y-%m-%d").date()
+    return jsonify(list(map(lambda s: s.serialize(), center.get_shifts_blocks_avalaible(d))))
