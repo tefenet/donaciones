@@ -20,11 +20,6 @@ def shift_avalaible(start_time, shifts_day):
     return list(filter(lambda s: s.start_time == start_time, shifts_day))
 
 
-def valid_start_time(start_time):
-    """Chequeo que el horario del turno pertenezca a un horario válido"""
-    return True if (time(9, 00) <= start_time <= time(15, 30)) else False
-
-
 def get_end_time(start_time):
     t1 = datetime.strptime(str(start_time), '%H:%M:%S')
     t2 = datetime.strptime(str(time(0, 30)), '%H:%M:%S')
@@ -33,30 +28,20 @@ def get_end_time(start_time):
 
 
 # @restricted(perm='shifts_new')
-def create_shift(params):
-    """Recibe center, donor_email, donor_phone, start_time, date.
-    Retorna Boolean."""
-    try:
-        if valid_start_time(params['start_time']):
-            center = params['center']
-            end_time = get_end_time(params['start_time'])
-            shift = Shifts(donor_email=params['donor_email'], donor_phone=params['donor_phone'],
-                           start_time=params['start_time'], end_time=end_time, shift_date=params['date'],
-                           center_id=params['center'].id)
-
-            shifts_day = center.get_shifts_by_date(params['date'])
-            if shifts_day:
-                app.logger.info(shifts_day)
-                if shift_avalaible(shift.start_time, shifts_day):
-                    raise ValueError("Error: turno no disponible")
-
-            dbSession.add(shift)
-            dbSession.commit()
-            return True
+def create_shift(shift):
+    """recibe un turno y lo valida antes de persistirlo."""
+    center = Center.get_by_id(shift.center_id)
+    if not center:
+        flash("Error al obtener el Centro con ID {}".format(shift.center_id), "success")
+    if center.valid_start_time(shift.start_time):
+        available_start = center.get_shifts_blocks_avalaible(shift.date)
+        if shift.start_time not in available_start:
+            raise ValueError("Error: turno no disponible")
+        shift.end_time = get_end_time(shift.start_time)
+        dbSession.add(shift)
+        dbSession.commit()
+    else:
         raise ValueError("Franja horaria de turno no válida. El turno debe respetar la franja horaria de 9hs a 16hs.")
-
-    except KeyError as err:
-        raise ValueError("Error al obtener el parametro {}".format(err))
 
 
 #####
@@ -66,11 +51,6 @@ def new_view(center_id):
     center = Center.get_by_id(center_id)
     if center:
         form = CreateShiftForm()
-
-        # form.date.data = date1
-        # choices_blocks = list(map(lambda d: (i, str(d)), get_shifts_blocks_avalaible(center_id, date1)))
-        # choices_blocks = [(i + 1, str(d)) for i, d in enumerate(get_shifts_blocks_avalaible(center_id, date1))]
-
         return render_template("shifts/new.html", form=form, center=center)
     flash("Error al obtener el centro id={}".format(center_id))
     return redirect(url_for("turnos_index"))
@@ -80,32 +60,19 @@ def new_view(center_id):
 def create_view(center_id):
     """Recibe el id del centro al que pertenece el turno. Crea un turno siempre
     y cuando haya disponibilidad en el día elegido."""
-    date1 = date(2020, 11, 3)
-    center = Center.get_by_id(center_id)
     form = CreateShiftForm()
-    date1 = form.date.data
-    # form['start_time'] = QuerySelectField("Horario",
-    #                                       query_factory=center.data.get_shifts_blocks_avalaible(form.date.data))
-    # form.start_time.choices = center.get_shifts_blocks_avalaible(date1)
-
-    if form.validate() and center:
-        start_time = datetime.strptime(form.start_time.data, '%H:%M:%S').time()
-        params = {'donor_email': thwart(form.donor_email.data), 'donor_phone': thwart(form.donor_phone.data),
-                  'start_time': start_time, 'date': date1, 'center': center}
+    if form.validate():
+        shift = Shifts()
+        form.populate_obj(shift)
+        shift.center_id = center_id
         try:
-            create_shift(params)
+            create_shift(shift)
             flash("Turno agregado exitosamente", "success")
         except ValueError as err:
-            app.logger.info(params)
             flash(err, "danger")
-
-    if not center:
-        flash("Error al obtener el Centro con ID {}".format(center_id), "success")
     if form.errors:
-        app.logger.info('por aqui pasó el aguila')
         display_errors(form.errors)
         return redirect(url_for("turnos_new", center_id=center_id))
-
     return redirect(url_for("turnos_index", page=1))
 
 
@@ -137,12 +104,11 @@ def search_by_donor_email():
     """Busca turnos por email donante.
     Recibe email, que es un string, devuelve una lista de turnos(Shifts) """
     try:
-        donor_email = request.args['donor_email']
+        donor_email = thwart(request.args['donor_email'])
         page = int(request.args['page'])
     except (BadRequestKeyError, ValueError) as e:
         flash("ERROR: {}".format(e), e)
         return redirect(url_for('turnos_index'))
-
     try:
         pagination = search_by_donor_email_paginated(donor_email, page)
     except AttributeError:  # raised when page < 1
@@ -164,12 +130,11 @@ def search_by_center_name():
     Recibe center_name(string), y numero de pagina, devuelve un template de lista de turnos(Shifts)"""
     app.logger.info(request.args)
     try:
-        center_name = request.args['center_name']
+        center_name = thwart(request.args['center_name'])
         page = int(request.args['page'])
     except (BadRequestKeyError, ValueError) as e:
         flash("ERROR: {}".format(e), e)
         return redirect(url_for('turnos_index'))
-
     c = Center.get_by_name(center_name)
     try:
         pagination = search_by_center_name_paginated(c, page)
@@ -183,7 +148,6 @@ def update_form():
     form_date = request.args['date']
     center = Center.get_by_id(request.args['center_id'])
     d = datetime.strptime(form_date, "%Y-%m-%d").date()
-    app.logger.info("asadasd %s",center.get_shifts_blocks_avalaible(d))
     return jsonify(list(map(lambda t: t.isoformat(), center.get_shifts_blocks_avalaible(d))))
 
 

@@ -1,4 +1,4 @@
-from datetime import date, time
+from datetime import date, time, datetime
 
 from flask import current_app
 from flask_wtf import FlaskForm
@@ -132,18 +132,33 @@ class CreateCenterForm(FlaskForm):
 
 
 shifts_blocks = [time(9), time(9, 30), time(10), time(10, 30), time(11), time(11, 30), time(12), time(12, 30),
-    time(13), time(13, 30), time(14), time(14, 30), time(15), time(15, 30)]
+                 time(13), time(13, 30), time(14), time(14, 30), time(15), time(15, 30)]
 
 
 class CreateShiftForm(FlaskForm):
-
-    donor_email = StringField('Email Donante', validators=[DataRequired("El email es obligatorio"), Length(max=55)])
+    donor_email = EmailField('Email Donante', validators=[DataRequired("El email es obligatorio"), Length(max=55),
+                                                          Email(message="Ingresá un correo electronico válido")])
     donor_phone = StringField('Telefono Donante',
                               validators=[DataRequired("El telefono es obligatorio"), Length(max=55)])
     date = DateField("Día", validators=[DataRequired("El día es obligatorio")])
     start_time = SelectField("Horario", choices=shifts_blocks)
 
-    # def __init__(self, *args, **kwargs):
-    #     super(CreateShiftForm, self).__init__(*args, **kwargs)
-    #     self.start_time.choices = self.update_choices()
+    def validate_start_time(self, start_time):
+        try:
+            start = datetime.strptime(start_time.data, '%H:%M:%S').time()
+        except ValueError as e:
+            raise ValidationError(e, ' seleccione un horario válido')
+        if self.date.data == date.today() and start < datetime.now().time():
+            raise ValidationError('seleccione un horario válido')
+        self.start_time.data = start
 
+    @classmethod
+    def validate_date(cls, form, dat):
+        if dat.data < date.today():
+            raise ValidationError('seleccione una fecha válida')
+
+    @classmethod
+    def validate_donor_phone(cls, form, phone):
+        for ch in phone.data:
+            if not ch.isdigit():
+                raise ValidationError('al ingresar el numero de telefono, utilice solo con digitos, sin espacios ni guiones')

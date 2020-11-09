@@ -33,6 +33,8 @@ class Shifts(Base):
 
     @classmethod
     def available_shifts(cls, center, shifts=[]):
+        """Este método devuelve una lista con todos los horarios de turnos disponibles de un centro
+            recibe los turnos reservados de un dia para un centro x, y recibe el centro x"""
         if shifts:
             start_not_available = list(map(lambda s: s.start_time, shifts))
             return list(filter(lambda sh: sh not in start_not_available, cls.shift_time_block(center)))
@@ -40,12 +42,12 @@ class Shifts(Base):
 
     @classmethod
     def shift_time_block(cls, center):
-
+        """Este método devuelve una lista con todos los horarios de turnos por dia de un centro
+        de acuerdo a su horario de apertura y cierre"""
         shifts = [center.opening]
 
         def add_30_minutes(t):
             return (datetime(1, 1, 1, t.hour, t.minute) + timedelta(minutes=30)).time()
-
         while shifts[-1] < center.closing:
             shifts.append(add_30_minutes(shifts[-1]))
         return shifts[:-1]

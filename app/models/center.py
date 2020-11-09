@@ -72,6 +72,10 @@ class Center(Base):
 
         return list(filter(lambda s: s.date == dt, self.shifts))
 
+    def valid_start_time(self, start_time):
+        """Chequeo que el horario del turno pertenezca a un horario válido"""
+        return self.opening <= start_time < self.closing
+
     @classmethod
     def delete_by_id(cls, id):
         """Elimina un centro de la base de datos de forma permanente"""
