@@ -84,7 +84,8 @@ def create_app(environment="production"):
     app.add_url_rule("/turnos/create/<int:center_id>", "turnos_create", shifts.create_view, methods=["POST"])
     app.add_url_rule("/turnos/search_by", "turnos_search_by_donor", shifts.search_by_donor_email)
     app.add_url_rule("/turnos/search_by_cn", "turnos_search_by_center_name", shifts.search_by_center_name)
-    app.add_url_rule("/turnos/deleteById", "turnos_delete_by_id", shifts.delete_shift, methods=["POST"])  # recibe id(int)
+    app.add_url_rule("/turnos/deleteById", "turnos_delete_by_id", shifts.delete_shift,
+                     methods=["POST"])  # recibe id(int)
     app.add_url_rule("/cmd", "update_form", shifts.update_form)
     # app.add_url_rule("/turnos/choices", "get_choices", center.)
 
@@ -112,6 +113,8 @@ def create_app(environment="production"):
 
     # api shifts
     app.add_url_rule("/api/v1.0/turnos", "api_shifts_index", api_shifts.index)
+    app.add_url_rule("/api/v1.0/centros/<int:id>/", "api_shifts_avalaible_by_date", api_shifts.avalaible_by_date)
+    app.add_url_rule("/api/v1.0/centros/<int:id>/reserva", "api_shifts_new", api_shifts.create, methods=["POST"])
 
     # Ruta de configuración del sistema
     app.add_url_rule("/sistema/config-sistema", 'config_sistema_get', sistema.config_sistema_get)
