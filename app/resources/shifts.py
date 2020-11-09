@@ -46,8 +46,9 @@ def create_shift(params):
 
             shifts_day = center.get_shifts_by_date(params['date'])
             if shifts_day:
+                app.logger.info(shifts_day)
                 if shift_avalaible(shift.start_time, shifts_day):
-                    raise ValueError("Error turno no disponible")
+                    raise ValueError("Error: turno no disponible")
 
             dbSession.add(shift)
             dbSession.commit()
@@ -61,9 +62,8 @@ def create_shift(params):
 #####
 # Create
 @restricted(perm='shifts_new')
-def new_view(center_id, date1=date.today()):
+def new_view(center_id):
     center = Center.get_by_id(center_id)
-    date1 = date(2020, 11, 3)
     if center:
         form = CreateShiftForm()
 
@@ -71,7 +71,7 @@ def new_view(center_id, date1=date.today()):
         # choices_blocks = list(map(lambda d: (i, str(d)), get_shifts_blocks_avalaible(center_id, date1)))
         # choices_blocks = [(i + 1, str(d)) for i, d in enumerate(get_shifts_blocks_avalaible(center_id, date1))]
 
-        return render_template("shifts/new.html", form=form, center=center, shift_date=date1)
+        return render_template("shifts/new.html", form=form, center=center)
     flash("Error al obtener el centro id={}".format(center_id))
     return redirect(url_for("turnos_index"))
 
@@ -183,7 +183,7 @@ def update_form():
     form_date = request.args['date']
     center = Center.get_by_id(request.args['center_id'])
     d = datetime.strptime(form_date, "%Y-%m-%d").date()
-    app.logger.info(center.get_shifts_blocks_avalaible(d))
+    app.logger.info("asadasd %s",center.get_shifts_blocks_avalaible(d))
     return jsonify(list(map(lambda t: t.isoformat(), center.get_shifts_blocks_avalaible(d))))
 
 
