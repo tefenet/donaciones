@@ -60,7 +60,7 @@ def create_shift(params):
 
 #####
 # Create
-@restricted(perm='user_new')
+@restricted(perm='shifts_new')
 def new_view(center_id, date1=date.today()):
     center = Center.get_by_id(center_id)
     date1 = date(2020, 11, 3)
@@ -118,7 +118,7 @@ def index(date_start=date.today(), date_end=(datetime.now() + timedelta(2)).date
     except (BadRequestKeyError, ValueError):
         page = 1
     try:
-        res = paginate(Shifts.query_shifts_between(date_start, date_end), page, sys.cant_por_pagina)  # check User.query
+        res = paginate(Shifts.query_shifts_between(date_start, date_end), page, sys.cant_por_pagina)
     except AttributeError as err:  # AttributeError raise when page<1
         app.logger.info(err)
         return redirect(url_for('turnos_index'))
@@ -126,7 +126,7 @@ def index(date_start=date.today(), date_end=(datetime.now() + timedelta(2)).date
 
 
 def search_by_donor_email_paginated(donor_email, page=1):
-    """Retorna una paginación con los usuarios que contengan username en su nombre de usuario"""
+    """Retorna una paginación con los turnos que contengan donor_email"""
     sys = Sistema.get_sistema()
     query = Shifts.query_donor_email(donor_email)
     return paginate(query, page, sys.cant_por_pagina)
@@ -185,3 +185,25 @@ def update_form():
     d = datetime.strptime(form_date, "%Y-%m-%d").date()
     app.logger.info(center.get_shifts_blocks_avalaible(d))
     return jsonify(list(map(lambda t: t.isoformat(), center.get_shifts_blocks_avalaible(d))))
+
+
+@restricted(perm='shifts_destroy')
+def __delete(shift):
+    """Elimina un turno del sistema de manera definitiva.
+    Retorna True si pudo eliminar el turno, caso contrario retorna false"""
+    if Shifts.delete_by_id(shift.id):
+        dbSession.commit()
+    return True
+
+
+@restricted(perm='shifts_destroy')
+def delete_shift():
+    try:
+        shift_id = request.args['object_id']
+        s = Shifts.get_by_id(shift_id)
+        if __delete(s):
+            flash("Turno id {} eliminado exitosamente".format(shift_id), "success")
+    except BadRequestKeyError:
+        flash("ERROR: shift_id no recibido", "danger")
+        return redirect(url_for('turnos_index'))
+    return redirect(url_for('turnos_index'))

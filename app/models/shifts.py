@@ -121,6 +121,11 @@ class Shifts(Base):
 
         return cls.query.filter(cls.date >= date1).filter(cls.date <= date2)
 
+    @classmethod
+    def delete_by_id(cls, shift_id):
+        """Elimina un turno de la base de datos de forma permanente"""
+        return cls.query.filter(cls.id == shift_id).delete()
+
     def serialize(self):
         return {
             'id': self.id,

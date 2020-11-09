@@ -84,6 +84,7 @@ def create_app(environment="production"):
     app.add_url_rule("/turnos/create/<int:center_id>", "turnos_create", shifts.create_view, methods=["POST"])
     app.add_url_rule("/turnos/search_by", "turnos_search_by_donor", shifts.search_by_donor_email)
     app.add_url_rule("/turnos/search_by_cn", "turnos_search_by_center_name", shifts.search_by_center_name)
+    app.add_url_rule("/turnos/deleteById", "turnos_delete_by_id", shifts.delete_shift, methods=["POST"])  # recibe id(int)
     app.add_url_rule("/cmd", "update_form", shifts.update_form)
     # app.add_url_rule("/turnos/choices", "get_choices", center.)
 
