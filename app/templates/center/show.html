@@ -1,53 +1,65 @@
 {% macro set(center,index) -%}
-<button class="btn btn-xs {{'btn-primary' if center.published else 'btn-dark'}}" data-target="#modalShowCenter{{index}}" data-toggle="modal"
-        type="button" >{{center.name}}
-</button>
-<div id="show-center-{{index}}">
-    <div class="modal fade" id="modalShowCenter{{index}}" role="dialog">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header" style="background-color:{{'darkseagreen' if center.published else 'cornsilk'}}">Centro <b style="color:#27279f">{{center.name}}</b> en <b style="color:#880202">{{center.city.name}}</b>
-                </div>
-                <div class="modal-body">
-                    <section style="display:table">
-                        <b>{{ 'dirección : ' + center.address }}</b><br/>
-                        <b>{{ 'Teléfono : ' + center.phone }}</b><br/>
-                        <b>{{ 'e-mail : ' + center.email }}</b><br/>
-                        <b>{{ 'sitio web :' + center.web_site }}</b><br/>
-                        <b>{{ 'horario de apertura :' + center.opening.strftime('%H:%M') }}</b><br/>
-                        <b>{{ 'horario de cierre :' + center.closing.strftime('%H:%M') }}</b><br/>
-                        <b>{{ 'tipo :' + center.type }}</b><br/>
-                        <b>{{ 'coordenadas :' + center.geo_location }}</b><br/>
-                        <b>protocolo :</b>
-                        {% if center.protocol %}
-                        <form action="{{url_for('get_protocol', object_id=center.id)}}">
-                            <button type="submit">download</button>
-                        </form><br/>
-                        {% else %}
-                        <b> no disponible</b>
+    <button class="btn btn-xs {{ 'btn-primary' if center.published else 'btn-dark' }}"
+            data-target="#modalShowCenter{{ index }}" data-toggle="modal"
+            type="button">{{ center.name }}
+    </button>
+    <div id="show-center-{{ index }}">
+        <div class="modal fade" id="modalShowCenter{{ index }}" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header"
+                         style="background-color:{{ 'darkseagreen' if center.published else 'cornsilk' }}">Centro <b
+                            style="color:#27279f">{{ center.name }}</b> en <b
+                            style="color:#880202">{{ center.city.name }}</b>
+                    </div>
+                    <div class="modal-body">
+                        <section style="display:table">
+                            <b>{{ 'dirección : ' + center.address }}</b><br/>
+                            <b>{{ 'Teléfono : ' + center.phone }}</b><br/>
+                            <b>{{ 'e-mail : ' + center.email }}</b><br/>
+                            <b>{{ 'sitio web :' + center.web_site }}</b><br/>
+                            <b>{{ 'horario de apertura :' + center.opening.strftime('%H:%M') }}</b><br/>
+                            <b>{{ 'horario de cierre :' + center.closing.strftime('%H:%M') }}</b><br/>
+                            <b>{{ 'tipo :' + center.type }}</b><br/>
+                            <b>{{ 'coordenadas :' + center.geo_location }}</b><br/>
+                            <b>protocolo :</b>
+                            {% if center.protocol %}
+                                <form action="{{ url_for('get_protocol', object_id=center.id) }}">
+                                    <button type="submit">download</button>
+                                </form><br/>
+                            {% else %}
+                                <b> no disponible</b>
+                            {% endif %}
+                        </section>
+                        <!--    published = Column(Boolean(), default=False)-->
+                    </div>
+                    <div class="modal-footer">
+                        {% if has_perm('shifts_search') %}
+                            <a class="btn btn-danger" href="{{ url_for('turnos_search_by_center_name',
+                        center_name=center.name, page=1) }}">Ver turnos</a>
                         {% endif %}
-                    </section>
-                    <!--    published = Column(Boolean(), default=False)-->
-                </div>
-                <div class="modal-footer">
-                    {% if center.state!='rejected'%}
-                    <form action="{{url_for('center_reject', center_id=center.id)}}" method="post">
-                        <button class="btn btn-danger" type="submit">Rechazar</button>
-                    </form>
-                    {% endif %}
-                    {% if center.state!='approved'%}
-                    <form action="{{url_for('center_approve', center_id=center.id)}}" method="post">
-                        <button class="btn btn-success" type="submit">Aprobar</button>
-                    </form>
-                    {% endif %}
-                    {% if center.state!='pending'%}
-                    <form action="{{url_for('center_review', center_id=center.id)}}" method="post">
-                        <button class="btn btn-warning" type="submit">Revisar</button>
-                    </form>
-                    {% endif %}
+                        {% if has_perm('shifts_new') %}
+                            <a class="btn btn-danger" href="{{ url_for('turnos_new', center_id=center.id) }}">Reservar
+                                turno</a>
+                        {% endif %}
+                        {% if center.state!='rejected' %}
+                            <form action="{{ url_for('center_reject', center_id=center.id) }}" method="post">
+                                <button class="btn btn-danger" type="submit">Rechazar</button>
+                            </form>
+                        {% endif %}
+                        {% if center.state!='approved' %}
+                            <form action="{{ url_for('center_approve', center_id=center.id) }}" method="post">
+                                <button class="btn btn-success" type="submit">Aprobar</button>
+                            </form>
+                        {% endif %}
+                        {% if center.state!='pending' %}
+                            <form action="{{ url_for('center_review', center_id=center.id) }}" method="post">
+                                <button class="btn btn-warning" type="submit">Revisar</button>
+                            </form>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 {%- endmacro %}
