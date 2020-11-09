@@ -4,14 +4,10 @@
     {{ super() }}
 {% endblock %}
 {% set content %}
-<div style="display:flex">
+<div style="display:flex" class="mt-4 mb-3">
     <h1 class="mx-auto">Turnos</h1>
 </div>
-<div style="display:flex">
-    <a href="{{ url_for("turnos_new", center_id=1) }}" class="link mx-auto">Nuevo</a>
-</div>
 <div class="container">
-
     <div class="card">
         <div class="card-body">
             <p class="card-description">
@@ -43,15 +39,22 @@
                                 <td>({{ shift.start_time }} - {{ shift.end_time }})</td>
                                 <td>{{ shift.date }}</td>
                                 <td>{{ shift.center.name }}</td>
+                                {% if has_perm('shifts_destroy') %}
+                                    <td>
+                                        {% import 'components/deleteButton.html' as deleteButton %}
+                                        {% set body = '¿Estás seguro que queres eliminar el turno
+                                        <b>{}</b>? Este cambios
+                                        es irreversible'.format(shift.id) %}
+                                        {% set header = 'Eliminar turno' %}
+                                        {{ deleteButton.set('turnos_delete_by_id',shift.id, header, body, loop.index ) }}
+                                    </td>
+                                {% endif %}
                             </tr>
                         {% endfor %}
                         </tbody>
                     </table>
-                    {% import 'components/pagination.html' as pag %}
-                    {% if request.path == url_for('turnos_index') or request.path == url_for('turnos_search_by_donor')
-                    or request.path == url_for('turnos_search_by_center_name') %}
-                        {{ pag.set('turnos_index',pagination) }}
-                    {% endif %}
+                    {% import 'shifts/pagination.html' as pag %}
+                    {{ pag.set('turnos_index',pagination) }}
                 </div>
             {% endif %}
         </div>

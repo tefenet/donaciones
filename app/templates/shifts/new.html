@@ -16,11 +16,18 @@
                         while (select.childNodes.length >= 1) {
                             select.removeChild(select.firstChild);
                         }
-                        for (var i = 0; i < data.length; i++) {
+                        if (data.length === 0) {
                             newOption = document.createElement('option');
-                            newOption.value = data[i];
-                            newOption.text = data[i];
+                            newOption.value = "No hay turnos disponibles";
+                            newOption.text = "No hay turnos disponibles";
                             select.appendChild(newOption);
+                        } else {
+                            for (var i = 0; i < data.length; i++) {
+                                newOption = document.createElement('option');
+                                newOption.value = data[i];
+                                newOption.text = data[i];
+                                select.appendChild(newOption);
+                            }
                         }
                         ;
                     });
@@ -40,14 +47,6 @@
 <div class="container">
     <form method=post action="{{ url_for('turnos_create', center_id=center.id) }}">
         {{ form.hidden_tag() }}
-        <div class="row">
-            <div class="col-25">
-                Centro:
-            </div>
-            <div class="col-75">
-                {{ center.name }} (id={{ center.id }})
-            </div>
-        </div>
         {% for field in form %}
             {% if field.name != "csrf_token" %}
                 <div class="row">
