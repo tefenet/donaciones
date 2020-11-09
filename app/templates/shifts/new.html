@@ -2,29 +2,30 @@
 {% block title %}Turnos{% endblock %}
 {% block head %}
     {{ super() }}
-<script type="text/javascript">
-            function cmd(e){
-                console.log(e.target.value)
-                $.get({
-                url: 'http://127.0.0.1:5000/cmd?center_id={{center.id}}',
-                data: {date:e.target.value}
-                })
+    <script type="text/javascript">
+        function cmd(e) {
+            console.log(e.target.value)
+            $.get({
+                url: '/cmd?center_id={{center.id}}',
+                data: {date: e.target.value}
+            })
                 .done(
-                function (data) {
+                    function (data) {
                         console.log(data)
-                        select=document.getElementById('start_time')
-                        while ( select.childNodes.length >= 1 ){
+                        select = document.getElementById('start_time')
+                        while (select.childNodes.length >= 1) {
                             select.removeChild(select.firstChild);
                         }
-                        for(var i=1;i<data.length;i++){
+                        for (var i = 0; i < data.length; i++) {
                             newOption = document.createElement('option');
-                            newOption.value=data[i];
-                            newOption.text=data[i];
+                            newOption.value = data[i];
+                            newOption.text = data[i];
                             select.appendChild(newOption);
-                        };
+                        }
+                        ;
                     });
-            }
-</script>
+        }
+    </script>
 {% endblock %}
 {% set content %}
 <div style="display:flex">
@@ -54,12 +55,12 @@
                         {{ field.label() }}
                     </div>
                     {% if field.id == 'date' %}
-                        <div class="col-75" >
+                        <div class="col-75">
                             {{ field(class="js-scroll-trigger", onChange="cmd(event)") }}
                         </div>
                     {% elif field.id == 'start_time' %}
-                        <div class="col-75" >
-                            {{ field(class="js-scroll-trigger", ) }}
+                        <div class="col-75">
+                            {{ field(class="js-scroll-trigger") }}
                         </div>
                     {% else %}
                         <div class="col-75">
