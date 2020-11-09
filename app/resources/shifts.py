@@ -155,8 +155,6 @@ def search_by_center_name_paginated(center_name, page=1):
     """Retorna una paginación con los turnos pertenecientes al centro 'center_name'"""
     sys = Sistema.get_sistema()
     query = Shifts.query_center_name(center_name)
-    app.logger.info(query.all())
-    app.logger.info("-------")
     return paginate(query, page, sys.cant_por_pagina)
 
 
@@ -164,6 +162,7 @@ def search_by_center_name_paginated(center_name, page=1):
 def search_by_center_name():
     """Busca turnos por nombre de centro.
     Recibe center_name(string), y numero de pagina, devuelve un template de lista de turnos(Shifts)"""
+    app.logger.info(request.args)
     try:
         center_name = request.args['center_name']
         page = int(request.args['page'])
@@ -171,11 +170,12 @@ def search_by_center_name():
         flash("ERROR: {}".format(e), e)
         return redirect(url_for('turnos_index'))
 
+    c = Center.get_by_name(center_name)
     try:
-        pagination = search_by_center_name_paginated(center_name, page)
+        pagination = search_by_center_name_paginated(c, page)
     except AttributeError:  # raised when page < 1
         page = 1
-        pagination = search_by_center_name_paginated(center_name, page)
+        pagination = search_by_center_name_paginated(c, page)
     return render_template("shifts/index.html", pagination=pagination, shifts=True, center_name=center_name)
 
 
@@ -183,4 +183,5 @@ def update_form():
     form_date = request.args['date']
     center = Center.get_by_id(request.args['center_id'])
     d = datetime.strptime(form_date, "%Y-%m-%d").date()
+    app.logger.info(center.get_shifts_blocks_avalaible(d))
     return jsonify(list(map(lambda t: t.isoformat(), center.get_shifts_blocks_avalaible(d))))

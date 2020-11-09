@@ -26,9 +26,6 @@ def paginate(query, page, page_size):
         raise AttributeError('page needs to be >= 1')
     if page_size <= 0:
         raise AttributeError('page_size needs to be >= 1')
-    print(query.all())
-    print("#######")
     items = query.limit(page_size).offset((page - 1) * page_size).all()
-    print(items)
     total = query.order_by(None).count()
     return Page(items, page, page_size, total)

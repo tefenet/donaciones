@@ -15,7 +15,6 @@ from app.resources.sistema import Sistema
 import importlib
 
 
-
 def create_app(environment="production"):
     # Configuración inicial de la app
     app = Flask(__name__)

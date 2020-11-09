@@ -83,6 +83,11 @@ class Center(Base):
         return cls.query.get(centro_id)
 
     @classmethod
+    def get_by_name(cls, center_name):
+        """Retorna el centro con id centro_id"""
+        return cls.query.filter(cls.name == center_name).first()
+
+    @classmethod
     def query_by_name(cls, name):
         return cls.query.filter(cls.name.contains(name))
 

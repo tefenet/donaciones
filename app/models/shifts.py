@@ -89,9 +89,9 @@ class Shifts(Base):
         return cls.query.filter(cls.donor_email == donor_email)
 
     @classmethod
-    def query_center_name(cls, center_name):
+    def query_center_name(cls, c):
         """Este método devuelve una Shift.query con todos los turnos pertenecientes a una persona con email 'donor_email'"""
-        return cls.query.filter(cls.center.name == center_name)
+        return cls.query.filter(cls.center == c)
 
     @classmethod
     def get_shifts_between(cls, date1=None, date2=None):
