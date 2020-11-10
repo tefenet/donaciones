@@ -112,7 +112,6 @@ def create_app(environment="production"):
     app.add_url_rule("/api/consultas", "api_issue_index", api_issue.index)
 
     # api shifts
-    app.add_url_rule("/api/v1.0/turnos", "api_shifts_index", api_shifts.index)
     app.add_url_rule("/api/v1.0/centros/<int:id>/", "api_shifts_avalaible_by_date", api_shifts.avalaible_by_date)
     app.add_url_rule("/api/v1.0/centros/<int:id>/reserva", "api_shifts_new", api_shifts.create, methods=["POST"])
 

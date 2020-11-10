@@ -130,14 +130,20 @@ class Shifts(Base):
         """Elimina un turno de la base de datos de forma permanente"""
         return cls.query.filter(cls.id == shift_id).delete()
 
+    @classmethod
+    def populate_from_api(cls, json_request):
+        return cls(donor_email=json_request['email_donante'], donor_phone=json_request['telefono_donante'],
+                   start_time=json_request['hora_inicio'], end_time=json_request['hora_fin'],
+                   shift_date=json_request['fecha'], center_id=json_request['centro_id'])
+
     def serialize(self):
         return {
             'id': self.id,
             'donor_email': self.donor_email,
             'donor_phone': self.donor_phone,
-            'start_time': self.start_time.__str__(),
-            'end_time': self.end_time.__str__(),
-            'date': self.date.__str__(),
+            'start_time': self.start_time.isoformat(),
+            'end_time': self.end_time.isoformat(),
+            'date': self.date.isoformat(),
             'center_id': self.center_id,
         }
 
@@ -168,6 +174,7 @@ def create_shift(shift, center):
         shift.end_time = get_end_time(shift.start_time)
         dbSession.add(shift)
         dbSession.commit()
+        return shift
     else:
         raise ValueError("Franja horaria de turno no válida. El turno debe respetar la franja horaria de 9hs a 16hs.")
 
@@ -188,3 +195,13 @@ def search_by_center_name_paginated(center_name, page=1):
 
 def aval_shifts(center, shifts):
     return Shifts.available_shifts(center, shifts)
+
+
+def check_end_time(start_time, end_time):
+    difference = end_time - start_time
+    seconds_in_day = 24 * 60 * 60
+    mins = divmod(difference.days * seconds_in_day + difference.seconds, 60)[0]
+    if mins != 30:
+        raise ValueError("Franja horaria de turno no válida. El turno debe ser de 30 minutos.")
+
+

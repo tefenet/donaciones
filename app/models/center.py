@@ -73,7 +73,8 @@ class Center(Base):
         return list(filter(lambda s: s.date == dt, self.shifts))
 
     def valid_start_time(self, start_time):
-        """Chequeo que el horario del turno pertenezca a un horario válido"""
+        """Chequeo que el horario del turno pertenezca a un horario válido
+        Start time debe ser un datetime object"""
         return self.opening <= start_time < self.closing
 
     @classmethod
