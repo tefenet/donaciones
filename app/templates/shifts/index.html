@@ -1,0 +1,87 @@
+{% extends "layout.html" %}
+{% block title %}Turnos{% endblock %}
+{% block head %}
+    {{ super() }}
+{% endblock %}
+{% set content %}
+<div style="display:flex" class="mt-4 mb-3">
+    <h1 class="mx-auto">Turnos</h1>
+</div>
+<div class="container">
+    <div class="card">
+        <div class="card-body">
+            <p class="card-description">
+                {% if date_start %}
+                    Lista de turnos entre <b>{{ date_start }}</b> y <b>{{ date_end }}</b>
+                {% elif donor_email %}
+                    Lista de turnos del donante {{ donor_email }}
+                {% else %}
+                    Lista de turnos del centro {{ center_name }}
+                {% endif %}
+            </p>
+            {% if shifts %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                        <tr align="center">
+                            <th>Correo</th>
+                            <th>Telefono</th>
+                            <th>Horario</th>
+                            <th>Día</th>
+                            <th>Centro</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for shift in pagination.items %}
+                            <tr align="center">
+                                <td>{{ shift.donor_email }}</td>
+                                <td>{{ shift.donor_phone }}</td>
+                                <td>({{ shift.start_time }} - {{ shift.end_time }})</td>
+                                <td>{{ shift.date }}</td>
+                                <td>{{ shift.center.name }}</td>
+                                {% if has_perm('shifts_destroy') %}
+                                    <td>
+                                        {% import 'components/deleteButton.html' as deleteButton %}
+                                        {% set body = '¿Estás seguro que queres eliminar el turno
+                                        <b>{}</b>? Este cambios
+                                        es irreversible'.format(shift.id) %}
+                                        {% set header = 'Eliminar turno' %}
+                                        {{ deleteButton.set('turnos_delete_by_id',shift.id, header, body, loop.index ) }}
+                                    </td>
+                                {% endif %}
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                    {% import 'shifts/pagination.html' as pag %}
+                    {{ pag.set('turnos_index',pagination) }}
+                </div>
+            {% endif %}
+        </div>
+        {% if has_perm('shifts_search') %}
+            <div class="m-3">
+                <h5>Buscar por correo donante </h5>
+                <form class="form-inline my-2  mr-auto  "
+                      action="{{ url_for('turnos_search_by_donor') }}">
+                    <input class="form-control mr-sm-2" type="text" id="donor_email" name="donor_email"
+                           placeholder="Email"
+                           aria-label="Email">
+                    <input id="pagee" name="page" type="hidden" value="1">
+                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Buscar</button>
+                </form>
+            </div>
+            <div class="m-3">
+                <h5>Buscar por nombre de centro </h5>
+                <form class="form-inline my-2  mr-auto  "
+                      action="{{ url_for('turnos_search_by_center_name') }}">
+                    <input class="form-control mr-sm-2" type="text" id="center_name" name="center_name"
+                           placeholder="Nombre del centro" aria-label="Nombre del centro">
+                    <input id="page" name="page" type="hidden" value="1">
+                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Buscar</button>
+                </form>
+            </div>
+        {% endif %}
+    </div>
+
+</div>
+{% endset %}

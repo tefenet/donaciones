@@ -4,8 +4,10 @@ from sqlalchemy.orm import relationship
 
 from app.db import Base, dbSession
 from sqlalchemy import Column, Integer, String, Boolean, DateTime, LargeBinary, ForeignKey, Time, Enum
-from datetime import datetime
+from datetime import datetime, date
 import enum
+
+from app.models.shifts import Shifts
 
 STATES = ('pending', 'approved', 'rejected')
 STATE_ENUM = ENUM(*STATES, name='state')
@@ -29,6 +31,7 @@ class Center(Base):
     protocol = Column(LargeBinary())
     city_id = Column(Integer, ForeignKey('city.id'))
     type = Column(CENTER_TYPES_ENUM)
+    shifts = relationship("Shifts", backref="center")
 
     def __init__(self, name=None, address=None, phone=None, email=None, opening=None, closing=None):
         self.name = name
@@ -47,7 +50,7 @@ class Center(Base):
 
     def toogle_published(self):
         if self.published:
-            self.published=False
+            self.published = False
         else:
             self.publish()
         dbSession.commit()
@@ -73,6 +76,24 @@ class Center(Base):
         self.published = False
         dbSession.commit()
 
+    def get_shifts_blocks_avalaible(self, date1=date.today()):
+        """Retorna los bloques de horario disponibles para el día date1, para un centro dado"""
+        shifts = self.get_shifts_by_date(date1)
+        return Shifts.aval_shifts(self, shifts)
+
+    def get_shifts_by_date(self, dt=date.today()):
+        """Retorna los turnos asociados al día recibido. dt debe ser datetime.date
+        Si no se recibe un día, retorna los turnos del día actual"""
+        if not type(dt) is date:
+            raise Exception("Error, la fecha debe ser un objeto datetime.date")
+        # si no es un datetime.date va a devolver una lista vacía, y se va a poder agregar un turno que ya existe.
+        return list(filter(lambda s: s.date == dt, self.shifts))
+
+    def valid_start_time(self, start_time):
+        """Chequeo que el horario del turno pertenezca a un horario válido"""
+        return self.opening <= start_time < self.closing
+
+
     @classmethod
     def delete_by_id(cls, id):
         """Elimina un centro de la base de datos de forma permanente"""
@@ -82,6 +103,11 @@ class Center(Base):
     def get_by_id(cls, centro_id):
         """Retorna el centro con id centro_id"""
         return cls.query.get(centro_id)
+
+    @classmethod
+    def get_by_name(cls, center_name):
+        """Retorna el centro con id centro_id"""
+        return cls.query.filter(cls.name == center_name).first()
 
     @classmethod
     def query_by_name(cls, name):

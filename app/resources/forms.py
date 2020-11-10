@@ -1,10 +1,11 @@
+from datetime import date, time, datetime
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed
 from wtforms import StringField, SubmitField, PasswordField, BooleanField, IntegerField, \
     RadioField, widgets, SelectField
 from wtforms.ext.sqlalchemy.fields import QuerySelectField, QuerySelectMultipleField
-from wtforms.fields.html5 import EmailField, TimeField, URLField
 from wtforms.validators import ValidationError, DataRequired, Length, length, Email, EqualTo, Optional
+from wtforms.fields.html5 import EmailField, TimeField, URLField, DateField
 
 from app.models.center import CENTER_TYPES_ENUM, CENTER_TYPES
 from app.models.city import City
@@ -48,7 +49,7 @@ class CreateUserForm(FlaskForm):
                              render_kw={"placeholder": "entre 6 y 20 caracteres"})
     confirm = PasswordField('Confirmar Contraseña')
     first_name = StringField('Nombre',
-                             [Length(message="El nombre  debe tener entre 4 y 20 caracteres", min=4, max=20),
+                             [Length(message="El nombre debe tener entre 2 y 20 caracteres", min=2, max=20),
                               DataRequired()], render_kw={"placeholder": "bob"})
     last_name = StringField('Apellido',
                             [Length(message="El apellido  debe tener entre 2 y 20 caracteres", min=2, max=20),
@@ -57,6 +58,9 @@ class CreateUserForm(FlaskForm):
     role = QuerySelectMultipleField('Rol', query_factory=select_role, get_label='name',
                                     widget=widgets.ListWidget(prefix_label=False),
                                     option_widget=widgets.CheckboxInput())
+    user_roles = QuerySelectMultipleField('Rol', query_factory=select_role, get_label='name',
+                                          widget=widgets.ListWidget(prefix_label=False),
+                                          option_widget=widgets.CheckboxInput())
 
     def validate_username(self, username):
         """Compruebo que el nombre de usuario no exista en el sistema"""
@@ -84,7 +88,7 @@ class EditUserForm(FlaskForm):
                                                    max=20), ],
                              render_kw={"placeholder": "entre 6 y 20 caracteres"})
     first_name = StringField('Nombre',
-                             [Length(message="El nombre  debe tener entre 4 y 20 caracteres", min=4, max=20),
+                             [Length(message="El nombre  debe tener entre 2 y 20 caracteres", min=2, max=20),
                               DataRequired()])
     last_name = StringField('Apellido',
                             [Length(message="El apellido  debe tener entre 2 y 20 caracteres", min=2, max=20),
@@ -135,3 +139,37 @@ class CreateCenterForm(FlaskForm):
     def validate_opening(cls, form, opening):
         if form.closing.data <= opening.data:
             raise ValidationError('el horario de apertura y cierre no son correctos')
+
+
+shifts_blocks = [time(9), time(9, 30), time(10), time(10, 30), time(11), time(11, 30), time(12), time(12, 30),
+                 time(13), time(13, 30), time(14), time(14, 30), time(15), time(15, 30)]
+
+
+class CreateShiftForm(FlaskForm):
+    donor_email = EmailField('Email Donante', validators=[DataRequired("El email es obligatorio"), Length(max=55),
+                                                          Email(message="Ingresá un correo electronico válido")])
+    donor_phone = StringField('Telefono Donante',
+                              validators=[DataRequired("El telefono es obligatorio"), Length(max=55)])
+    date = DateField("Día", validators=[DataRequired("El día es obligatorio")])
+    start_time = SelectField("Horario", choices=shifts_blocks)
+
+    def validate_start_time(self, start_time):
+        try:
+            start = datetime.strptime(start_time.data, '%H:%M:%S').time()
+        except ValueError as e:
+            raise ValidationError(e, ' seleccione un horario válido')
+        if self.date.data == date.today() and start < datetime.now().time():
+            raise ValidationError('seleccione un horario válido')
+        self.start_time.data = start
+
+    @classmethod
+    def validate_date(cls, form, dat):
+        if dat.data < date.today():
+            raise ValidationError('seleccione una fecha válida')
+
+    @classmethod
+    def validate_donor_phone(cls, form, phone):
+        for ch in phone.data:
+            if not ch.isdigit():
+                raise ValidationError(
+                    'al ingresar el numero de telefono, utilice solo con digitos, sin espacios ni guiones')

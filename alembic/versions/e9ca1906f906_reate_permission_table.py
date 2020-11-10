@@ -47,6 +47,12 @@ def upgrade():
                        {'id': 21, 'name': 'centro_destroy'},
                        {'id': 22, 'name': 'centro_update'},
                        {'id': 23, 'name': 'centro_show'},
+                       {'id': 24, 'name': 'shifts_index'},
+                       {'id': 25, 'name': 'shifts_new'},
+                       {'id': 26, 'name': 'shifts_destroy'},
+                       {'id': 27, 'name': 'shifts_update'},
+                       {'id': 28, 'name': 'shifts_show'},
+                       {'id': 29, 'name': 'shifts_search'},
                    ]
                    )
 

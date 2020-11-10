@@ -26,6 +26,9 @@
                         {% if is_authenticated(session) and has_perm('centro_index') %}
                             <a class="nav-link dropdown-item" href="{{ url_for('center_index', page=1) }}">Centros</a>
                         {% endif %}
+                        {% if is_authenticated(session) and has_perm('shifts_index') %}
+                            <a class="nav-link dropdown-item" href="{{ url_for('turnos_index', page=1) }}">Turnos</a>
+                        {% endif %}
                     </div>
                 </li>
                 <li class="divider" style="margin-left:3vh"></li>
