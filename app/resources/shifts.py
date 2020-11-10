@@ -10,7 +10,7 @@ from app.helpers.auth import restricted
 from app.helpers.handler import display_errors
 from app.helpers.pagination import paginate
 from app.models.center import Center
-from app.models.shifts import Shifts, create_shift, search_by_donor_email_paginated, search_by_center_name_paginated
+from app.models.shifts import Shifts
 from app.models.sistema import Sistema
 from app.resources.forms import CreateShiftForm
 
@@ -38,7 +38,7 @@ def create_view(center_id):
         shift.center_id = center_id
         try:
             center = Center.get_by_id(shift.center_id)
-            create_shift(shift, center)
+            Shifts.create_shift(shift, center)
             flash("Turno agregado exitosamente", "success")
         except ValueError as err:
             flash(err, "danger")
@@ -78,7 +78,7 @@ def search_by_donor_email():
         flash("ERROR: {}".format(e), e)
         return redirect(url_for('turnos_index'))
 
-    pagination = search_by_donor_email_paginated(donor_email, page)
+    pagination = Shifts.search_by_donor_email_paginated(donor_email, page)
     return render_template("shifts/index.html", pagination=pagination, shifts=True, donor_email=donor_email)
 
 
@@ -98,7 +98,7 @@ def search_by_center_name():
         return redirect(url_for('turnos_index'))
 
     c = Center.get_by_name(center_name)
-    pagination = search_by_center_name_paginated(c, page)
+    pagination = Shifts.search_by_center_name_paginated(c, page)
     return render_template("shifts/index.html", pagination=pagination, shifts=True, center_name=center_name)
 
 

@@ -1,6 +1,4 @@
 from flask import jsonify, request, current_app as app
-from app.models.shifts import get_end_time, create_shift, check_end_time, check_date, str_date_to_datetime, \
-    str_time_to_datetime
 from app.models.center import Center
 from app.models.shifts import Shifts
 from werkzeug.exceptions import BadRequestKeyError
@@ -11,7 +9,7 @@ import traceback
 def get_json_turnos(turnos, fecha, centro_id):
     turnos_disp = []
     for start_time in turnos:
-        end_time = get_end_time(start_time)
+        end_time = Shifts.get_end_time(start_time)
         turno = {
             "centro_id": centro_id, "hora_inicio": start_time.isoformat(), "hora_fin": end_time.isoformat(),
             "fecha": fecha.isoformat()
@@ -60,16 +58,16 @@ def create(id):
     try:
         datos_turno = request.get_json()
         center = Center.get_by_id(id)  # datos_turno['centro_id']
-        check_date(str_date_to_datetime(datos_turno['fecha']).date())
-        check_end_time(str_time_to_datetime(datos_turno['hora_inicio']), str_time_to_datetime(datos_turno['hora_fin']))
+        Shifts.check_date(Shifts.str_date_to_datetime(datos_turno['fecha']).date())
+        Shifts.check_end_time(Shifts.str_time_to_datetime(datos_turno['hora_inicio']), Shifts.str_time_to_datetime(datos_turno['hora_fin']))
         if not center:
             return get_json_error_msg(error_code=500, error_msg="id de centro no válido", status="center not found")
 
-        datos_turno['hora_inicio'] = str_time_to_datetime(datos_turno['hora_inicio']).time()
-        datos_turno['hora_fin'] = str_time_to_datetime(datos_turno['hora_fin']).time()
-        datos_turno['fecha'] = str_date_to_datetime(datos_turno['fecha']).date()
+        datos_turno['hora_inicio'] = Shifts.str_time_to_datetime(datos_turno['hora_inicio']).time()
+        datos_turno['hora_fin'] = Shifts.str_time_to_datetime(datos_turno['hora_fin']).time()
+        datos_turno['fecha'] = Shifts.str_date_to_datetime(datos_turno['fecha']).date()
         shift = Shifts.populate_from_api(datos_turno)
-        created_shift = create_shift(shift, center)  # errores posibles capturados
+        created_shift = Shifts.create_shift(shift, center)  # errores posibles capturados
         return jsonify({"atributos": created_shift.serialize()})
     except (BadRequestKeyError, ValueError, KeyError, AttributeError) as err:
         app.logger.info(traceback.format_exc())

@@ -150,74 +150,76 @@ class Shifts(Base):
     # def serialize(self):
     #     return json.dumps(self._to_dict(), default=str, indent=4, sort_keys=True)
 
+    @classmethod
+    def shift_avalaible(cls, start_time, shifts_day):
+        """Chequea si el turno esta disponible. Retorna un Boolean"""
+        return list(filter(lambda s: s.start_time == start_time, shifts_day))
 
-def shift_avalaible(start_time, shifts_day):
-    """Chequea si el turno esta disponible. Retorna un Boolean"""
-    return list(filter(lambda s: s.start_time == start_time, shifts_day))
+    @classmethod
+    def get_end_time(cls, start_time):
+        t1 = datetime.strptime(str(start_time), '%H:%M:%S')
+        t2 = datetime.strptime(str(time(0, 30)), '%H:%M:%S')
+        time_zero = datetime.strptime(str(time(0)), '%H:%M:%S')
+        return (t1 - time_zero + t2).time()
 
+    @classmethod
+    def create_shift(cls, shift, center):
+        """recibe un turno y un centro, lo valida antes de persistirlo."""
+        if not center:
+            flash("Error al obtener el Centro con ID {}".format(shift.center_id), "success")
+        if center.valid_start_time(shift.start_time):
+            available_start = center.get_shifts_blocks_avalaible(shift.date)
+            app.logger.info("HORARIOS DISPONIBLES PARA EL CENTRO    : %s",
+                            center.get_shifts_blocks_avalaible(shift.date))
+            if shift.start_time not in available_start:
+                raise ValueError("Error: turno no disponible")
+            shift.end_time = cls.get_end_time(shift.start_time)
+            dbSession.add(shift)
+            dbSession.commit()
+            return shift
+        else:
+            raise ValueError(
+                "Franja horaria de turno no válida. El turno debe respetar la franja horaria de 9hs a 16hs.")
 
-def get_end_time(start_time):
-    t1 = datetime.strptime(str(start_time), '%H:%M:%S')
-    t2 = datetime.strptime(str(time(0, 30)), '%H:%M:%S')
-    time_zero = datetime.strptime(str(time(0)), '%H:%M:%S')
-    return (t1 - time_zero + t2).time()
+    @classmethod
+    def search_by_donor_email_paginated(cls, donor_email, page=1):
+        """Retorna una paginación con los turnos que contengan donor_email"""
+        sys = Sistema.get_sistema()
+        query = Shifts.query_donor_email(donor_email)
+        return paginate(query, page, sys.cant_por_pagina)
 
+    @classmethod
+    def search_by_center_name_paginated(cls, center_name, page=1):
+        """Retorna una paginación con los turnos pertenecientes al centro 'center_name'"""
+        sys = Sistema.get_sistema()
+        query = Shifts.query_center_name(center_name)
+        return paginate(query, page, sys.cant_por_pagina)
 
-def create_shift(shift, center):
-    """recibe un turno y un centro, lo valida antes de persistirlo."""
-    if not center:
-        flash("Error al obtener el Centro con ID {}".format(shift.center_id), "success")
-    if center.valid_start_time(shift.start_time):
-        available_start = center.get_shifts_blocks_avalaible(shift.date)
-        app.logger.info("HORARIOS DISPONIBLES PARA EL CENTRO    : %s", center.get_shifts_blocks_avalaible(shift.date))
-        if shift.start_time not in available_start:
-            raise ValueError("Error: turno no disponible")
-        shift.end_time = get_end_time(shift.start_time)
-        dbSession.add(shift)
-        dbSession.commit()
-        return shift
-    else:
-        raise ValueError("Franja horaria de turno no válida. El turno debe respetar la franja horaria de 9hs a 16hs.")
+    @classmethod
+    def aval_shifts(cls, center, shifts):
+        return Shifts.available_shifts(center, shifts)
 
+    @classmethod
+    def check_end_time(cls, start_time, end_time):
+        """Comprueba que la hora de fin del turno sea válida. Si la fecha fin no es 30 minutos levanta
+        una excepción ValueError"""
+        difference = end_time - start_time
+        seconds_in_day = 24 * 60 * 60
+        mins = divmod(difference.days * seconds_in_day + difference.seconds, 60)[0]
+        if mins != 30:
+            raise ValueError("Franja horaria de turno no válida. El turno debe ser de 30 minutos.")
 
-def search_by_donor_email_paginated(donor_email, page=1):
-    """Retorna una paginación con los turnos que contengan donor_email"""
-    sys = Sistema.get_sistema()
-    query = Shifts.query_donor_email(donor_email)
-    return paginate(query, page, sys.cant_por_pagina)
+    @classmethod
+    def check_date(cls, shift_date):
+        """Comprueba que la fecha del turno sea valida. Si la fecha es menor al día de la fecha levanta una
+        excepcion ValueError."""
+        if shift_date < date.today():
+            raise ValueError("La fecha del turno no puede ser menor al día de la fecha. ")
 
+    @classmethod
+    def str_time_to_datetime(cls, str_time):
+        return datetime.strptime(str_time, '%H:%M')
 
-def search_by_center_name_paginated(center_name, page=1):
-    """Retorna una paginación con los turnos pertenecientes al centro 'center_name'"""
-    sys = Sistema.get_sistema()
-    query = Shifts.query_center_name(center_name)
-    return paginate(query, page, sys.cant_por_pagina)
-
-
-def aval_shifts(center, shifts):
-    return Shifts.available_shifts(center, shifts)
-
-
-def check_end_time(start_time, end_time):
-    """Comprueba que la hora de fin del turno sea válida. Si la fecha fin no es 30 minutos levanta
-    una excepción ValueError"""
-    difference = end_time - start_time
-    seconds_in_day = 24 * 60 * 60
-    mins = divmod(difference.days * seconds_in_day + difference.seconds, 60)[0]
-    if mins != 30:
-        raise ValueError("Franja horaria de turno no válida. El turno debe ser de 30 minutos.")
-
-
-def check_date(shift_date):
-    """Comprueba que la fecha del turno sea valida. Si la fecha es menor al día de la fecha levanta una
-    excepcion ValueError."""
-    if shift_date < date.today():
-        raise ValueError("La fecha del turno no puede ser menor al día de la fecha. ")
-
-
-def str_time_to_datetime(str_time):
-    return datetime.strptime(str_time, '%H:%M')
-
-
-def str_date_to_datetime(str_date):
-    return datetime.strptime(str_date, '%Y-%m-%d')
+    @classmethod
+    def str_date_to_datetime(cls, str_date):
+        return datetime.strptime(str_date, '%Y-%m-%d')
