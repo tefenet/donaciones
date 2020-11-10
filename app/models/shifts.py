@@ -92,12 +92,12 @@ class Shifts(Base):
     @classmethod
     def query_donor_email(cls, donor_email):
         """Este método devuelve una Shift.query con todos los turnos pertenecientes a una persona con email 'donor_email'"""
-        return cls.query.filter(cls.donor_email == donor_email)
+        return cls.query.filter(cls.donor_email == donor_email).order_by(cls.date).order_by(cls.start_time)
 
     @classmethod
     def query_center_name(cls, c):
         """Este método devuelve una Shift.query con todos los turnos pertenecientes a una persona con email 'donor_email'"""
-        return cls.query.filter(cls.center == c)
+        return cls.query.filter(cls.center == c).order_by(cls.date).order_by(cls.start_time)
 
     @classmethod
     def get_shifts_between(cls, date1=None, date2=None):
@@ -125,7 +125,7 @@ class Shifts(Base):
         if date2 is None:
             date2 = (datetime.now() + timedelta(2)).date()
 
-        return cls.query.filter(cls.date >= date1).filter(cls.date <= date2)
+        return cls.query.filter(cls.date >= date1).filter(cls.date <= date2).order_by(cls.date).order_by(cls.start_time)
 
     @classmethod
     def delete_by_id(cls, shift_id):
