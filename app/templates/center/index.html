@@ -32,7 +32,7 @@
                         <th>Nombre</th>
                         <th>Telefono</th>
                         <th>sitio web</th>
-                        <th>Estado</th>
+<!--                        <th>Estado</th>-->
                         <th>Publicado</th>
                     </tr>
                     </thead>
@@ -46,15 +46,16 @@
                         </td>
                         <td>{{center.phone}}</td>
                         <td>{{center.web_site}}</td>
-                        <td><b class="{{center.state}}">{{center.state}}</b></td>
+<!--                        <td><b class="{{center.state}}">{{center.state}}</b></td>-->
                         <td>
                             <form action="{{url_for('center_publish', object_id=center.id)}}" id="form-{{center.id}}"
                                   method="post">
                                 {% if center.published %}
                                 <input checked class="toggle" data-toggle="toggle" type="checkbox"
-                                       value="{{center.id}}">
+                                       value="{{center.id}}" data-on="Sí" data-off="No">
                                 {% else %}
-                                <input class="toggle" data-toggle="toggle" type="checkbox" value="{{center.id}}">
+                                <input class="toggle" data-toggle="toggle" type="checkbox"
+                                       value="{{center.id}}" data-on="Sí" data-off="No" data-offstyle="dark">
                                 {% endif %}
                             </form>
 

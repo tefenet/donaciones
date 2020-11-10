@@ -11,17 +11,17 @@ from app.helpers.pagination import paginate
 from app.models.center import Center, STATES
 from app.models.sistema import Sistema
 from app.resources.forms import CreateCenterForm
+SYS_PAGE_COUNT = Sistema.page_count()
 
 
 @restricted(perm='centro_index')
 def index():
-    sys = Sistema.get_sistema()
     try:
         page = int(request.args['page'])
     except (BadRequestKeyError, ValueError):
         page = 1
     try:
-        res = paginate(Center.query, page, sys.cant_por_pagina)
+        res = paginate(Center.get_for_index(), page, SYS_PAGE_COUNT)
     except AttributeError:
         return redirect(url_for('center_index'))
     return render_template("center/index.html", pagination=res)
@@ -36,7 +36,7 @@ def new():
 @restricted(perm='centro_new')
 def create():
     """ Da de alta un centro en la base de datos."""
-    form = CreateCenterForm(request.form)
+    form = CreateCenterForm()
     if form.validate():
         center = Center()
         form.populate_obj(center)
@@ -62,23 +62,6 @@ def delete_center():
         flash("ERROR: id Centro no recibido", "danger")
     finally:
         return redirect(url_for('center_index'))
-
-
-@restricted('centro_update')
-def toogle_publish_center():
-    """ edita los atributos del centro con los datos obtenidos del formulario """
-    try:
-        center_id = request.args['object_id']
-    except BadRequestKeyError:
-        flash("ERROR: id Centro no recibido", "danger")
-    center = Center.get_by_id(center_id)
-    try:
-        center.toogle_published()
-    except AttributeError as e:
-        flash(e, 'danger')
-        return redirect(url_for("center_index"))
-    flash("el centro {} ha sido {}".format(center.name, "publicado" if center.published else "despublicado"), "info")
-    return redirect(url_for("center_index"))
 
 
 @restricted('centro_update')
@@ -117,12 +100,11 @@ def search_by_name():
     except (BadRequestKeyError, ValueError) as e:
         flash("ERROR: {}".format(e), e)
         return redirect(url_for('center_index'))
-    sys = Sistema.get_sistema()
     query = Center.query_by_name(name)
     try:
-        pagination = paginate(query, page, sys.cant_por_pagina)
+        pagination = paginate(query, page, SYS_PAGE_COUNT)
     except AttributeError:  # raised when page < 1
-        pagination = paginate(query, 1, sys.cant_por_pagina)
+        pagination = paginate(query, 1, SYS_PAGE_COUNT)
     return render_template("center/index.html", pagination=pagination)
 
 
@@ -133,12 +115,11 @@ def search_by_state():
     except (BadRequestKeyError, ValueError) as e:
         flash("ERROR: {}".format(e), e)
         return redirect(url_for('center_index'))
-    sys = Sistema.get_sistema()
     query = Center.query_by_state(state)
     try:
-        pagination = paginate(query, page, sys.cant_por_pagina)
+        pagination = paginate(query, page, SYS_PAGE_COUNT)
     except AttributeError:
-        pagination = paginate(query, 1, sys.cant_por_pagina)
+        pagination = paginate(query, 1, SYS_PAGE_COUNT)
     return render_template("center/index.html", pagination=pagination)
 
 
@@ -148,58 +129,55 @@ def search_by_published():
     except (BadRequestKeyError, ValueError) as e:
         flash("ERROR: {}".format(e), e)
         return redirect(url_for('center_index'))
-    sys = Sistema.get_sistema()
     query = Center.query_by_published(published)
     try:
         page = int(request.args['page'])
-        pagination = paginate(query, page, sys.cant_por_pagina)
+        pagination = paginate(query, page, SYS_PAGE_COUNT)
     except (BadRequestKeyError, ValueError):
-        pagination = paginate(query, 1, sys.cant_por_pagina)
+        pagination = paginate(query, 1, SYS_PAGE_COUNT)
     except AttributeError:
-        pagination = paginate(query, 1, sys.cant_por_pagina)
+        pagination = paginate(query, 1, SYS_PAGE_COUNT)
     return render_template("center/index.html", pagination=pagination)
+
+
+def change_state(method, message):
+    try:
+        center_id = request.args['object_id']
+    except BadRequestKeyError:
+        flash("ERROR: id Centro no recibido", "danger")
+        return redirect(url_for("center_index"))
+    center = Center.get_by_id(center_id)
+    try:
+        getattr(center, method)()
+    except IntegrityError:
+        flash('hubo un problema en la transacción', 'danger')
+        return redirect(url_for("center_index"))
+    except AttributeError as e:
+        flash(e, 'danger')
+        return redirect(url_for("center_index"))
+    flash(message.format(center.name), "info")
+    return redirect(url_for("center_index"))
 
 
 @restricted('centro_update')
 def approve_center():
-    center_id = request.args['center_id']
-    center = Center.get_by_id(center_id)
-    center.state = STATES[1]
-    center.published = True
-    try:
-        dbSession.commit()
-    except IntegrityError:
-        return redirect(url_for("center_index"))
-    flash("el centro {} fue aprobado".format(center.name), "info")
-    return redirect(url_for("center_index"))
+    return change_state('approve', "el centro {} fue aprobado")
 
 
 @restricted('centro_update')
 def reject_center():
-    center_id = request.args['center_id']
-    center = Center.get_by_id(center_id)
-    center.state = STATES[2]
-    center.published = False
-    try:
-        dbSession.commit()
-    except IntegrityError:
-        return redirect(url_for("center_index"))
-    flash("el centro {} fue rechazado".format(center.name), "info")
-    return redirect(url_for("center_index"))
+    return change_state('reject', "el centro {} fue rechazado")
 
 
 @restricted('centro_update')
 def review_center():
-    center_id = request.args['center_id']
-    center = Center.get_by_id(center_id)
-    center.state = STATES[0]
-    center.published = False
-    try:
-        dbSession.commit()
-    except IntegrityError:
-        return redirect(url_for("center_index"))
-    flash("el centro {} está pendiente de revisión".format(center.name), "warning")
-    return redirect(url_for("center_index"))
+    return change_state('review', "el centro {} está pendiente de revisión")
+
+
+@restricted('centro_update')
+def toogle_publish_center():
+    """ edita los atributos del centro con los datos obtenidos del formulario """
+    return change_state('toogle_published', "el centro {} cambio su estado")
 
 
 def get_protocol(object_id):

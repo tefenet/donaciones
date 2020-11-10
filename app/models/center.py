@@ -58,6 +58,21 @@ class Center(Base):
         else:
             raise AttributeError('no se puede publicar si no está aprobado')
 
+    def approve(self):
+        self.state = STATES[1]
+        self.published = True
+        dbSession.commit()
+
+    def reject(self):
+        self.state = STATES[2]
+        self.published = False
+        dbSession.commit()
+
+    def review(self):
+        self.state = STATES[0]
+        self.published = False
+        dbSession.commit()
+
     @classmethod
     def delete_by_id(cls, id):
         """Elimina un centro de la base de datos de forma permanente"""
@@ -75,11 +90,14 @@ class Center(Base):
     @classmethod
     def query_by_state(cls, state):
         """Recibe un string indicando el estado. Retorna una Query"""
-
         return cls.query.filter(cls.state == state)
+
+    @classmethod
+    def get_for_index(cls):
+        """Retorna una Query para el paginador, que tome los centro que no fueron rechazados"""
+        return cls.query.filter(cls.state != STATES[2])
 
     @classmethod
     def query_by_published(cls, published):
         """Recibe un string indicando el estado. Retorna una Query"""
-
         return cls.query.filter(cls.published == published)

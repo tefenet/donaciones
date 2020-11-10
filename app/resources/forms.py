@@ -1,14 +1,10 @@
 from flask_wtf import FlaskForm
-from flask_wtf.file import FileField
-
+from flask_wtf.file import FileField, FileAllowed
 from wtforms import StringField, SubmitField, PasswordField, BooleanField, IntegerField, \
     RadioField, widgets, SelectField
 from wtforms.ext.sqlalchemy.fields import QuerySelectField, QuerySelectMultipleField
-from wtforms.validators import ValidationError, DataRequired, Length, length, Email, EqualTo, Optional
-
 from wtforms.fields.html5 import EmailField, TimeField, URLField
-
-from pymysql import escape_string as thwart  # escape_string para prevenir sql injections
+from wtforms.validators import ValidationError, DataRequired, Length, length, Email, EqualTo, Optional
 
 from app.models.center import CENTER_TYPES_ENUM, CENTER_TYPES
 from app.models.city import City
@@ -111,18 +107,31 @@ class SistemaForm(FlaskForm):
     cant_por_pagina = IntegerField('Cantidad de elementos por página', validators=[DataRequired()])
     habilitado = RadioField('Estado de la página', coerce=int, choices=[(0, "Deshabilitado."),
                                                                         (1, "Habilitado")], default=1)
-    # habilitado = BooleanField('Estado de la página')
 
 
 class CreateCenterForm(FlaskForm):
     name = StringField('nombre', validators=[DataRequired(), Length(max=55)])
-    address = StringField('direccion')
-    phone = StringField('telefono', validators=[])
-    email = StringField('email', validators=[DataRequired(), Length(max=60)])
-    opening = TimeField('apertura')
-    closing = TimeField('cierre')
+    address = StringField('direccion', validators=[Length(max=99)])
+    phone = StringField('telefono',
+                        validators=[Length(min=8, max=20, message='el telefono debe tener entre 8 y 20 digitos')])
+    email = EmailField('email', validators=[DataRequired(), Email('el email ingresado no es válido'),
+                                            Length(max=60, message='se permite hasta 60 caracteres')])
+    opening = TimeField('apertura', validators=[DataRequired()])
+    closing = TimeField('cierre', validators=[DataRequired()])
     city = QuerySelectField('ciudad', query_factory=select_city, get_label='name')
     type = SelectField(label='tipo', choices=[(g, g) for g in CENTER_TYPES])
     web_site = URLField('sitio web', render_kw={"placeholder": "https://www.site.com"})
     geo_location = StringField('coordenadas')
-    protocol = FileField('protocolo')
+    protocol = FileField('protocolo', widget=widgets.FileInput(),
+                         validators=[FileAllowed(['pdf'], 'protocolo en pdf unicamente')])
+
+    @classmethod
+    def validate_phone(cls, form, phone):
+        for ch in phone.data:
+            if not ch.isdigit():
+                raise ValidationError('al ingresar el telefono, utilice dígitos únicamente, sin espacios ni guiones')
+
+    @classmethod
+    def validate_opening(cls, form, opening):
+        if form.closing.data <= opening.data:
+            raise ValidationError('el horario de apertura y cierre no son correctos')

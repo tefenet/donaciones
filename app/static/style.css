@@ -120,6 +120,10 @@ color:blue}
   line-height: .5;
   border-radius: .2rem;
 }
+.toggle-handle{
+border-width:1px 2px;
+background-color: aliceblue;
+}
 .alert{
     max-width:50%;
     margin: 0 auto;

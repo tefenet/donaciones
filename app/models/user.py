@@ -1,4 +1,3 @@
-from app.models.sistema import Sistema
 from app.db import Base
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy import Column, Integer, String, Boolean, DateTime, SmallInteger

@@ -30,21 +30,19 @@
                     <!--    published = Column(Boolean(), default=False)-->
                 </div>
                 <div class="modal-footer">
-                    {% if center.state!='rejected'%}
-                    <form action="{{url_for('center_reject', center_id=center.id)}}" method="post">
+                    {% if center.state=='pending'%}
+                    <form action="{{url_for('center_reject', object_id=center.id)}}" method="post">
                         <button class="btn btn-danger" type="submit">Rechazar</button>
                     </form>
-                    {% endif %}
-                    {% if center.state!='approved'%}
-                    <form action="{{url_for('center_approve', center_id=center.id)}}" method="post">
+                    <form action="{{url_for('center_approve', object_id=center.id)}}" method="post">
                         <button class="btn btn-success" type="submit">Aprobar</button>
                     </form>
                     {% endif %}
-                    {% if center.state!='pending'%}
-                    <form action="{{url_for('center_review', center_id=center.id)}}" method="post">
-                        <button class="btn btn-warning" type="submit">Revisar</button>
-                    </form>
-                    {% endif %}
+<!--                    {% if center.state!='pending'%}-->
+<!--                    <form action="{{url_for('center_review', object_id=center.id)}}" method="post">-->
+<!--                        <button class="btn btn-warning" type="submit">Revisar</button>-->
+<!--                    </form>-->
+<!--                    {% endif %}-->
                 </div>
             </div>
         </div>
