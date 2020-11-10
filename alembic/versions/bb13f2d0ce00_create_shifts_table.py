@@ -47,7 +47,7 @@ def upgrade():
     hora_fin = time(9, 30)
     for i in range(1, 15):
         turno = {
-            'id': i, 'donor_email': 'donor{}@test.com'.format(i), 'donor_phone': '+54 555 555-5555',
+            'donor_email': 'donor{}@test.com'.format(i), 'donor_phone': '+54 555 555-5555',
             'start_time': hora_inicio, 'end_time': hora_fin, 'date': '2020-11-07', 'center_id': 1
         }
         hora_inicio = increment_time(hora_inicio)
@@ -58,9 +58,9 @@ def upgrade():
     turnos = []
     hora_inicio = time(11, 00)
     hora_fin = time(11, 30)
-    for i in range(15, 21):
+    for i in range(1, 7):
         turno = {
-            'id': i, 'donor_email': 'donor{}@test.com'.format(i), 'donor_phone': '+54 555 555-5555',
+            'donor_email': 'donor{}@test.com'.format(i), 'donor_phone': '+54 555 555-5555',
             'start_time': hora_inicio, 'end_time': hora_fin, 'date': '2020-11-06', 'center_id': 2
         }
         hora_inicio = increment_time(hora_inicio)
@@ -71,10 +71,10 @@ def upgrade():
     turnos = []
     hora_inicio = time(9, 30)
     hora_fin = time(10, 00)
-    for i in range(21, 32):
-        center_id = 2 if i <= 26 else 3 if i > 26 else 1
+    for i in range(1, 12):
+        center_id = 2 if i <= 6 else 3 if i > 6 else 1
         turno = {
-            'id': i, 'donor_email': 'donor{}@test.com'.format(i), 'donor_phone': '+54 555 555-5555',
+            'donor_email': 'donor{}@test.com'.format(i), 'donor_phone': '+54 555 555-5555',
             'start_time': hora_inicio, 'end_time': hora_fin, 'date': date.today(), 'center_id': center_id
         }
         hora_inicio = increment_time(hora_inicio)
@@ -88,15 +88,15 @@ def upgrade():
     hora_inicio = time(9, 30)
     hora_fin = time(10, 00)
     dia = datetime.now()
-    for i in range(32, 45):
-        center_id = 4 if i <= 38 else 1 if i > 38 else 1
+    for i in range(1, 14):
+        center_id = 4 if i <= 6 else 1 if i > 6 else 1
         turno = {
-            'id': i, 'donor_email': 'donor77@test.com'.format(i), 'donor_phone': '+54 555 555-5555',
+            'donor_email': 'donor77@test.com'.format(i), 'donor_phone': '+54 555 555-5555',
             'start_time': hora_inicio, 'end_time': hora_fin, 'date': dia.date(), 'center_id': center_id
         }
         hora_inicio = increment_time(hora_inicio)
         hora_fin = increment_time(hora_fin)
-        if i == 37:
+        if i > 6:
             dia = increment_datetime(dia)
         turnos.append(turno)
 
@@ -105,15 +105,16 @@ def upgrade():
     turnos = []
     hora_inicio = time(9, 00)
     hora_fin = time(9, 30)
-    for i in range(45, 59):
+    for i in range(1, 15):
         turno = {
-            'id': i, 'donor_email': 'donor{}@test.com'.format(i), 'donor_phone': '+54 555 555-5555',
+            'donor_email': 'donor{}@test.com'.format(i), 'donor_phone': '+54 555 555-5555',
             'start_time': hora_inicio, 'end_time': hora_fin, 'date': date.today(), 'center_id': 7
         }
         hora_inicio = increment_time(hora_inicio)
         hora_fin = increment_time(hora_fin)
         turnos.append(turno)
     op.bulk_insert(shifts_table, turnos)
+
 
 def downgrade():
     op.drop_table('shifts')
