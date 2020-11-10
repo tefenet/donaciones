@@ -1,6 +1,6 @@
-from datetime import datetime, timedelta, date, time
+from datetime import datetime, timedelta, date
 
-from flask import redirect, render_template, request, url_for, flash, current_app as app
+from flask import redirect, render_template, request, url_for, flash
 from flask.json import jsonify
 from pymysql import escape_string as thwart
 from werkzeug.exceptions import BadRequestKeyError
@@ -10,38 +10,9 @@ from app.helpers.auth import restricted
 from app.helpers.handler import display_errors
 from app.helpers.pagination import paginate
 from app.models.center import Center
-from app.models.shifts import Shifts
+from app.models.shifts import Shifts, create_shift, search_by_donor_email_paginated, search_by_center_name_paginated
 from app.models.sistema import Sistema
 from app.resources.forms import CreateShiftForm
-
-
-def shift_avalaible(start_time, shifts_day):
-    """Chequea si el turno esta disponible. Retorna un Boolean"""
-    return list(filter(lambda s: s.start_time == start_time, shifts_day))
-
-
-def get_end_time(start_time):
-    t1 = datetime.strptime(str(start_time), '%H:%M:%S')
-    t2 = datetime.strptime(str(time(0, 30)), '%H:%M:%S')
-    time_zero = datetime.strptime(str(time(0)), '%H:%M:%S')
-    return (t1 - time_zero + t2).time()
-
-
-# @restricted(perm='shifts_new')
-def create_shift(shift):
-    """recibe un turno y lo valida antes de persistirlo."""
-    center = Center.get_by_id(shift.center_id)
-    if not center:
-        flash("Error al obtener el Centro con ID {}".format(shift.center_id), "success")
-    if center.valid_start_time(shift.start_time):
-        available_start = center.get_shifts_blocks_avalaible(shift.date)
-        if shift.start_time not in available_start:
-            raise ValueError("Error: turno no disponible")
-        shift.end_time = get_end_time(shift.start_time)
-        dbSession.add(shift)
-        dbSession.commit()
-    else:
-        raise ValueError("Franja horaria de turno no válida. El turno debe respetar la franja horaria de 9hs a 16hs.")
 
 
 #####
@@ -66,7 +37,8 @@ def create_view(center_id):
         form.populate_obj(shift)
         shift.center_id = center_id
         try:
-            create_shift(shift)
+            center = Center.get_by_id(shift.center_id)
+            create_shift(shift, center)
             flash("Turno agregado exitosamente", "success")
         except ValueError as err:
             flash(err, "danger")
@@ -82,21 +54,14 @@ def index(date_start=date.today(), date_end=(datetime.now() + timedelta(2)).date
     sys = Sistema.get_sistema()
     try:
         page = int(request.args['page'])
+        if page < 0:
+            flash("El número de página debe ser mayor o igual a 1.", "danger")
+            return redirect(url_for('turnos_index'))
     except (BadRequestKeyError, ValueError):
         page = 1
-    try:
-        res = paginate(Shifts.query_shifts_between(date_start, date_end), page, sys.cant_por_pagina)
-    except AttributeError as err:  # AttributeError raise when page<1
-        app.logger.info(err)
-        return redirect(url_for('turnos_index'))
+
+    res = paginate(Shifts.query_shifts_between(date_start, date_end), page, sys.cant_por_pagina)
     return render_template("shifts/index.html", pagination=res, date_start=date_start, date_end=date_end, shifts=shifts)
-
-
-def search_by_donor_email_paginated(donor_email, page=1):
-    """Retorna una paginación con los turnos que contengan donor_email"""
-    sys = Sistema.get_sistema()
-    query = Shifts.query_donor_email(donor_email)
-    return paginate(query, page, sys.cant_por_pagina)
 
 
 @restricted(perm='shifts_search')
@@ -106,41 +71,34 @@ def search_by_donor_email():
     try:
         donor_email = thwart(request.args['donor_email'])
         page = int(request.args['page'])
+        if page < 0:
+            flash("El número de página debe ser mayor o igual a 1.")
+            return redirect(url_for('turnos_index'))
     except (BadRequestKeyError, ValueError) as e:
         flash("ERROR: {}".format(e), e)
         return redirect(url_for('turnos_index'))
-    try:
-        pagination = search_by_donor_email_paginated(donor_email, page)
-    except AttributeError:  # raised when page < 1
-        page = 1
-        pagination = search_by_donor_email_paginated(donor_email, page)
+
+    pagination = search_by_donor_email_paginated(donor_email, page)
     return render_template("shifts/index.html", pagination=pagination, shifts=True, donor_email=donor_email)
-
-
-def search_by_center_name_paginated(center_name, page=1):
-    """Retorna una paginación con los turnos pertenecientes al centro 'center_name'"""
-    sys = Sistema.get_sistema()
-    query = Shifts.query_center_name(center_name)
-    return paginate(query, page, sys.cant_por_pagina)
 
 
 @restricted(perm='shifts_search')
 def search_by_center_name():
     """Busca turnos por nombre de centro.
     Recibe center_name(string), y numero de pagina, devuelve un template de lista de turnos(Shifts)"""
-    app.logger.info(request.args)
+
     try:
         center_name = thwart(request.args['center_name'])
         page = int(request.args['page'])
+        if page < 0:
+            flash("El número de página debe ser mayor o igual a 1.")
+            return redirect(url_for('turnos_index'))
     except (BadRequestKeyError, ValueError) as e:
         flash("ERROR: {}".format(e), e)
         return redirect(url_for('turnos_index'))
+
     c = Center.get_by_name(center_name)
-    try:
-        pagination = search_by_center_name_paginated(c, page)
-    except AttributeError:  # raised when page < 1
-        page = 1
-        pagination = search_by_center_name_paginated(c, page)
+    pagination = search_by_center_name_paginated(c, page)
     return render_template("shifts/index.html", pagination=pagination, shifts=True, center_name=center_name)
 
 
@@ -167,7 +125,8 @@ def delete_shift():
         s = Shifts.get_by_id(shift_id)
         if __delete(s):
             flash("Turno id {} eliminado exitosamente".format(shift_id), "success")
+        else:
+            flash("Error al eliminar Turno con ID {}".format(shift_id))
     except BadRequestKeyError:
         flash("ERROR: shift_id no recibido", "danger")
-        return redirect(url_for('turnos_index'))
     return redirect(url_for('turnos_index'))

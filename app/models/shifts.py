@@ -1,8 +1,9 @@
-from datetime import datetime, date, timedelta
-
 from sqlalchemy import Column, Integer, ForeignKey, String, Time, Date
-
-from app.db import Base
+from datetime import datetime, timedelta, date, time
+from app.helpers.pagination import paginate
+from app.models.sistema import Sistema
+from app.db import Base, dbSession
+from flask import flash
 
 
 # from app.models.center import Center
@@ -48,6 +49,7 @@ class Shifts(Base):
 
         def add_30_minutes(t):
             return (datetime(1, 1, 1, t.hour, t.minute) + timedelta(minutes=30)).time()
+
         while shifts[-1] < center.closing:
             shifts.append(add_30_minutes(shifts[-1]))
         return shifts[:-1]
@@ -141,3 +143,48 @@ class Shifts(Base):
 
     # def serialize(self):
     #     return json.dumps(self._to_dict(), default=str, indent=4, sort_keys=True)
+
+
+def shift_avalaible(start_time, shifts_day):
+    """Chequea si el turno esta disponible. Retorna un Boolean"""
+    return list(filter(lambda s: s.start_time == start_time, shifts_day))
+
+
+def get_end_time(start_time):
+    t1 = datetime.strptime(str(start_time), '%H:%M:%S')
+    t2 = datetime.strptime(str(time(0, 30)), '%H:%M:%S')
+    time_zero = datetime.strptime(str(time(0)), '%H:%M:%S')
+    return (t1 - time_zero + t2).time()
+
+
+def create_shift(shift, center):
+    """recibe un turno y un centro, lo valida antes de persistirlo."""
+    if not center:
+        flash("Error al obtener el Centro con ID {}".format(shift.center_id), "success")
+    if center.valid_start_time(shift.start_time):
+        available_start = center.get_shifts_blocks_avalaible(shift.date)
+        if shift.start_time not in available_start:
+            raise ValueError("Error: turno no disponible")
+        shift.end_time = get_end_time(shift.start_time)
+        dbSession.add(shift)
+        dbSession.commit()
+    else:
+        raise ValueError("Franja horaria de turno no válida. El turno debe respetar la franja horaria de 9hs a 16hs.")
+
+
+def search_by_donor_email_paginated(donor_email, page=1):
+    """Retorna una paginación con los turnos que contengan donor_email"""
+    sys = Sistema.get_sistema()
+    query = Shifts.query_donor_email(donor_email)
+    return paginate(query, page, sys.cant_por_pagina)
+
+
+def search_by_center_name_paginated(center_name, page=1):
+    """Retorna una paginación con los turnos pertenecientes al centro 'center_name'"""
+    sys = Sistema.get_sistema()
+    query = Shifts.query_center_name(center_name)
+    return paginate(query, page, sys.cant_por_pagina)
+
+
+def aval_shifts(center, shifts):
+    return Shifts.available_shifts(center, shifts)
