@@ -3,6 +3,7 @@ from datetime import date
 
 from flask import redirect, render_template, request, url_for, abort, flash, send_file
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm.exc import NoResultFound
 from werkzeug.exceptions import BadRequestKeyError
 
 from app import dbSession
@@ -61,6 +62,8 @@ def delete_center():
             flash("el Centro {} ha sido borrado".format(center_name), "info")
     except BadRequestKeyError:
         flash("ERROR: id Centro no recibido", "danger")
+    except NoResultFound as e:
+        flash(e, 'danger')
     finally:
         return redirect(url_for('center_index'))
 
@@ -68,19 +71,20 @@ def delete_center():
 @restricted('centro_update')
 def update_center_form(object_id):
     """ renderiza el formulario para editar un centro """
-    center = Center.get_by_id(object_id)
-    if center:
-        form = CreateCenterForm(obj=center)
-        return render_template('center/update.html', form=form, center_id=object_id)
-    abort(500, "ERROR: Error al obtener centro id = {}".format(object_id))
+    form = CreateCenterForm()
+    return render_template('center/update.html', form=form, center_id=object_id)
 
 
 @restricted('centro_update')
 def update_center(object_id):
     """ edita los atributos del centro con los datos obtenidos del formulario """
-    form = CreateCenterForm(request.form)
+    form = CreateCenterForm()
     if form.validate():
-        center = Center.get_by_id(object_id)
+        try:
+            center = Center.get_by_id(object_id)
+        except NoResultFound as e:
+            flash(e, 'danger')
+            redirect(url_for("center_index"))
         form.populate_obj(center)
         center.protocol = request.files['protocol'].read()
         dbSession.commit()
@@ -147,7 +151,11 @@ def change_state(method, message):
     except BadRequestKeyError:
         flash("ERROR: id Centro no recibido", "danger")
         return redirect(url_for("center_index"))
-    center = Center.get_by_id(center_id)
+    try:
+        center = Center.get_by_id(center_id)
+    except NoResultFound as e:
+        flash(e, 'danger')
+        return redirect(url_for("center_index"))
     try:
         getattr(center, method)()
     except IntegrityError:
@@ -186,6 +194,6 @@ def get_protocol(object_id):
         center = Center.get_by_id(object_id)
         return send_file(io.BytesIO(center.protocol), mimetype='pdf', as_attachment=True,
                          attachment_filename='{} protocol.pdf'.format(center.name))
-    except BadRequestKeyError:
-        flash("ERROR: id Centro no recibido", "danger")
+    except NoResultFound as e:
+        flash(e, 'danger')
     return redirect(url_for("center_index"))

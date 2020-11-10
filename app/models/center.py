@@ -1,6 +1,7 @@
 from MySQLdb import TIMESTAMP, TIME
 from sqlalchemy.dialects.mysql import ENUM
 from sqlalchemy.orm import relationship
+from sqlalchemy.orm.exc import NoResultFound
 
 from app.db import Base, dbSession
 from sqlalchemy import Column, Integer, String, Boolean, DateTime, LargeBinary, ForeignKey, Time, Enum
@@ -102,7 +103,10 @@ class Center(Base):
     @classmethod
     def get_by_id(cls, centro_id):
         """Retorna el centro con id centro_id"""
-        return cls.query.get(centro_id)
+        c = cls.query.get(centro_id)
+        if c is None:
+            raise NoResultFound('no existe un Centro con id {}'.format(centro_id))
+        return c
 
     @classmethod
     def get_by_name(cls, center_name):

@@ -3,6 +3,7 @@ from datetime import datetime, timedelta, date
 from flask import redirect, render_template, request, url_for, flash
 from flask.json import jsonify
 from pymysql import escape_string as thwart
+from sqlalchemy.orm.exc import NoResultFound
 from werkzeug.exceptions import BadRequestKeyError
 
 from app.db import dbSession
@@ -19,12 +20,13 @@ from app.resources.forms import CreateShiftForm
 # Create
 @restricted(perm='shifts_new')
 def new_view(center_id):
-    center = Center.get_by_id(center_id)
-    if center:
-        form = CreateShiftForm()
-        return render_template("shifts/new.html", form=form, center=center)
-    flash("Error al obtener el centro id={}".format(center_id))
-    return redirect(url_for("turnos_index"))
+    try:
+        center = Center.get_by_id(center_id)
+    except NoResultFound as err:
+        flash(err, "danger")
+        return redirect(url_for("turnos_index"))
+    form = CreateShiftForm()
+    return render_template("shifts/new.html", form=form, center=center)
 
 
 @restricted(perm='shifts_new')
@@ -40,7 +42,7 @@ def create_view(center_id):
             center = Center.get_by_id(shift.center_id)
             Shifts.create_shift(shift, center)
             flash("Turno agregado exitosamente", "success")
-        except ValueError as err:
+        except (NoResultFound, ValueError) as err:
             flash(err, "danger")
     if form.errors:
         display_errors(form.errors)
@@ -86,7 +88,6 @@ def search_by_donor_email():
 def search_by_center_name():
     """Busca turnos por nombre de centro.
     Recibe center_name(string), y numero de pagina, devuelve un template de lista de turnos(Shifts)"""
-
     try:
         center_name = thwart(request.args['center_name'])
         page = int(request.args['page'])
@@ -104,7 +105,12 @@ def search_by_center_name():
 
 def update_form():
     form_date = request.args['date']
-    center = Center.get_by_id(request.args['center_id'])
+    center_id = request.args['center_id']
+    try:
+        center = Center.get_by_id(center_id)
+    except NoResultFound as err:
+        flash(err, "danger")
+        return redirect(url_for('turnos_new'))
     d = datetime.strptime(form_date, "%Y-%m-%d").date()
     return jsonify(list(map(lambda t: t.isoformat(), center.get_shifts_blocks_avalaible(d))))
 

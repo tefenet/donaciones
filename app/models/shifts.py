@@ -1,9 +1,11 @@
-from sqlalchemy import Column, Integer, ForeignKey, String, Time, Date
 from datetime import datetime, timedelta, date, time
+
+from flask import current_app as app
+from sqlalchemy import Column, Integer, ForeignKey, String, Time, Date
+
+from app.db import Base, dbSession
 from app.helpers.pagination import paginate
 from app.models.sistema import Sistema
-from app.db import Base, dbSession
-from flask import flash, current_app as app
 
 
 # from app.models.center import Center
@@ -165,8 +167,6 @@ class Shifts(Base):
     @classmethod
     def create_shift(cls, shift, center):
         """recibe un turno y un centro, lo valida antes de persistirlo."""
-        if not center:
-            flash("Error al obtener el Centro con ID {}".format(shift.center_id), "success")
         if center.valid_start_time(shift.start_time):
             available_start = center.get_shifts_blocks_avalaible(shift.date)
             app.logger.info("HORARIOS DISPONIBLES PARA EL CENTRO    : %s",
@@ -200,7 +200,7 @@ class Shifts(Base):
         return Shifts.available_shifts(center, shifts)
 
     @classmethod
-    def check_end_time(cls, start_time, end_time):
+    def check_duration(cls, start_time, end_time):
         """Comprueba que la hora de fin del turno sea válida. Si la fecha fin no es 30 minutos levanta
         una excepción ValueError"""
         difference = end_time - start_time
@@ -215,11 +215,3 @@ class Shifts(Base):
         excepcion ValueError."""
         if shift_date < date.today():
             raise ValueError("La fecha del turno no puede ser menor al día de la fecha. ")
-
-    @classmethod
-    def str_time_to_datetime(cls, str_time):
-        return datetime.strptime(str_time, '%H:%M')
-
-    @classmethod
-    def str_date_to_datetime(cls, str_date):
-        return datetime.strptime(str_date, '%Y-%m-%d')
