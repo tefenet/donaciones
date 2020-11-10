@@ -67,14 +67,15 @@ class Center(Base):
         return aval_shifts(self, shifts)
 
     def get_shifts_by_date(self, dt=date.today()):
-        """Retorna los turnos asociados al día recibido.
+        """Retorna los turnos asociados al día recibido. dt debe ser datetime.date
         Si no se recibe un día, retorna los turnos del día actual"""
-
+        if not type(dt) is date:
+            raise Exception("Error, la fecha debe ser un objeto datetime.date")
+        # si no es un datetime.date va a devolver una lista vacía, y se va a poder agregar un turno que ya existe.
         return list(filter(lambda s: s.date == dt, self.shifts))
 
     def valid_start_time(self, start_time):
-        """Chequeo que el horario del turno pertenezca a un horario válido
-        Start time debe ser un datetime object"""
+        """Chequeo que el horario del turno pertenezca a un horario válido"""
         return self.opening <= start_time < self.closing
 
     @classmethod

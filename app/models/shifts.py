@@ -3,7 +3,7 @@ from datetime import datetime, timedelta, date, time
 from app.helpers.pagination import paginate
 from app.models.sistema import Sistema
 from app.db import Base, dbSession
-from flask import flash
+from flask import flash, current_app as app
 
 
 # from app.models.center import Center
@@ -169,6 +169,7 @@ def create_shift(shift, center):
         flash("Error al obtener el Centro con ID {}".format(shift.center_id), "success")
     if center.valid_start_time(shift.start_time):
         available_start = center.get_shifts_blocks_avalaible(shift.date)
+        app.logger.info("HORARIOS DISPONIBLES PARA EL CENTRO    : %s", center.get_shifts_blocks_avalaible(shift.date))
         if shift.start_time not in available_start:
             raise ValueError("Error: turno no disponible")
         shift.end_time = get_end_time(shift.start_time)
@@ -198,6 +199,8 @@ def aval_shifts(center, shifts):
 
 
 def check_end_time(start_time, end_time):
+    """Comprueba que la hora de fin del turno sea válida. Si la fecha fin no es 30 minutos levanta
+    una excepción ValueError"""
     difference = end_time - start_time
     seconds_in_day = 24 * 60 * 60
     mins = divmod(difference.days * seconds_in_day + difference.seconds, 60)[0]
@@ -205,3 +208,16 @@ def check_end_time(start_time, end_time):
         raise ValueError("Franja horaria de turno no válida. El turno debe ser de 30 minutos.")
 
 
+def check_date(shift_date):
+    """Comprueba que la fecha del turno sea valida. Si la fecha es menor al día de la fecha levanta una
+    excepcion ValueError."""
+    if shift_date < date.today():
+        raise ValueError("La fecha del turno no puede ser menor al día de la fecha. ")
+
+
+def str_time_to_datetime(str_time):
+    return datetime.strptime(str_time, '%H:%M')
+
+
+def str_date_to_datetime(str_date):
+    return datetime.strptime(str_date, '%Y-%m-%d')
