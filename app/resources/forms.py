@@ -125,9 +125,10 @@ class CreateCenterForm(FlaskForm):
     city = QuerySelectField('ciudad', query_factory=select_city, get_label='name')
     type = SelectField(label='tipo', choices=[(g, g) for g in CENTER_TYPES])
     web_site = URLField('sitio web', render_kw={"placeholder": "https://www.site.com"})
-    geo_location = StringField('coordenadas')
     protocol = FileField('protocolo', widget=widgets.FileInput(),
                          validators=[FileAllowed(['pdf'], 'protocolo en pdf unicamente')])
+    gl_lat = StringField('latitud', render_kw={'readonly': True, "placeholder": "seleccionar punto en el mapa"})
+    gl_long = StringField('longitud', render_kw={'readonly': True, "placeholder": "seleccionar punto en el mapa"})
 
     @classmethod
     def validate_phone(cls, form, phone):

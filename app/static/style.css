@@ -3,129 +3,155 @@
 
 
 /* Style inputs, select elements and textareas */
-input[type=text], select, textarea{
-  width: 100%;
-  padding: 12px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  box-sizing: border-box;
-  resize: vertical;
+input[type=text], select, textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    resize: vertical;
 }
-main{
-   min-height:100vh;
+
+main {
+    min-height: 100vh;
 }
 
 /* Style the label to display next to the inputs */
 label {
-  padding: 12px 12px 12px 0;
-  display: inline-block;
+    padding: 12px 12px 12px 0;
+    display: inline-block;
 }
 
 /* Style the submit button */
 input[type=submit] {
-  background-color: #4CAF50;
-  color: white;
-  padding: 12px 20px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  float: right;
-  max-width:25%;
+    background-color: #4CAF50;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    float: right;
+    max-width: 25%;
 }
+
 button[type=reset] {
-  background-color: #AC4CAF;
-  color: white;
-  padding: 12px 20px;
-  margin-left:10px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  float: right;
+    background-color: #AC4CAF;
+    color: white;
+    padding: 12px 20px;
+    margin-left: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    float: right;
 }
+
 /* Style the container */
 .container {
-  border-radius: 5px;
-  background-color: #f2f2f2;
-  padding: 20px;
-  max-Width:900px;
+    border-radius: 5px;
+    background-color: #f2f2f2;
+    padding: 20px;
+    max-Width: 900px;
 }
 
 /* Floating column for labels: 25% width */
 .col-25 {
-  float: left;
-  width: 25%;
-  margin-top: 6px;
+    float: left;
+    width: 25%;
+    margin-top: 6px;
 }
 
 /* Floating column for inputs: 75% width */
 .col-75 {
-  float: left;
-  width: 75%;
-  margin-top: 6px;
+    float: left;
+    width: 75%;
+    margin-top: 6px;
 }
 
 /* Clear floats after the columns */
 .row:after {
-  content: "";
-  display: table;
-  clear: both;
+    content: "";
+    display: table;
+    clear: both;
 }
-.row{
-display:contents;}
-.oddRow{
-background-color:#aaa
+
+.row {
+    display: contents;
 }
-.evenRow{
-background-color:#ddd}
-.bug{
-color:red}
-.question{
-color:blue}
+
+.oddRow {
+    background-color: #aaa
+}
+
+.evenRow {
+    background-color: #ddd
+}
+
+.bug {
+    color: red
+}
+
+.question {
+    color: blue
+}
+
 .column {
-  float: left;
-  width: 50%;
-  padding: 10px;
-  height:20vh;
+    float: left;
+    width: 50%;
+    padding: 10px;
+    height: 20vh;
 }
-.approved{
-    color:#35600c;
+
+.approved {
+    color: #35600c;
 }
-.pending{
-    color:blue;
+
+.pending {
+    color: blue;
 }
-.rejected{
-    color:red;
+
+.rejected {
+    color: red;
 }
-.modal-header > approved{
-    background-color:#35600c;
+
+.modal-header > approved {
+    background-color: #35600c;
 }
-.modal-header > pending{
-    background-color:#blue;
+
+.modal-header > pending {
+    background-color: blue;
 }
-.modal-header > rejected{
-    background-color:red;
+
+.modal-header > rejected {
+    background-color: red;
 }
+
 /* Responsive layout - when the screen is less than 600px wide, make the two columns stack on top of each other instead of next to each other */
 @media screen and (max-width: 600px) {
-  .col-25, .col-75, input[type=submit] {
-    width: 100%;
-    margin-top: 0;
-  }
+    .col-25, .col-75, input[type=submit] {
+        width: 100%;
+        margin-top: 0;
+    }
 }
 
 /* xs button bootstrap */
 .btn-group-xs > .btn, .btn-xs {
-  padding: .25rem .4rem;
-  font-size: .875rem;
-  line-height: .5;
-  border-radius: .2rem;
+    padding: .25rem .4rem;
+    font-size: .875rem;
+    line-height: .5;
+    border-radius: .2rem;
 }
-.toggle-handle{
-border-width:1px 2px;
-background-color: aliceblue;
+
+.toggle-handle {
+    border-width: 1px 2px;
+    background-color: aliceblue;
 }
-.alert{
-    max-width:50%;
+
+.alert {
+    max-width: 50%;
     margin: 0 auto;
-    text-align:center;
-    }
+    text-align: center;
+}
+
+#mapid {
+    height: 250px;
+}

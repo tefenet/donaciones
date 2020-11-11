@@ -1,7 +1,8 @@
 {% extends "layout.html" %}
 {% block title %}crear Centro{% endblock %}
 {% block head %}
-{{ super() }}
+    {{ super() }}
+    {% include 'components/leaftlet_lib.html' %}
 {% endblock %}
 {% set content %}
 <div style="display:flex">
@@ -30,6 +31,15 @@
     {% endif %}
     {% endfor %}
     <div class="row">
+      <div class="col-25">
+        ubicación geográfica
+      </div>
+      <div class="col-75">
+        <div id="mapid"></div>
+      </div>
+    </div>
+
+    <div class="row">
       <button type="reset" class="btn btn-primary js-scroll-trigger">Limpiar</button>
     <input type="submit" value="Crear" class="btn btn-primary js-scroll-trigger">
 
@@ -37,3 +47,6 @@
 </form>
 </div>
 {% endset %}
+{% block script %}
+    <script src="{{ url_for("static", filename="marker_latlng.js") }}"></script>
+{% endblock %}

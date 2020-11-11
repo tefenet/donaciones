@@ -28,7 +28,8 @@ class Center(Base):
     closing = Column(Time())
     published = Column(Boolean(), default=False)
     state = Column(STATE_ENUM, default=STATES[0])
-    geo_location = Column(String(30))
+    gl_lat = Column(String(30))
+    gl_long = Column(String(30))
     protocol = Column(LargeBinary())
     city_id = Column(Integer, ForeignKey('city.id'))
     type = Column(CENTER_TYPES_ENUM)
@@ -93,7 +94,6 @@ class Center(Base):
     def valid_start_time(self, start_time):
         """Chequeo que el horario del turno pertenezca a un horario válido"""
         return self.opening <= start_time < self.closing
-
 
     @classmethod
     def delete_by_id(cls, id):

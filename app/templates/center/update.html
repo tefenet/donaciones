@@ -1,7 +1,8 @@
 {% extends "layout.html" %}
 {% block title %}Editar Centro{% endblock %}
 {% block head %}
-{{ super() }}
+    {{ super() }}
+    {% include 'components/leaftlet_lib.html' %}
 {% endblock %}
 {% set content %}
 <div style="display:flex">
@@ -30,6 +31,14 @@
     {% endif %}
     {% endfor %}
     <div class="row">
+        <div class="col-25">
+        ubicación geográfica
+        </div>
+        <div class="col-75">
+        <div id="mapid"></div>
+        </div>
+    </div>
+    <div class="row">
       <button type="reset" class="btn btn-primary js-scroll-trigger">Limpiar</button>
     <input type="submit" value="Guardar" class="btn btn-primary js-scroll-trigger">
 
@@ -37,3 +46,19 @@
 </form>
 </div>
 {% endset %}
+{% block script %}
+    <script src="{{ url_for("static", filename="marker_latlng.js") }}"></script>
+    <script>
+    var field_lat = document.getElementById('gl_lat');
+    var field_lng = document.getElementById('gl_long');
+    console.log(field_lng.value);
+    console.log(field_lng.value);
+
+    if (field_lng.value !== '' && field_lat.value !== '') {
+        mymap.setView([field_lat.value, field_lng.value], 12);
+        marker = new L.marker([field_lat.value, field_lng.value]).addTo(mymap);
+    } else {
+        mymap.setView([-34.9217246, -57.95694], 12);
+    }
+    </script>
+{% endblock %}

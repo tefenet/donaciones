@@ -1,7 +1,5 @@
 import io
-from datetime import date
-
-from flask import redirect, render_template, request, url_for, abort, flash, send_file
+from flask import redirect, render_template, request, url_for, flash, send_file
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm.exc import NoResultFound
 from werkzeug.exceptions import BadRequestKeyError
@@ -10,9 +8,10 @@ from app import dbSession
 from app.helpers.auth import restricted
 from app.helpers.handler import display_errors
 from app.helpers.pagination import paginate
-from app.models.center import Center, STATES
+from app.models.center import Center
 from app.models.sistema import Sistema
 from app.resources.forms import CreateCenterForm
+
 SYS_PAGE_COUNT = Sistema.page_count()
 
 
@@ -71,20 +70,25 @@ def delete_center():
 @restricted('centro_update')
 def update_center_form(object_id):
     """ renderiza el formulario para editar un centro """
-    form = CreateCenterForm()
+    try:
+        center = Center.get_by_id(object_id)
+    except NoResultFound as e:
+        flash(e, "danger")
+        return redirect(url_for('center_index'))
+    form = CreateCenterForm(obj=center)
     return render_template('center/update.html', form=form, center_id=object_id)
 
 
 @restricted('centro_update')
 def update_center(object_id):
     """ edita los atributos del centro con los datos obtenidos del formulario """
-    form = CreateCenterForm()
+    form = CreateCenterForm(request.form)
     if form.validate():
         try:
             center = Center.get_by_id(object_id)
         except NoResultFound as e:
             flash(e, 'danger')
-            redirect(url_for("center_index"))
+            return redirect(url_for("center_index"))
         form.populate_obj(center)
         center.protocol = request.files['protocol'].read()
         dbSession.commit()

@@ -17,7 +17,7 @@
                         <b>{{ 'horario de apertura :' + center.opening.strftime('%H:%M') }}</b><br/>
                         <b>{{ 'horario de cierre :' + center.closing.strftime('%H:%M') }}</b><br/>
                         <b>{{ 'tipo :' + center.type }}</b><br/>
-                        <b>{{ 'coordenadas :' + center.geo_location }}</b><br/>
+                        <b>{{ 'coordenadas :' + center.gl_lat + ', ' + center.gl_long }}</b><br/>
                         <b>protocolo :</b>
                         {% if center.protocol %}
                         <form action="{{url_for('get_protocol', object_id=center.id)}}">
