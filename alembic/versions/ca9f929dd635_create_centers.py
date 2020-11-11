@@ -156,6 +156,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "pending",
+			"published": False,
+
             "geo_location": "-39.42783, -131.22992"
         },
         {
@@ -169,6 +171,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "pending",
+			"published": False,
+
             "geo_location": "-73.07459, 110.51013"
         },
         {
@@ -182,6 +186,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "pending",
+			"published": False,
+
             "geo_location": "43.8134, -68.89941"
         },
         {
@@ -195,6 +201,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "pending",
+			"published": False,
+
             "geo_location": "-20.41078, -23.12832"
         },
         {
@@ -208,6 +216,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "pending",
+			"published": False,
+
             "geo_location": "60.17464, -108.22611"
         },
         {
@@ -221,6 +231,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "pending",
+			"published": False,
+
             "geo_location": "-72.98666, -121.59964"
         },
         {
@@ -234,6 +246,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "pending",
+			"published": False,
+
             "geo_location": "8.67668, -155.07677"
         },
         {
@@ -247,6 +261,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "pending",
+			"published": False,
+
             "geo_location": "54.42302, 10.20175"
         },
         {
@@ -260,6 +276,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "pending",
+			"published": False,
+
             "geo_location": "-30.4538, -31.3343"
         },
         {
@@ -273,6 +291,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "pending",
+			"published": False,
+
             "geo_location": "-70.42086, 123.8907"
         },
         {
@@ -286,6 +306,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "pending",
+			"published": False,
+
             "geo_location": "40.52007, 11.28166"
         },
         {
@@ -299,6 +321,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "pending",
+			"published": False,
+
             "geo_location": "75.9892, 33.40298"
         },
         {
@@ -312,6 +336,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "pending",
+			"published": False,
+
             "geo_location": "74.97436, 21.7691"
         },
         {
@@ -325,6 +351,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "pending",
+			"published": False,
+
             "geo_location": "29.37252, 42.6547"
         },
         {
@@ -338,6 +366,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "pending",
+			"published": False,
+
             "geo_location": "-82.72105, -36.19353"
         },
         {
@@ -351,6 +381,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "pending",
+			"published": False,
+
             "geo_location": "-64.88058, 43.42009"
         },
         {
@@ -364,6 +396,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "pending",
+			"published": False,
+
             "geo_location": "-58.23742, -53.6479"
         },
         {
@@ -377,6 +411,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "pending",
+			"published": False,
+
             "geo_location": "-23.08501, 114.58898"
         },
         {
@@ -390,6 +426,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "pending",
+			"published": False,
+
             "geo_location": "29.1554, -58.39153"
         },
         {
@@ -403,6 +441,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "pending",
+			"published": False,
+
             "geo_location": "-64.13474, 24.90177"
         },
         {
@@ -416,6 +456,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "pending",
+			"published": False,
+
             "geo_location": "2.09674, 91.37508"
         },
         {
@@ -429,6 +471,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "pending",
+			"published": False,
+
             "geo_location": "8.64294, -71.38021"
         },
         {
@@ -442,6 +486,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "pending",
+			"published": False,
+
             "geo_location": "60.10816, -104.05721"
         },
         {
@@ -455,6 +501,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "pending",
+			"published": False,
+
             "geo_location": "-84.43946, -15.15763"
         },
         {
@@ -468,6 +516,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "pending",
+			"published": False,
+
             "geo_location": "-80.37991, 60.47264"
         },
         {
@@ -481,6 +531,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "pending",
+			"published": False,
+
             "geo_location": "-5.36161, 18.86378"
         },
         {
@@ -494,6 +546,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "pending",
+			"published": False,
+
             "geo_location": "-0.31799, 41.28833"
         },
         {
@@ -507,6 +561,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "pending",
+			"published": False,
+
             "geo_location": "-1.08516, 145.73139"
         },
         {
@@ -520,6 +576,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "pending",
+			"published": False,
+
             "geo_location": "30.8473, 40.11083"
         },
         {
@@ -533,6 +591,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "pending",
+			"published": False,
+
             "geo_location": "51.5266, -135.26973"
         },
         {
@@ -546,6 +606,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "rejected",
+			"published": False,
+
             "geo_location": "-54.06222, 142.76637"
         },
         {
@@ -559,6 +621,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "rejected",
+			"published": False,
+
             "geo_location": "62.97775, 177.08708"
         },
         {
@@ -572,6 +636,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "rejected",
+			"published": False,
+
             "geo_location": "11.42182, 149.57773"
         },
         {
@@ -585,6 +651,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "rejected",
+			"published": False,
+
             "geo_location": "-57.58976, 155.88253"
         },
         {
@@ -598,6 +666,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "rejected",
+			"published": False,
+
             "geo_location": "44.55883, -67.81671"
         },
         {
@@ -611,6 +681,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "rejected",
+			"published": False,
+
             "geo_location": "-85.34147, 65.68446"
         },
         {
@@ -624,6 +696,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "rejected",
+			"published": False,
+
             "geo_location": "78.30875, 106.18924"
         },
         {
@@ -637,6 +711,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "rejected",
+			"published": False,
+
             "geo_location": "-29.63107, 49.64374"
         },
         {
@@ -650,6 +726,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "rejected",
+			"published": False,
+
             "geo_location": "-70.06008, 25.50508"
         },
         {
@@ -663,6 +741,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "rejected",
+			"published": False,
+
             "geo_location": "-29.03175, 153.50266"
         },
         {
@@ -676,6 +756,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "rejected",
+			"published": False,
+
             "geo_location": "-13.6171, 71.03475"
         },
         {
@@ -689,6 +771,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "rejected",
+			"published": False,
+
             "geo_location": "-72.38899, -115.07888"
         },
         {
@@ -702,6 +786,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "rejected",
+			"published": False,
+
             "geo_location": "5.80521, 10.87034"
         },
         {
@@ -715,6 +801,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "rejected",
+			"published": False,
+
             "geo_location": "56.14653, 133.66836"
         },
         {
@@ -728,6 +816,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "rejected",
+			"published": False,
+
             "geo_location": "8.88968, -129.41991"
         },
         {
@@ -741,6 +831,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "rejected",
+			"published": False,
+
             "geo_location": "53.28283, 103.69874"
         },
         {
@@ -754,6 +846,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "rejected",
+			"published": False,
+
             "geo_location": "-47.01651, 80.63826"
         },
         {
@@ -767,6 +861,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "rejected",
+			"published": False,
+
             "geo_location": "-10.45212, -25.99467"
         },
         {
@@ -780,6 +876,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "rejected",
+			"published": False,
+
             "geo_location": "86.81364, -79.28977"
         },
         {
@@ -793,6 +891,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "rejected",
+			"published": False,
+
             "geo_location": "-25.97686, -2.64713"
         },
         {
@@ -806,6 +906,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "rejected",
+			"published": False,
+
             "geo_location": "87.56708, -63.79444"
         },
         {
@@ -819,6 +921,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "rejected",
+			"published": False,
+
             "geo_location": "-20.54861, 120.06517"
         },
         {
@@ -832,6 +936,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "rejected",
+			"published": False,
+
             "geo_location": "-73.92559, -35.3757"
         },
         {
@@ -845,6 +951,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "rejected",
+			"published": False,
+
             "geo_location": "-39.34287, 35.5736"
         },
         {
@@ -858,6 +966,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "rejected",
+			"published": False,
+
             "geo_location": "-63.8459, -166.74882"
         },
         {
@@ -871,6 +981,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "rejected",
+			"published": False,
+
             "geo_location": "-1.52048, -20.0232"
         },
         {
@@ -884,6 +996,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "rejected",
+			"published": False,
+
             "geo_location": "46.90089, 77.911"
         },
         {
@@ -897,6 +1011,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "rejected",
+			"published": False,
+
             "geo_location": "-18.77066, 85.02954"
         },
         {
@@ -910,6 +1026,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "rejected",
+			"published": False,
+
             "geo_location": "-53.14448, -39.41993"
         },
         {
@@ -923,6 +1041,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "rejected",
+			"published": False,
+
             "geo_location": "-0.30826, -26.62818"
         },
         {
@@ -936,6 +1056,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "approved",
+			"published": True,
+
             "geo_location": "72.85296, -37.94386"
         },
         {
@@ -949,6 +1071,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "approved",
+			"published": True,
+
             "geo_location": "-52.75021, 56.39467"
         },
         {
@@ -962,6 +1086,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "approved",
+			"published": True,
+
             "geo_location": "-57.35384, -96.19838"
         },
         {
@@ -975,6 +1101,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "approved",
+			"published": True,
+
             "geo_location": "-83.85124, 48.28826"
         },
         {
@@ -988,6 +1116,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "approved",
+			"published": True,
+
             "geo_location": "64.14131, -5.45627"
         },
         {
@@ -1001,6 +1131,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "approved",
+			"published": True,
+
             "geo_location": "39.49738, -62.82087"
         },
         {
@@ -1014,6 +1146,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "approved",
+			"published": True,
+
             "geo_location": "28.70681, 169.15634"
         },
         {
@@ -1027,6 +1161,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "approved",
+			"published": True,
+
             "geo_location": "66.44082, 61.57636"
         },
         {
@@ -1040,6 +1176,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "approved",
+			"published": True,
+
             "geo_location": "56.85814, -44.87736"
         },
         {
@@ -1053,6 +1191,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "approved",
+			"published": False,
+
             "geo_location": "-50.79657, 34.90389"
         },
         {
@@ -1066,6 +1206,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "approved",
+			"published": False,
+
             "geo_location": "-32.10208, 166.09958"
         },
         {
@@ -1079,6 +1221,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "approved",
+			"published": False,
+
             "geo_location": "-27.26932, 13.91126"
         },
         {
@@ -1092,6 +1236,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "approved",
+			"published": False,
+
             "geo_location": "72.62085, -65.55914"
         },
         {
@@ -1105,6 +1251,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "approved",
+			"published": False,
+
             "geo_location": "-67.93376, 115.31118"
         },
         {
@@ -1118,6 +1266,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "approved",
+			"published": False,
+
             "geo_location": "-17.03772, 146.64229"
         },
         {
@@ -1131,6 +1281,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "approved",
+			"published": False,
+
             "geo_location": "68.12259, -46.48113"
         },
         {
@@ -1144,6 +1296,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "approved",
+			"published": False,
+
             "geo_location": "22.99388, -159.03609"
         },
         {
@@ -1157,6 +1311,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "approved",
+			"published": False,
+
             "geo_location": "84.78805, 52.44064"
         },
         {
@@ -1170,6 +1326,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "approved",
+			"published": False,
+
             "geo_location": "29.23232, -106.85368"
         },
         {
@@ -1183,6 +1341,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "approved",
+			"published": False,
+
             "geo_location": "-48.92283, -75.10375"
         },
         {
@@ -1196,6 +1356,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "approved",
+			"published": False,
+
             "geo_location": "20.93141, -129.80747"
         },
         {
@@ -1209,6 +1371,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "approved",
+			"published": False,
+
             "geo_location": "-3.26106, -111.83292"
         },
         {
@@ -1222,6 +1386,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "approved",
+			"published": False,
+
             "geo_location": "-35.48654, 173.953"
         },
         {
@@ -1235,6 +1401,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "approved",
+			"published": False,
+
             "geo_location": "51.39711, 161.95409"
         },
         {
@@ -1248,6 +1416,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "approved",
+			"published": False,
+
             "geo_location": "-74.16089, 37.47218"
         },
         {
@@ -1261,6 +1431,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "approved",
+			"published": False,
+
             "geo_location": "-50.29322, 153.77538"
         },
         {
@@ -1274,6 +1446,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "approved",
+			"published": False,
+
             "geo_location": "-14.79298, 86.62935"
         },
         {
@@ -1287,6 +1461,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "approved",
+			"published": False,
+
             "geo_location": "-32.75646, -65.31224"
         },
         {
@@ -1300,6 +1476,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "approved",
+			"published": False,
+
             "geo_location": "76.14129, 67.63632"
         },
         {
@@ -1313,6 +1491,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "approved",
+			"published": False,
+
             "geo_location": "32.54869, -87.66695"
         },
         {
@@ -1326,6 +1506,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "pending",
+			"published": False,
+
             "geo_location": "-42.26103, -34.23717"
         },
         {
@@ -1339,6 +1521,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "pending",
+			"published": False,
+
             "geo_location": "32.27731, -113.08469"
         },
         {
@@ -1352,6 +1536,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "pending",
+			"published": False,
+
             "geo_location": "42.7001, -69.12884"
         },
         {
@@ -1365,6 +1551,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "pending",
+			"published": False,
+
             "geo_location": "5.0972, 141.53215"
         },
         {
@@ -1378,6 +1566,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "pending",
+			"published": False,
+
             "geo_location": "68.64176, 10.56924"
         },
         {
@@ -1391,6 +1581,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "pending",
+			"published": False,
+
             "geo_location": "-16.99769, -28.54151"
         },
         {
@@ -1404,6 +1596,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "pending",
+			"published": False,
+
             "geo_location": "77.84556, -138.28887"
         },
         {
@@ -1417,6 +1611,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "pending",
+			"published": False,
+
             "geo_location": "-22.16088, -144.92666"
         },
         {
@@ -1430,6 +1626,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "pending",
+			"published": False,
+
             "geo_location": "81.67126, -129.88043"
         },
         {
@@ -1443,6 +1641,8 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "pending",
+			"published": False,
+
             "geo_location": "-82.6036, 76.94164"
         }
     ]
