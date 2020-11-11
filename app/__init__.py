@@ -108,21 +108,20 @@ def create_app(environment="production"):
     app.add_url_rule("/api/consultas", "api_issue_index", api_issue.index)
 
     # Rutas de API-rest centros
-    app.add_url_rule("/centros", "api_center_index", api_center.index)
-    app.add_url_rule("/centros", "api_center_create", api_center.create, methods=["POST"])
+    app.add_url_rule("/api/v1.0/centros", "api_center_index", api_center.index)
+    app.add_url_rule("/api/v1.0/centros", "api_center_create", api_center.create, methods=["POST"])
 
-
-    app.add_url_rule("/centros/<int:centro_id>", "centros", api_center.show)
+    app.add_url_rule("/api/v1.0/centros/<int:center_id>", "centros", api_center.show)
 
     """
     #definicion equivalente con decorator
-    @app.route('/centros/<int:centro_id>')
+    @app.route('/api/v1.0/centros/<int:centro_id>')
     def show_centro(centro_id):
         return 'ruta de centros/%d ' %centro_id
     """
 
     # api shifts
-    app.add_url_rule("/api/v1.0/centros/<int:id>/", "api_shifts_avalaible_by_date", api_shifts.avalaible_by_date)
+    app.add_url_rule("/api/v1.0/centros/<int:id>/turnos_disponibles", "api_shifts_avalaible_by_date", api_shifts.avalaible_by_date)
     app.add_url_rule("/api/v1.0/centros/<int:id>/reserva", "api_shifts_new", api_shifts.create, methods=["POST"])
 
     # Ruta de configuración del sistema
