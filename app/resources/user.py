@@ -15,7 +15,6 @@ from app.helpers.pagination import paginate
 @restricted(perm='user_update')
 def activate(user):
     user.activate()
-    flash("El usuario {} fue activado exitosamente".format(user.email), "success")
     return True
 
 
@@ -23,7 +22,6 @@ def activate(user):
 @is_not_admin()
 def deactivate(user):
     user.deactivate()
-    flash("El usuario {} fue desactivado exitosamente".format(user.email), "success")
     return True
 
 
