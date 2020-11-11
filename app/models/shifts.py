@@ -215,3 +215,8 @@ class Shifts(Base):
         excepcion ValueError."""
         if shift_date < date.today():
             raise ValueError("La fecha del turno no puede ser menor al día de la fecha. ")
+
+    @classmethod
+    def get_donor_email_set(cls):
+        return set(map(lambda s: s.donor_email, cls.query.all()))
+        # return cls.query.distinct(cls.donor_email)

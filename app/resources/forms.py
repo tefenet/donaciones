@@ -11,6 +11,7 @@ from app.models.center import CENTER_TYPES_ENUM, CENTER_TYPES
 from app.models.city import City
 from app.models.role import Role
 from app.models.user import User
+from app.models.shifts import Shifts
 
 
 class LoginForm(FlaskForm):
@@ -174,3 +175,7 @@ class CreateShiftForm(FlaskForm):
             if not ch.isdigit():
                 raise ValidationError(
                     'al ingresar el numero de telefono, utilice solo con digitos, sin espacios ni guiones')
+
+
+class SearchDonorEmailForm(FlaskForm):
+    donor_email = SelectField(choices=Shifts.get_donor_email_set(), render_kw={'style': 'width: auto;'})
