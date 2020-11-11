@@ -33,23 +33,27 @@ def avalaible_by_date(id):
     """
     try:
         fecha = datetime.strptime(request.args['fecha'], '%Y-%m-%d').date()
+        center = Center.get_by_id(id)
+        if center.published is False:
+            raise ValueError(
+                "centro id={} no se encuentra activo".format(center.id))  # podria implementarse en el metodo
     except BadRequestKeyError:  # no se recibe la fecha
         app.logger.info(traceback.format_exc())
         fecha = date.today()
-    except ValueError:
+        center = Center.get_by_id(id)
+        if center.published is False:
+            raise ValueError(
+                "centro id={} no se encuentra activo".format(center.id))  # podria implementarse en el metodo
+    except (ValueError, NoResultFound) as e:
         app.logger.info(traceback.format_exc())
-        return get_json_error_msg(error_msg="formato de fecha no válido", error_code=422)
+        return get_json_error_msg(error_msg=str(e), error_code=422)
     except Exception as e:
         app.logger.info(traceback.print_exc())
         return get_json_error_msg(error_code=500, error_msg="Error en el servidor", status="internal server error")
-    try:
-        center = Center.get_by_id(id)
-    except NoResultFound as err:
-        return get_json_error_msg(error_msg=str(err), error_code=422)
+
     turnos = center.get_shifts_blocks_avalaible(fecha)
     if turnos:
-        return get_json_turnos(turnos, fecha, center.id), 200
-
+        return get_json_turnos(turnos=turnos, fecha=fecha, centro_id=center.id), 200
     return get_json_error_msg(center_info={"centro_id": center.id, "fecha": fecha.isoformat()},
                               status="shifts not available", error_code=200,
                               error_msg="no hay turnos disponibles".format(center.id))
@@ -58,21 +62,24 @@ def avalaible_by_date(id):
 def create(id):
     try:
         datos_turno = request.get_json()
+        if id != datos_turno['centro_id']:
+            raise ValueError("id url no coincide con centro_id.")
         center = Center.get_by_id(id)  # datos_turno['centro_id']
         Shifts.check_date(str_date_to_datetime(datos_turno['fecha']).date())
-        Shifts.check_duration(str_time_to_datetime(datos_turno['hora_inicio']), str_time_to_datetime(datos_turno['hora_fin']))
+        Shifts.check_duration(str_time_to_datetime(datos_turno['hora_inicio']),
+                              str_time_to_datetime(datos_turno['hora_fin']))
         datos_turno['hora_inicio'] = str_time_to_datetime(datos_turno['hora_inicio']).time()
         datos_turno['hora_fin'] = str_time_to_datetime(datos_turno['hora_fin']).time()
         datos_turno['fecha'] = str_date_to_datetime(datos_turno['fecha']).date()
         shift = Shifts.populate_from_api(datos_turno)
         created_shift = Shifts.create_shift(shift, center)  # errores posibles capturados
         return jsonify({"atributos": created_shift.serialize()})
-    except (BadRequestKeyError, ValueError, KeyError, AttributeError) as err:
+
+    except (BadRequestKeyError, ValueError, KeyError, AttributeError, NoResultFound) as err:
         app.logger.info(traceback.format_exc())
         return get_json_error_msg(error_msg=str(err), error_code=420, status="invalid request")
+
     except Exception as e:
         app.logger.info(traceback.format_exc())
         return get_json_error_msg(error_code=500, error_msg="Error inesperado",
                                   status="internal server error")
-    except NoResultFound as err:
-        return get_json_error_msg(error_msg=str(err), error_code=422)

@@ -167,10 +167,10 @@ class Shifts(Base):
     @classmethod
     def create_shift(cls, shift, center):
         """recibe un turno y un centro, lo valida antes de persistirlo."""
+        if center.published is False:
+            raise ValueError("El centro {} no se encuentra activo.".format(center.id))
         if center.valid_start_time(shift.start_time):
             available_start = center.get_shifts_blocks_avalaible(shift.date)
-            app.logger.info("HORARIOS DISPONIBLES PARA EL CENTRO    : %s",
-                            center.get_shifts_blocks_avalaible(shift.date))
             if shift.start_time not in available_start:
                 raise ValueError("Error: turno no disponible")
             shift.end_time = cls.get_end_time(shift.start_time)
