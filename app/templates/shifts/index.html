@@ -64,15 +64,9 @@
                     <h5>Buscar por correo donante </h5>
                     <form method="GET" action="{{ url_for('turnos_search_by_donor') }}">
                         {{ search_donor_form.hidden_tag() }}
-                        <div class="row">
-                            <div class="col-25">
-                                {{ search_donor_form.donor_email }}
-                            </div>
-                            <div class="col-75">
-                                <input type="hidden" name="page" value=1 />
-                                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Buscar</button>
-                            </div>
-                        </div>
+                        {{ search_donor_form.donor_email }}
+                        <input type="hidden" name="page" value="1"/>
+                        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Buscar</button>
                     </form>
                 {% endif %}
             </div>
