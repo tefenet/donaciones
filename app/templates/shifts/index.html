@@ -60,15 +60,21 @@
         </div>
         {% if has_perm('shifts_search') %}
             <div class="m-3">
-                <h5>Buscar por correo donante </h5>
-                <form class="form-inline my-2  mr-auto  "
-                      action="{{ url_for('turnos_search_by_donor') }}">
-                    <input class="form-control mr-sm-2" type="text" id="donor_email" name="donor_email"
-                           placeholder="Email"
-                           aria-label="Email">
-                    <input id="pagee" name="page" type="hidden" value="1">
-                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Buscar</button>
-                </form>
+                {% if search_donor_form %}
+                    <h5>Buscar por correo donante </h5>
+                    <form method="GET" action="{{ url_for('turnos_search_by_donor') }}">
+                        {{ search_donor_form.hidden_tag() }}
+                        <div class="row">
+                            <div class="col-25">
+                                {{ search_donor_form.donor_email }}
+                            </div>
+                            <div class="col-75">
+                                <input type="hidden" name="page" value=1 />
+                                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Buscar</button>
+                            </div>
+                        </div>
+                    </form>
+                {% endif %}
             </div>
             <div class="m-3">
                 <h5>Buscar por nombre de centro </h5>
@@ -82,6 +88,5 @@
             </div>
         {% endif %}
     </div>
-
 </div>
 {% endset %}

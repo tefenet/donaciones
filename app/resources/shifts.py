@@ -13,7 +13,7 @@ from app.helpers.pagination import paginate
 from app.models.center import Center
 from app.models.shifts import Shifts
 from app.models.sistema import Sistema
-from app.resources.forms import CreateShiftForm
+from app.resources.forms import CreateShiftForm, SearchDonorEmailForm
 
 
 #####
@@ -63,7 +63,8 @@ def index(date_start=date.today(), date_end=(datetime.now() + timedelta(2)).date
         page = 1
 
     res = paginate(Shifts.query_shifts_between(date_start, date_end), page, sys.cant_por_pagina)
-    return render_template("shifts/index.html", pagination=res, date_start=date_start, date_end=date_end, shifts=shifts)
+    return render_template("shifts/index.html", pagination=res, date_start=date_start, date_end=date_end, shifts=shifts,
+                           search_donor_form=SearchDonorEmailForm())
 
 
 @restricted(perm='shifts_search')
@@ -81,7 +82,8 @@ def search_by_donor_email():
         return redirect(url_for('turnos_index'))
 
     pagination = Shifts.search_by_donor_email_paginated(donor_email, page)
-    return render_template("shifts/index.html", pagination=pagination, shifts=True, donor_email=donor_email)
+    return render_template("shifts/index.html", pagination=pagination, shifts=True, donor_email=donor_email,
+                           search_donor_form=SearchDonorEmailForm())
 
 
 @restricted(perm='shifts_search')
@@ -100,7 +102,8 @@ def search_by_center_name():
 
     c = Center.get_by_name(center_name)
     pagination = Shifts.search_by_center_name_paginated(c, page)
-    return render_template("shifts/index.html", pagination=pagination, shifts=True, center_name=center_name)
+    return render_template("shifts/index.html", pagination=pagination, shifts=True, center_name=center_name,
+                           search_donor_form=SearchDonorEmailForm())
 
 
 def update_form():
