@@ -108,7 +108,8 @@ def create_app(environment="production"):
     app.add_url_rule("/api/consultas", "api_issue_index", api_issue.index)
 
     # Rutas de API-rest centros
-    app.add_url_rule("/api/v1.0/centros/", "api_center_index", api_center.index)
+    app.add_url_rule("/api/v1.0/centros/index/", "api_center_index", api_center.index)
+    app.add_url_rule("/api/v1.0/centros/index/<int:page>", "api_center_index", api_center.index)
     app.add_url_rule("/api/v1.0/centros/", "api_center_create", api_center.create, methods=["POST"])
     app.add_url_rule("/api/v1.0/centros/<int:center_id>/", "centros", api_center.show)
 

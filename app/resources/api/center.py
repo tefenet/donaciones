@@ -2,6 +2,7 @@ from flask import jsonify, request
 from app import dbSession
 from app.models.center import Center
 from app.models.sistema import Sistema
+from app.helpers.pagination import Page
 from sqlalchemy.orm.exc import NoResultFound
 
 
@@ -18,11 +19,27 @@ def show(center_id):
     return center.to_json()
 
 
-def index():
+def index(page=1):
     """retorna en formato JSON los datos de todos los centros de ayuda publicados en el sitio"""
     cant_pagina = Sistema.get_sistema().cant_por_pagina
-    #paginar segun la variable del sistema
-    return "ruta de centro index (GET)"
+    try:
+        result = Page(Center.query_by_published(True), page, cant_pagina)
+        total = result.pages()
+        if page > total:
+            raise ValueError('Pagina no valida')
+    except (ValueError, AttributeError):
+        return jsonify({'error': [{'status': 'Invalid Request', 'error_msg': 'Pagina no disponible',
+                        'error_code': 420}]}), 420
+    listado = []
+    for center in result.items:
+        center_serialized = center.serialized()
+        listado.append(center_serialized)
+    result = {
+        'centros': listado,
+        'total': total,
+        'pagina': page,
+    }
+    return jsonify(result)
 
 
 def create():
