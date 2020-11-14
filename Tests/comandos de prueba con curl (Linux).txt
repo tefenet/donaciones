@@ -1,0 +1,119 @@
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
+COMANDOS DE PRUEBA PARA POWERSHELL:
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------------
+LISTAR TURNOS:
+
+
+CASO EXITOSO:
+
+curl.exe localhost:5000/api/v1.0/centros/1/turnos_disponibles
+
+
+CENTRO INEXISTENTE:  //retorna error 422
+
+curl.exe localhost:5000/api/v1.0/centros/9999/turnos_disponibles
+
+
+
+---------------------------------------------------------------------------------------------------------------
+SOLICITAR TURNO:
+
+CASO EXITOSO:
+
+curl.exe -X POST -H "Content-Type: application/json" -d '{"centro_id" : 1 , "email_donante" : "juan.perez@gmail.com" , "telefono_donante" : "221 - 5930941" , "hora_inicio" : "12:00" , "hora_fin" : "12:30" , "fecha" : "2020-12-12"}'  localhost:5000/api/v1.0/centros/1/reserva
+
+
+
+TURNO EN HORARIO FUERA DEL ESTABLECIDO: //retorna error 420 invalid request
+
+curl.exe -X POST -H "Content-Type: application/json" -d '{"centro_id" : 1 , "email_donante" : "juan.perez@gmail.com" , "telefono_donante" : "221 - 5930941" , "hora_inicio" : "22:00" , "hora_fin" : "22:30" , "fecha" : "2020-12-12"}'  localhost:5000/api/v1.0/centros/1/reserva
+
+
+
+FECHA CON FORMATO INVALIDO: //da error 420
+
+curl.exe -X POST -H "Content-Type: application/json" -d '{"centro_id" : 1 , "email_donante" : "juan.perez@gmail.com" , "telefono_donante" : "221 - 5930941" , "hora_inicio" : "12:00" , "hora_fin" : "12:30" , "fecha" : "2020-25-12"}'  localhost:5000/api/v1.0/centros/1/reserva
+
+
+
+SOLICITUD DE TURNO SIN DATOS EN EL CUERPO:	//retorna error 500 internal server error
+
+curl.exe  -i  -X POST -d '{}'  localhost:5000/api/v1.0/centros/1/reserva
+
+
+
+CENTRO NO EXISTENTE: //Retorna error 420 invalid request
+
+curl.exe -X POST -H "Content-Type: application/json" -d '{"centro_id" : 99999 , "email_donante" : "juan.perez@gmail.com" , "telefono_donante" : "221 - 5930941" , "hora_inicio" : "12:00" , "hora_fin" : "12:30" , "fecha" : "2020-12-12"}'  localhost:5000/api/v1.0/centros/99999/reserva
+
+
+
+CENTRO_ID EN LA URL NO COINCIDE CON EL ID EN EL CUERPO DEL JSON: //Retorna error 420 invalid request
+
+curl.exe -X POST -H "Content-Type: application/json" -d '{"centro_id" : 99999 , "email_donante" : "juan.perez@gmail.com" , "telefono_donante" : "221 - 5930941" , "hora_inicio" : "12:00" , "hora_fin" : "12:30" , "fecha" : "2020-12-12"}'  localhost:5000/api/v1.0/centros/1/reserva
+
+
+
+CENTRO NO PUBLICADO: //Retorna error 420: invalid request
+
+curl.exe -X POST -H "Content-Type: application/json" -d '{"centro_id" : 20 , "email_donante" : "juan.perez@gmail.com" , "telefono_donante" : "221 - 5930941" , "hora_inicio" : "22:00" , "hora_fin" : "22:30" , "fecha" : "2020-12-12"}'  localhost:5000/api/v1.0/centros/20/reserva
+
+
+
+
+TURNO OCUPADO:  //da error 420 invalid request: turno no disponible
+
+ejecutar 2 veces:
+
+curl.exe -X POST -H "Content-Type: application/json" -d '{"centro_id" : 1 , "email_donante" : "juan.perez@gmail.com" , "telefono_donante" : "221 - 5930941" , "hora_inicio" : "12:00" , "hora_fin" : "12:30" , "fecha" : "2020-12-25"}'  localhost:5000/api/v1.0/centros/1/reserva
+
+
+
+---------------------------------------------------------------------------------------------------------------
+LISTAR CENTROS:
+
+CASO EXITOSO:
+
+curl.exe  localhost:5000/api/v1.0/centros/
+
+
+---------------------------------------------------------------------------------------------------------------
+MOSTRAR CENTRO:
+
+CASO EXITOSO:
+
+curl.exe  localhost:5000/api/v1.0/centros/1/
+
+
+CENTRO INEXISTENTE: //da error 404 not found
+
+curl.exe  localhost:5000/api/v1.0/centros/9999999/
+
+
+EL CENTRO NO ESTA DISPONIBLE PUBLICAMENTE: //da error 420 invalid request
+
+curl.exe  localhost:5000/api/v1.0/centros/11/
+
+
+---------------------------------------------------------------------------------------------------------------
+CREAR CENTRO: (POST)
+
+CASO EXITOSO:
+
+curl.exe -X POST -H "Content-Type: application/json" -d '{ "nombre" : "Colegio" , "direccion" : "Calle 88 nro 1912, Ringuelet" , "telefono" : "221 - 5930941" , "hora_apertura" : "15:00" , "hora_cierre" : "18:00" , "tipo" : "alimentos" , "web" : "" , "email" : "" }'  localhost:5000/api/v1.0/centros/
+
+
+SOLICITUD CON HEADER INCORRECTO: //da error 400 bad request
+
+curl.exe -X POST -d '{ "nombre" : "Colegio" , "direccion" : "Calle 88 nro 1912, Ringuelet" , "telefono" : "221 - 5930941" , "hora_apertura" : "15:00" , "hora_cierre" : "18:00" , "tipo" : "alimentos" , "web" : "" , "email" : "" }'  localhost:5000/api/v1.0/centros/
+
+
+
+SOLICITUD CON DATOS INCOMPLETOS: //da error 500
+
+curl.exe -X POST -H "Content-Type: application/json" -d '{ "nombre" : "Colegio Sagrado Corazon" }'  localhost:5000/api/v1.0/centros/
+
