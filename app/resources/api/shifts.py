@@ -37,19 +37,12 @@ def avalaible_by_date(id):
         if center.published is False:
             raise ValueError(
                 "centro id={} no se encuentra activo".format(center.id))  # podria implementarse en el metodo
-    except BadRequestKeyError:  # no se recibe la fecha
-        fecha = date.today()
-        try:
-            center = Center.get_by_id(id)
-            if center.published is False:
-                raise ValueError(
-                    "centro id={} no se encuentra activo".format(center.id))  # podria implementarse en el metodo
-        except NoResultFound as e:
-            return get_json_error_msg(error_msg=str(e), error_code=422)
-
-    except (ValueError, NoResultFound) as e:
+    except (ValueError, NoResultFound, BadRequestKeyError) as e:
         app.logger.info(traceback.format_exc())
-        return get_json_error_msg(error_msg=str(e), error_code=422)
+        msg, error_code = str(e), 404
+        if type(e) == BadRequestKeyError:
+            msg, error_code = "error: fecha no recibida", 422
+        return get_json_error_msg(error_msg=msg, error_code=error_code)
 
     except Exception as e:
         app.logger.info(traceback.print_exc())
