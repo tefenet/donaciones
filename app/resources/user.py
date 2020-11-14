@@ -9,7 +9,7 @@ from app.resources.forms import CreateUserForm, EditUserForm
 from werkzeug.exceptions import BadRequestKeyError
 from pymysql import escape_string as thwart
 from sqlalchemy.exc import IntegrityError
-from app.helpers.pagination import paginate
+from app.helpers.pagination import Page
 
 
 @restricted(perm='user_update')
@@ -30,15 +30,15 @@ def find_by_username_paginated(username, page=1):
     """Retorna una paginación con los usuarios que contengan username en su nombre de usuario"""
     sys = Sistema.get_sistema()
     query = User.query_by_username(username)
-    return paginate(query, page, sys.cant_por_pagina)
+    return Page(query, page, sys.cant_por_pagina)
 
 
 @restricted(perm='user_find')
-def find_by_status_paginated(status=True, page=1):
+def find_by_status_paginated(status, page=1):
     """Retornauna paginación con los usuarios con el estado recibido"""
     query = User.query_by_status(status)
     sys = Sistema.get_sistema()
-    return paginate(query, page, sys.cant_por_pagina)
+    return Page(query, page, sys.cant_por_pagina)
 
 
 # Protected resources
@@ -53,7 +53,7 @@ def index():
     except (BadRequestKeyError, ValueError):
         page = 1
     try:
-        res = paginate(User.query, page, sys.cant_por_pagina)  # check User.query
+        res = Page(User.query, page, sys.cant_por_pagina)  # check User.query
     except AttributeError:  # AttributeError raise when page<1
         return redirect(url_for('user_index'))
     return render_template("user/index.html", pagination=res)
@@ -193,7 +193,7 @@ def search_by_status():
     """Busca usuarios por estado(activo/inactivo).
     Recibe status, que es un booleano, devuelve una lista de usuarios """
     try:
-        status = False if request.args['status'] == "False" else True
+        status = eval(request.args['args'])['status']
         page = int(request.args['page'])
     except (BadRequestKeyError, ValueError) as e:
         flash("ERROR: {}".format(e), e)
@@ -204,7 +204,8 @@ def search_by_status():
     except AttributeError:  # raised when page < 1
         page = 1
         pagination = find_by_status_paginated(status, page)
-    return render_template("user/index.html", pagination=pagination)
+    context = {'pagination': pagination, 'status': status}
+    return render_template("user/index.html", **context)
 
 
 @restricted(perm='user_find')
@@ -212,7 +213,7 @@ def search_by_username():
     """Busca usuarios por nombre de usuario.
     Recibe status, que es un booleano, devuelve una lista de usuarios """
     try:
-        username = request.args['username']
+        username = thwart(request.args['args'])
         page = int(request.args['page'])
     except (BadRequestKeyError, ValueError) as e:
         flash("ERROR: {}".format(e), e)
@@ -223,7 +224,8 @@ def search_by_username():
     except AttributeError:  # raised when page < 1
         page = 1
         pagination = find_by_username_paginated(username, page)
-    return render_template("user/index.html", pagination=pagination)
+    context = {'pagination': pagination, 'username': username}
+    return render_template("user/index.html", **context)
 
 
 #####
