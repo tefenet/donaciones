@@ -4,7 +4,7 @@ from flask import current_app as app
 from sqlalchemy import Column, Integer, ForeignKey, String, Time, Date
 
 from app.db import Base, dbSession
-from app.helpers.pagination import paginate
+from app.helpers.pagination import Page
 from app.models.sistema import Sistema
 
 
@@ -186,14 +186,14 @@ class Shifts(Base):
         """Retorna una paginación con los turnos que contengan donor_email"""
         sys = Sistema.get_sistema()
         query = Shifts.query_donor_email(donor_email)
-        return paginate(query, page, sys.cant_por_pagina)
+        return Page(query, page, sys.cant_por_pagina)
 
     @classmethod
     def search_by_center_name_paginated(cls, center_name, page=1):
         """Retorna una paginación con los turnos pertenecientes al centro 'center_name'"""
         sys = Sistema.get_sistema()
         query = Shifts.query_center_name(center_name)
-        return paginate(query, page, sys.cant_por_pagina)
+        return Page(query, page, sys.cant_por_pagina)
 
     @classmethod
     def aval_shifts(cls, center, shifts):

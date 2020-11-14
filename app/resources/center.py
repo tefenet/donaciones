@@ -1,13 +1,14 @@
 import io
-from flask import redirect, render_template, request, url_for, flash, send_file
+from flask import redirect, render_template, request, url_for, flash, send_file, current_app
+from flask_sqlalchemy import Pagination
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm.exc import NoResultFound
 from werkzeug.exceptions import BadRequestKeyError
-
+from pymysql import escape_string as thwart
 from app import dbSession
 from app.helpers.auth import restricted
 from app.helpers.handler import display_errors
-from app.helpers.pagination import paginate
+from app.helpers.pagination import Page
 from app.models.center import Center
 from app.models.sistema import Sistema
 from app.resources.forms import CreateCenterForm
@@ -22,7 +23,7 @@ def index():
     except (BadRequestKeyError, ValueError):
         page = 1
     try:
-        res = paginate(Center.get_for_index(), page, SYS_PAGE_COUNT)
+        res = Page(Center.get_for_index(), page, SYS_PAGE_COUNT)
     except AttributeError:
         return redirect(url_for('center_index'))
     return render_template("center/index.html", pagination=res)
@@ -104,49 +105,53 @@ def search_by_name():
     """Busca centros por nombre.
         Recibe name, que es un string, devuelve una lista paginada de centros """
     try:
-        name = request.args['name']
+        name = thwart(request.args['args'])
         page = int(request.args['page'])
     except (BadRequestKeyError, ValueError) as e:
         flash("ERROR: {}".format(e), e)
         return redirect(url_for('center_index'))
     query = Center.query_by_name(name)
     try:
-        pagination = paginate(query, page, SYS_PAGE_COUNT)
+        pagination = Page(query, page, SYS_PAGE_COUNT)
     except AttributeError:  # raised when page < 1
-        pagination = paginate(query, 1, SYS_PAGE_COUNT)
-    return render_template("center/index.html", pagination=pagination)
+        pagination = Page(query, 1, SYS_PAGE_COUNT)
+    context = {'pagination': pagination, 'name': name}
+    return render_template("center/index.html", **context)
 
 
 def search_by_state():
     try:
-        state = request.args['state']
+        state = eval(request.args['args'])['state']
         page = int(request.args['page'])
     except (BadRequestKeyError, ValueError) as e:
         flash("ERROR: {}".format(e), e)
         return redirect(url_for('center_index'))
     query = Center.query_by_state(state)
     try:
-        pagination = paginate(query, page, SYS_PAGE_COUNT)
+        pagination = Page(query, page, SYS_PAGE_COUNT)
     except AttributeError:
-        pagination = paginate(query, 1, SYS_PAGE_COUNT)
-    return render_template("center/index.html", pagination=pagination)
+        pagination = Page(query, 1, SYS_PAGE_COUNT)
+    context = {'pagination': pagination, 'state': state}
+    return render_template("center/index.html", **context)
 
 
 def search_by_published():
+
     try:
-        published = False if request.args['published'] == "False" else True
+        published = eval(request.args['args'])['published']
     except (BadRequestKeyError, ValueError) as e:
         flash("ERROR: {}".format(e), e)
         return redirect(url_for('center_index'))
     query = Center.query_by_published(published)
     try:
         page = int(request.args['page'])
-        pagination = paginate(query, page, SYS_PAGE_COUNT)
+        pagination = Page(query, page, SYS_PAGE_COUNT)
     except (BadRequestKeyError, ValueError):
-        pagination = paginate(query, 1, SYS_PAGE_COUNT)
+        pagination = Page(query, 1, SYS_PAGE_COUNT)
     except AttributeError:
-        pagination = paginate(query, 1, SYS_PAGE_COUNT)
-    return render_template("center/index.html", pagination=pagination)
+        pagination = Page(query, 1, SYS_PAGE_COUNT)
+    context = {'pagination': pagination, 'published': published}
+    return render_template("center/index.html", **context)
 
 
 def change_state(method, message):

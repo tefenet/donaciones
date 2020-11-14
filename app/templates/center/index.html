@@ -39,7 +39,7 @@
                     <br/>
                     <tbody>
                     {% for center in pagination.items %}
-                    <tr align="center" class="{{'oddRow' if loop.index%2==0 else 'evenRow'}}" >
+                    <tr id="{{loop.index% site_variables().cant_por_pagina}}" align="center" class="{{'oddRow' if loop.index%2==0 else 'evenRow'}}" >
                         <td>
                             {% import 'center/show.html' as show_center %}
                             {{ show_center.set(center, loop.index) }}
@@ -92,9 +92,10 @@
                 {% if request.path == url_for('center_index') %}
                     {{ pag.set('center_index',pagination) }}
                 {% elif request.path == url_for('centro_search_by_published') %}
-                    {{ pag.set('centro_search_by_published',pagination, request.args.get('published')) }}
+                {% set args="{'published':"+ "{}".format(published) + "}" %}
+                    {{ pag.set('centro_search_by_published',pagination, args ) }}
                 {% else %}
-                    {{ pag.set('centro_search_by_name',pagination,request.args.get('name')) }}
+                    {{ pag.set('centro_search_by_name',pagination, name) }}
                 {% endif %}
             </div>
         </div>
@@ -103,7 +104,7 @@
             <h5>Buscar por nombre de centro </h5>
             <form action="{{url_for('centro_search_by_name')}}"
                   class="form-inline my-2  mr-auto  ">
-                <input aria-label="name" class="form-control mr-sm-2" id="name" name="name" placeholder="nombre del centro"
+                <input aria-label="name" class="form-control mr-sm-2" id="name" name="args" placeholder="nombre del centro"
                        type="text">
                 <input id="page" name="page" type="hidden" value="1">
                 <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Buscar</button>
@@ -112,9 +113,9 @@
         <div class="m-3">
             <h5>Buscar por estado</h5>
             <a class="btn btn-outline-success my-2 my-sm-0"
-               href="{{url_for('centro_search_by_published', published=True)}}">Publicados</a>
+               href="{{url_for('centro_search_by_published', args={'published':True})}}">Publicados</a>
             <a class="btn btn-outline-success my-2 my-sm-0"
-               href="{{url_for('centro_search_by_published', published=False)}}">Despublicados</a>
+               href="{{url_for('centro_search_by_published', args={'published':False})}}">Despublicados</a>
         </div>
         {% endif %}
     </div>

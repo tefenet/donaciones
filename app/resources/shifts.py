@@ -9,7 +9,7 @@ from werkzeug.exceptions import BadRequestKeyError
 from app.db import dbSession
 from app.helpers.auth import restricted
 from app.helpers.handler import display_errors
-from app.helpers.pagination import paginate
+from app.helpers.pagination import Page
 from app.models.center import Center
 from app.models.shifts import Shifts
 from app.models.sistema import Sistema
@@ -62,7 +62,7 @@ def index(date_start=date.today(), date_end=(datetime.now() + timedelta(2)).date
     except (BadRequestKeyError, ValueError):
         page = 1
 
-    res = paginate(Shifts.query_shifts_between(date_start, date_end), page, sys.cant_por_pagina)
+    res = Page(Shifts.query_shifts_between(date_start, date_end), page, sys.cant_por_pagina)
     return render_template("shifts/index.html", pagination=res, date_start=date_start, date_end=date_end, shifts=shifts,
                            search_donor_form=SearchDonorEmailForm())
 
@@ -80,7 +80,6 @@ def search_by_donor_email():
     except (BadRequestKeyError, ValueError) as e:
         flash("ERROR: {}".format(e), e)
         return redirect(url_for('turnos_index'))
-
     pagination = Shifts.search_by_donor_email_paginated(donor_email, page)
     return render_template("shifts/index.html", pagination=pagination, shifts=True, donor_email=donor_email,
                            search_donor_form=SearchDonorEmailForm())
