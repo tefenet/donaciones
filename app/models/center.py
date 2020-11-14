@@ -1,3 +1,4 @@
+from flask import jsonify
 from MySQLdb import TIMESTAMP, TIME
 from sqlalchemy.dialects.mysql import ENUM
 from sqlalchemy.orm import relationship
@@ -7,6 +8,7 @@ from app.db import Base, dbSession
 from sqlalchemy import Column, Integer, String, Boolean, DateTime, LargeBinary, ForeignKey, Time, Enum
 from datetime import datetime, date
 import enum
+
 
 from app.models.shifts import Shifts
 
@@ -94,6 +96,19 @@ class Center(Base):
     def valid_start_time(self, start_time):
         """Chequeo que el horario del turno pertenezca a un horario válido"""
         return self.opening <= start_time < self.closing
+
+    def to_json(self, string_on_top="centro"):
+        """Convierte un centro de ayuda a formato JSON"""
+        data = {
+            "nombre": self.name,
+            "direccion": self.address,
+            "telefono": self.phone,
+            "hora_apertura": self.opening.isoformat(),
+            "hora_cierre": self.closing.isoformat(),
+            "tipo": self.type,
+            "web": self.web_site,
+            "email": self.email}
+        return jsonify({string_on_top: data})
 
     @classmethod
     def delete_by_id(cls, id):
