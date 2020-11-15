@@ -34,7 +34,7 @@ class Center(Base):
     gl_long = Column(String(30))
     protocol = Column(LargeBinary())
     city_id = Column(Integer, ForeignKey('city.id'))
-    type = Column(CENTER_TYPES_ENUM)
+    center_type = Column(CENTER_TYPES_ENUM)
     shifts = relationship("Shifts", backref="center")
 
     def __init__(self, name=None, address=None, phone=None, email=None, opening=None, closing=None):

@@ -2,7 +2,7 @@ from datetime import date, time, datetime
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed
 from wtforms import StringField, SubmitField, PasswordField, BooleanField, IntegerField, \
-    RadioField, widgets, SelectField
+    RadioField, widgets, SelectField, HiddenField
 from wtforms.ext.sqlalchemy.fields import QuerySelectField, QuerySelectMultipleField
 from wtforms.validators import ValidationError, DataRequired, Length, length, Email, EqualTo, Optional
 from wtforms.fields.html5 import EmailField, TimeField, URLField, DateField
@@ -123,13 +123,13 @@ class CreateCenterForm(FlaskForm):
                                             Length(max=60, message='se permite hasta 60 caracteres')])
     opening = TimeField('apertura', validators=[DataRequired()])
     closing = TimeField('cierre', validators=[DataRequired()])
-    city = QuerySelectField('ciudad', query_factory=select_city, get_label='name')
-    type = SelectField(label='tipo', choices=[(g, g) for g in CENTER_TYPES])
+    city_id = SelectField('ciudad', choices=[])
+    center_type = SelectField(label='tipo', choices=[(g, g) for g in CENTER_TYPES])
     web_site = URLField('sitio web', render_kw={"placeholder": "https://www.site.com"})
     protocol = FileField('protocolo', widget=widgets.FileInput(),
                          validators=[FileAllowed(['pdf'], 'protocolo en pdf unicamente')])
-    gl_lat = StringField('latitud', render_kw={'readonly': True, "placeholder": "seleccionar punto en el mapa"})
-    gl_long = StringField('longitud', render_kw={'readonly': True, "placeholder": "seleccionar punto en el mapa"})
+    gl_lat = HiddenField()
+    gl_long = HiddenField()
 
     @classmethod
     def validate_phone(cls, form, phone):
