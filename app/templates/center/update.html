@@ -3,6 +3,7 @@
 {% block head %}
     {{ super() }}
     {% include 'components/leaftlet_lib.html' %}
+
 {% endblock %}
 {% set content %}
 <div style="display:flex">
@@ -18,7 +19,7 @@
 <form method=post action="{{url_for('center_update', object_id=center_id)}}" enctype=multipart/form-data>
   {{ form.hidden_tag() }}
 
-    {% for field in form %}
+    {% for field in form if field.widget.input_type != 'hidden' %}
     {% if field.name != "csrf_token" %}
     <div class="row">
       <div class="col-25">
@@ -47,7 +48,8 @@
 </div>
 {% endset %}
 {% block script %}
-    <script src="{{ url_for("static", filename="marker_latlng.js") }}"></script>
+    <script src="{{ url_for('static', filename='marker_latlng.js') }}"></script>
+
     <script>
     var field_lat = document.getElementById('gl_lat');
     var field_lng = document.getElementById('gl_long');
@@ -60,5 +62,8 @@
     } else {
         mymap.setView([-34.9217246, -57.95694], 12);
     }
+    </script>
+    <script id ="updateSc" type="text/javascript" src="../../static/setCityList.js" >
+    
     </script>
 {% endblock %}

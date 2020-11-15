@@ -7,8 +7,7 @@ let esparta = (index,ev) => {
     muni = document.getElementById('Municipio'+index)        
     key=muni.accessKey
     getAjax(key).done((jsonResponse)=>{        
-    muni.innerText = 'Municipio: '+jsonResponse.data.Town[key].name
-    console.log(jsonResponse.data.Town[key].name)}
+    muni.innerText = 'Municipio: '+jsonResponse.data.Town[key].name    
      )
 }
 

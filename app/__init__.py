@@ -90,10 +90,10 @@ def create_app(environment="production"):
     app.add_url_rule("/cmd", "update_form", shifts.update_form)
     # app.add_url_rule("/turnos/choices", "get_choices", center.)
 
-    # Rutas de Sistema
-    app.add_url_rule("/sistema/configurar", "system_configure", sistema.config_sistema_get)
-    app.add_url_rule("/sistema/configurar", "system_configure_post", sistema.config_sistema_post)
 
+    # Ruta de configuración del sistema
+    app.add_url_rule("/sistema/configurar", "system_configure", sistema.show)
+    app.add_url_rule("/sistema/configurar", "system_configure_post", sistema.update, methods=["POST"])
 
     # app.add_url_rule("/usuarios", "system_configure", user.index)
     # app.add_url_rule("/usuarios", "system", user.index)
@@ -116,10 +116,6 @@ def create_app(environment="production"):
     app.add_url_rule("/api/v1.0/centros/<int:id>/turnos_disponibles", "api_shifts_avalaible_by_date", api_shifts.avalaible_by_date)
     app.add_url_rule("/api/v1.0/centros/<int:id>/reserva", "api_shifts_new", api_shifts.create, methods=["POST"])
 
-    # Ruta de configuración del sistema
-    app.add_url_rule("/sistema/config-sistema", 'config_sistema_get', sistema.config_sistema_get)
-    app.add_url_rule("/sistema/actualizar-configuracion", 'config_sistema_post',
-                     sistema.config_sistema_post, methods=["POST"])
 
     # Handlers
     app.register_error_handler(404, handler.not_found_error)
