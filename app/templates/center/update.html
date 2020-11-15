@@ -3,7 +3,7 @@
 {% block head %}
     {{ super() }}
     {% include 'components/leaftlet_lib.html' %}
-<script type="text/javascript" src="../../static/setCityList.js"></script>
+
 {% endblock %}
 {% set content %}
 <div style="display:flex">
@@ -62,5 +62,8 @@
     } else {
         mymap.setView([-34.9217246, -57.95694], 12);
     }
+    </script>
+    <script id ="updateSc" type="text/javascript" src="../../static/setCityList.js" >
+    
     </script>
 {% endblock %}
