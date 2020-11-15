@@ -153,3 +153,4 @@ class Center(Base):
     def query_by_published(cls, published):
         """Recibe un string indicando el estado. Retorna una Query"""
         return cls.query.filter(cls.published == published)
+
