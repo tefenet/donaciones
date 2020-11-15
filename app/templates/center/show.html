@@ -3,10 +3,10 @@
         type="button" >{{center.name}}
 </button>
 <div id="show-center-{{index}}">
-    <div class="modal fade" id="modalShowCenter{{index}}" role="dialog">
+    <div class="modal fade" name="show-center" id="modalShowCenter{{index}}" role="dialog" content="{{index}}">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header" style="background-color:{{'darkseagreen' if center.published else 'cornsilk'}}">Centro <b style="color:#27279f">{{center.name}}</b> en <b style="color:#880202">{{center.city.name}}</b>
+                <div class="modal-header"  style="background-color:'darkseagreen'">Centro <b class='mx-auto'style="color:#27279f">{{center.name}}</b>
                 </div>
                 <div class="modal-body">
                     <section style="display:table">
@@ -17,6 +17,7 @@
                         <b>{{ 'horario de apertura :' + center.opening.strftime('%H:%M') }}</b><br/>
                         <b>{{ 'horario de cierre :' + center.closing.strftime('%H:%M') }}</b><br/>
                         <b>{{ 'tipo :' + center.center_type }}</b><br/>
+                        <b id="Municipio{{index}}" accesskey="{{center.city_id}}"></b><br/>
                         <b>{{ 'coordenadas :' + center.gl_lat + ', ' + center.gl_long }}</b><br/>
                         <b>protocolo :</b>
                         {% if center.protocol %}

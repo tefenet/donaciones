@@ -49,7 +49,7 @@ function update_coordenadas(latlng) {
         .run(function (error, result, response) {
             if (!error && response)                
                 console.log(result.address.City)
-            // acá se guardaría el nombre de la ciudad seleccionada en el MimeTypeArray, en el atributo city_id de center                
+            // acá se guardaría el nombre de la ciudad seleccionada en el atributo city_id de center
             // callback is called with error, result, and raw response
             // result.latlng contains the coordinates of the located address
             // result.address contains information about the match
