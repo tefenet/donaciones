@@ -111,14 +111,14 @@ class SistemaForm(FlaskForm):
                                                                         (1, "Habilitado")], default=1)
 
 
-def get_cities_list(api_url="https://api-referencias.proyecto2020.linti.unlp.edu.ar/municipios?page=1&per_page=150"):
-    with urllib.request.urlopen(api_url) as url:
-        data = json.loads(url.read().decode())
-        l = []
-        for center in data["data"]["Town"].values():
-            c = (center['id'], center['name'])
-            l.append(c)
-    return l
+# def get_cities_list(api_url="https://api-referencias.proyecto2020.linti.unlp.edu.ar/municipios?page=1&per_page=150"):
+#     with urllib.request.urlopen(api_url) as url:
+#         data = json.loads(url.read().decode())
+#         l = []
+#         for center in data["data"]["Town"].values():
+#             c = (center['id'], center['name'])
+#             l.append(c)
+#     return l
 
 
 class CreateCenterForm(FlaskForm):
@@ -130,7 +130,11 @@ class CreateCenterForm(FlaskForm):
                                             Length(max=60, message='se permite hasta 60 caracteres')])
     opening = TimeField('apertura', validators=[DataRequired()])
     closing = TimeField('cierre', validators=[DataRequired()])
-    city_id = SelectField('municipio', choices=get_cities_list(), coerce=int)
+
+    city_id = SelectField('municipio', choices=[n for n in range(1, 153)])
+
+    # city_id = SelectField('municipio', choices=get_cities_list(), coerce=int)
+
     center_type = SelectField(label='tipo', choices=[(g, g) for g in CENTER_TYPES])
     web_site = URLField('sitio web', render_kw={"placeholder": "https://www.site.com"})
     protocol = FileField('protocolo', widget=widgets.FileInput(),
