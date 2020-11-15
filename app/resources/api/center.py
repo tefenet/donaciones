@@ -19,9 +19,13 @@ def show(center_id):
     return jsonify({'centro': center.serialized()})
 
 
-def index(page=1):
+def index():
     """retorna en formato JSON los datos de todos los centros de ayuda publicados en el sitio"""
     cant_pagina = Sistema.get_sistema().cant_por_pagina
+    if 'page' in request.args:
+        page = int(request.args['page'])
+    else:
+        page = 1
     try:
         result = Page(Center.query_by_published(True), page, cant_pagina)
         total = result.pages()
