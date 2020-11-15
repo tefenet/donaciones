@@ -1,7 +1,8 @@
-let cityList=[]
-  function getAjax(page) {
+let cityList = []
+
+function getAjax(page) {
     return $.get({
-      url: 'https://api-referencias.proyecto2020.linti.unlp.edu.ar/municipios?page=' + page,      
+        url: 'https://api-referencias.proyecto2020.linti.unlp.edu.ar/municipios?page=' + page,
     })
   }  
   function setOptions (jsonResponse) {
