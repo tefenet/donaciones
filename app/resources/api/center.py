@@ -2,6 +2,7 @@ from flask import jsonify, request
 from app import dbSession
 from app.models.center import Center
 from app.models.sistema import Sistema
+from app.helpers.pagination import Page
 from sqlalchemy.orm.exc import NoResultFound
 
 
@@ -15,14 +16,34 @@ def show(center_id):
     if not center.published:
         return jsonify({'error': [{'status': 'Invalid Request', 'error_msg':
         'El centro con id: %d no se encuentra disponible publicamente' % center_id, 'error_code': 420}]}), 420
-    return center.to_json()
+    return jsonify({'centro': center.serialized()})
 
 
 def index():
     """retorna en formato JSON los datos de todos los centros de ayuda publicados en el sitio"""
     cant_pagina = Sistema.get_sistema().cant_por_pagina
-    #paginar segun la variable del sistema
-    return "ruta de centro index (GET)"
+    if 'page' in request.args:
+        page = int(request.args['page'])
+    else:
+        page = 1
+    try:
+        result = Page(Center.query_by_published(True), page, cant_pagina)
+        total = result.pages()
+        if page > total:
+            raise ValueError('Pagina no valida')
+    except (ValueError, AttributeError):
+        return jsonify({'error': [{'status': 'Invalid Request', 'error_msg': 'Pagina no disponible',
+                        'error_code': 420}]}), 420
+    listado = []
+    for center in result.items:
+        center_serialized = center.serialized()
+        listado.append(center_serialized)
+    result = {
+        'centros': listado,
+        'total': total,
+        'pagina': page,
+    }
+    return jsonify(result)
 
 
 def create():
@@ -43,7 +64,7 @@ def create():
         new_center.email = data['email']
         dbSession.add(new_center)
         dbSession.commit()
-        return new_center.to_json("atributos"), 201
+        return jsonify({'atributos': new_center.serialized()}), 201
     except:
         return jsonify(error_code=500, error_msg="Error inesperado", status="internal server error"), 500
 
