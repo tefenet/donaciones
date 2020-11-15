@@ -97,19 +97,6 @@ class Center(Base):
         """Chequeo que el horario del turno pertenezca a un horario válido"""
         return self.opening <= start_time < self.closing
 
-    #eliminar este metodo y usar el nuevo en su lugar
-    def to_json(self, string_on_top="centro"):
-        """Convierte un centro de ayuda a formato JSON"""
-        data = {
-            "nombre": self.name,
-            "direccion": self.address,
-            "telefono": self.phone,
-            "hora_apertura": self.opening.isoformat(),
-            "hora_cierre": self.closing.isoformat(),
-            "tipo": self.type,
-            "web": self.web_site,
-            "email": self.email}
-        return jsonify({string_on_top: data})
 
     def serialized(self):
         """Serializa un centro de ayuda"""
@@ -125,7 +112,7 @@ class Center(Base):
         }
 
 
-    def to_json_refactored(self):
+    def to_json(self):
         """Convierte un centro de ayuda a formato JSON"""
         return jsonify(self.serialized())
 

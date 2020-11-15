@@ -16,7 +16,7 @@ def show(center_id):
     if not center.published:
         return jsonify({'error': [{'status': 'Invalid Request', 'error_msg':
         'El centro con id: %d no se encuentra disponible publicamente' % center_id, 'error_code': 420}]}), 420
-    return center.to_json()
+    return jsonify({'centro': center.serialized()})
 
 
 def index(page=1):
@@ -60,7 +60,7 @@ def create():
         new_center.email = data['email']
         dbSession.add(new_center)
         dbSession.commit()
-        return new_center.to_json("atributos"), 201
+        return jsonify({'atributos': new_center.serialized()}), 201
     except:
         return jsonify(error_code=500, error_msg="Error inesperado", status="internal server error"), 500
 
