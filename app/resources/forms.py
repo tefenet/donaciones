@@ -119,7 +119,7 @@ class CreateCenterForm(FlaskForm):
                                             Length(max=60, message='se permite hasta 60 caracteres')])
     opening = TimeField('apertura', validators=[DataRequired()])
     closing = TimeField('cierre', validators=[DataRequired()])
-    city_id = SelectField('municipio', choices=[])
+    city_id = SelectField('municipio', choices=[n for n in range(1, 153)])
     center_type = SelectField(label='tipo', choices=[(g, g) for g in CENTER_TYPES])
     web_site = URLField('sitio web', render_kw={"placeholder": "https://www.site.com"})
     protocol = FileField('protocolo', widget=widgets.FileInput(),

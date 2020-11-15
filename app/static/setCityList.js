@@ -15,6 +15,9 @@ let cityList=[]
           }
           else{            
             select = document.getElementById('city_id')
+            while (select.childNodes.length >= 1) {
+                            select.removeChild(select.firstChild);
+                        }
             function appendOption (city) {
               newOption = document.createElement('option');
               newOption.value = city.id;
