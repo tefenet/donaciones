@@ -3,6 +3,7 @@
 {% block head %}
     {{ super() }}
     {% include 'components/leaftlet_lib.html' %}
+<script type="text/javascript" src="../../static/setCityList.js"></script>
 {% endblock %}
 {% set content %}
 <div style="display:flex">
@@ -18,7 +19,7 @@
 <form method=post action="{{url_for('center_update', object_id=center_id)}}" enctype=multipart/form-data>
   {{ form.hidden_tag() }}
 
-    {% for field in form %}
+    {% for field in form if field.widget.input_type != 'hidden' %}
     {% if field.name != "csrf_token" %}
     <div class="row">
       <div class="col-25">
