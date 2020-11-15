@@ -12,6 +12,7 @@ from app.models.center import CENTER_TYPES_ENUM, CENTER_TYPES
 from app.models.role import Role
 from app.models.user import User
 from app.models.shifts import Shifts
+import urllib.request, json
 
 
 class LoginForm(FlaskForm):
@@ -110,6 +111,16 @@ class SistemaForm(FlaskForm):
                                                                         (1, "Habilitado")], default=1)
 
 
+def get_cities_list(api_url="https://api-referencias.proyecto2020.linti.unlp.edu.ar/municipios?page=1&per_page=150"):
+    with urllib.request.urlopen(api_url) as url:
+        data = json.loads(url.read().decode())
+        l = []
+        for center in data["data"]["Town"].values():
+            c = (center['id'], center['name'])
+            l.append(c)
+    return l
+
+
 class CreateCenterForm(FlaskForm):
     name = StringField('nombre', validators=[DataRequired(), Length(max=55)])
     address = StringField('direccion', validators=[Length(max=99)])
@@ -119,7 +130,7 @@ class CreateCenterForm(FlaskForm):
                                             Length(max=60, message='se permite hasta 60 caracteres')])
     opening = TimeField('apertura', validators=[DataRequired()])
     closing = TimeField('cierre', validators=[DataRequired()])
-    city_id = SelectField('municipio', choices=[])
+    city_id = SelectField('municipio', choices=get_cities_list(), coerce=int)
     center_type = SelectField(label='tipo', choices=[(g, g) for g in CENTER_TYPES])
     web_site = URLField('sitio web', render_kw={"placeholder": "https://www.site.com"})
     protocol = FileField('protocolo', widget=widgets.FileInput(),

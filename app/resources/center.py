@@ -1,5 +1,5 @@
 import io
-from flask import redirect, render_template, request, url_for, flash, send_file, current_app
+from flask import redirect, render_template, request, url_for, flash, send_file, current_app as app
 from flask_sqlalchemy import Pagination
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm.exc import NoResultFound
@@ -39,6 +39,7 @@ def new():
 def create():
     """ Da de alta un centro en la base de datos."""
     form = CreateCenterForm()
+    app.logger.info(form.data)
     if form.validate():
         center = Center()
         form.populate_obj(center)
@@ -47,7 +48,7 @@ def create():
         dbSession.commit()
     if form.errors:
         display_errors(form.errors)
-        return new()
+        return redirect(url_for("center_new"))
     return redirect(url_for("center_index", page=1))
 
 
@@ -136,7 +137,6 @@ def search_by_state():
 
 
 def search_by_published():
-
     try:
         published = eval(request.args['args'])['published']
     except (BadRequestKeyError, ValueError) as e:

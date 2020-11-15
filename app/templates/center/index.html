@@ -1,13 +1,13 @@
 {% extends "layout.html" %}
 {% block title %}Centros{% endblock %}
 {% block head %}
-{{ super() }}
-<link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" rel="stylesheet">
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"></script>
-<link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
-<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
-<script type="text/javascript" src="../../static/index_center.js">        
-</script>
+    {{ super() }}
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"></script>
+    <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+    <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+    <script type="text/javascript" src="../../static/index_center.js">
+    </script>
 {% endblock %}
 {% set content %}
 
@@ -28,90 +28,90 @@
             <div class="table-responsive">
                 <table class="table table-hover">
                     <thead>
-                        <tr align="center">
+                    <tr align="center">
 
-                            <th>Nombre</th>
-                            <th>Telefono</th>
-                            <th>sitio web</th>
-                            <!--                        <th>Estado</th>-->
-                            <th>Publicado</th>
-                        </tr>
+                        <th>Nombre</th>
+                        <th>Telefono</th>
+                        <th>sitio web</th>
+                        <!--                        <th>Estado</th>-->
+                        <th>Publicado</th>
+                    </tr>
                     </thead>
-                    <br />
                     <tbody>
-                        {% for center in pagination.items %}
-                        <tr id="{{loop.index% site_variables().cant_por_pagina}}" align="center"
-                            class="{{'oddRow' if loop.index%2==0 else 'evenRow'}}">
+                    {% for center in pagination.items %}
+                        <tr id="{{ loop.index% site_variables().cant_por_pagina }}" align="center"
+                            class="{{ 'oddRow' if loop.index%2==0 else 'evenRow' }}">
                             <td>
                                 {% import 'center/show.html' as show_center %}
                                 {{ show_center.set(center, loop.index) }}
                             </td>
-                            <td>{{center.phone}}</td>
-                            <td>{{center.web_site}}</td>
+                            <td>{{ center.phone }}</td>
+                            <td>{{ center.web_site }}</td>
                             <!--                        <td><b class="{{center.state}}">{{center.state}}</b></td>-->
                             <td>
-                                <form action="{{url_for('center_publish', object_id=center.id)}}"
-                                    id="form-{{center.id}}" method="post">
+                                <form action="{{ url_for('center_publish', object_id=center.id) }}"
+                                      id="form-{{ center.id }}" method="post">
                                     {% if center.published %}
-                                    <input checked class="toggle" data-toggle="toggle" type="checkbox"
-                                        value="{{center.id}}" data-on="Sí" data-off="No">
+                                        <input checked class="toggle" data-toggle="toggle" type="checkbox"
+                                               value="{{ center.id }}" data-on="Sí" data-off="No">
                                     {% else %}
-                                    <input class="toggle" data-toggle="toggle" type="checkbox" value="{{center.id}}"
-                                        data-on="Sí" data-off="No" data-offstyle="dark">
+                                        <input class="toggle" data-toggle="toggle" type="checkbox"
+                                               value="{{ center.id }}"
+                                               data-on="Sí" data-off="No" data-offstyle="dark">
                                     {% endif %}
                                 </form>
 
                             </td>
                             {% if has_perm('centro_update') %}
-                            <td>
-                                {% import 'components/editButton.html' as editButton %}
-                                {{ editButton.set('center_update_form',center.id) }}
-                            </td>
+                                <td>
+                                    {% import 'components/editButton.html' as editButton %}
+                                    {{ editButton.set('center_update_form',center.id) }}
+                                </td>
                             {% endif %}
 
-                            {% if has_perm('centro_destroy')%}
-                            <td>
-                                {% import 'components/deleteButton.html' as deleteButton %}
-                                {% set header = '
+                            {% if has_perm('centro_destroy') %}
+                                <td>
+                                    {% import 'components/deleteButton.html' as deleteButton %}
+                                    {% set header = '
                             <div>Eliminar centro <b class="mr-auto" style="padding-left:1vh">{}</b></div>
                             '.format(center.name) %}
-                                {% set body = '<b>Este cambio es irreversible</b>' %}
-                                {{ deleteButton.set('center_delete',center.id, header, body, loop.index ) }}
+                                    {% set body = '<b>Este cambio es irreversible</b>' %}
+                                    {{ deleteButton.set('center_delete',center.id, header, body, loop.index ) }}
 
-                            </td>
+                                </td>
                             {% endif %}
                         </tr>
-                        {% endfor %}
+                    {% endfor %}
                     </tbody>
                 </table>
                 {% import 'components/pagination.html' as pag %}
                 {% if request.path == url_for('center_index') %}
-                {{ pag.set('center_index',pagination) }}
+                    {{ pag.set('center_index',pagination) }}
                 {% elif request.path == url_for('centro_search_by_published') %}
-                {% set args="{'published':"+ "{}".format(published) + "}" %}
-                {{ pag.set('centro_search_by_published',pagination, args ) }}
+                    {% set args="{'published':"+ "{}".format(published) + "}" %}
+                    {{ pag.set('centro_search_by_published',pagination, args ) }}
                 {% else %}
-                {{ pag.set('centro_search_by_name',pagination, name) }}
+                    {{ pag.set('centro_search_by_name',pagination, name) }}
                 {% endif %}
             </div>
         </div>
         {% if has_perm('centro_index') %}
-        <div class="m-3">
-            <h5>Buscar por nombre de centro </h5>
-            <form action="{{url_for('centro_search_by_name')}}" class="form-inline my-2  mr-auto  ">
-                <input aria-label="name" class="form-control mr-sm-2" id="name" name="args"
-                    placeholder="nombre del centro" type="text">
-                <input id="page" name="page" type="hidden" value="1">
-                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Buscar</button>
-            </form>
-        </div>
-        <div class="m-3">
-            <h5>Buscar por estado</h5>
-            <a class="btn btn-outline-success my-2 my-sm-0"
-                href="{{url_for('centro_search_by_published', args={'published':True})}}">Publicados</a>
-            <a class="btn btn-outline-success my-2 my-sm-0"
-                href="{{url_for('centro_search_by_published', args={'published':False})}}">Despublicados</a>
-        </div>
+            <div class="m-3">
+                <h5>Buscar por nombre de centro </h5>
+                <form action="{{ url_for('centro_search_by_name') }}" class="form-inline my-2  mr-auto  ">
+                    <input aria-label="name" class="form-control mr-sm-2" id="name" name="args"
+                           placeholder="nombre del centro" type="text">
+                    <input id="page" name="page" type="hidden" value="1">
+                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Buscar</button>
+                </form>
+            </div>
+            <div class="m-3">
+                <h5>Buscar por estado</h5>
+                <a class="btn btn-outline-success my-2 my-sm-0"
+                   href="{{ url_for('centro_search_by_published', args={'published':True}) }}">Publicados</a>
+                <a class="btn btn-outline-success my-2 my-sm-0"
+                   href="{{ url_for('centro_search_by_published', args={'published':False}) }}">Despublicados</a>
+            </div>
         {% endif %}
     </div>
 </div>
