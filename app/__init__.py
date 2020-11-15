@@ -2,7 +2,7 @@ from os import environ
 from flask import Flask, render_template
 from flask_session import Session
 
-from app.models import center, city, shifts
+from app.models import center, shifts
 from config import config
 from app.db import dbSession, init_db
 from app.resources import issue, center, user, auth, sistema, shifts

@@ -33,7 +33,7 @@ class Center(Base):
     gl_lat = Column(String(30))
     gl_long = Column(String(30))
     protocol = Column(LargeBinary())
-    city_id = Column(Integer, ForeignKey('city.id'))
+    city_id = Column(Integer)
     center_type = Column(CENTER_TYPES_ENUM)
     shifts = relationship("Shifts", backref="center")
 
@@ -106,7 +106,7 @@ class Center(Base):
             "telefono": self.phone,
             "hora_apertura": self.opening.isoformat(),
             "hora_cierre": self.closing.isoformat(),
-            "tipo": self.type,
+            "tipo": self.center_type,
             "web": self.web_site,
             "email": self.email
         }

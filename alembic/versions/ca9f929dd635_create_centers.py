@@ -8,8 +8,6 @@ Create Date: 2020-10-22 19:20:54.757635
 
 import sqlalchemy as sa
 from alembic import op
-# revision identifiers, used by Alembic.
-from sqlalchemy import ForeignKey
 from sqlalchemy.dialects.mysql import ENUM
 
 revision = 'ca9f929dd635'
@@ -24,11 +22,11 @@ CENTER_TYPES_ENUM = ENUM(*CENTER_TYPES, name='type')
 
 
 def upgrade():
-    city_table = op.create_table(
-        'city',
-        sa.Column('id', sa.Integer, primary_key=True, autoincrement=True),
-        sa.Column('name', sa.String(100), nullable=False),
-    )
+    # city_table = op.create_table(
+    #     'city',
+    #     sa.Column('id', sa.Integer, primary_key=True, autoincrement=True),
+    #     sa.Column('name', sa.String(100), nullable=False),
+    # )
     centers_table = op.create_table(
         'centers',
         sa.Column('id', sa.Integer, primary_key=True, autoincrement=True),
@@ -44,103 +42,9 @@ def upgrade():
         sa.Column('closing', sa.Time()),
         sa.Column('state', STATE_ENUM),
         sa.Column('protocol', sa.dialects.mysql.LONGBLOB()),
-        sa.Column('city_id', sa.Integer, ForeignKey('city.id')),
+        sa.Column('city_id', sa.Integer),
         sa.Column('center_type', CENTER_TYPES_ENUM),
     )
-
-    op.bulk_insert(city_table,
-                   [
-                       {
-                           "name": "Bengkulu"
-                       },
-                       {
-                           "name": "Duluth"
-                       },
-                       {
-                           "name": "Brescia"
-                       },
-                       {
-                           "name": "Daknam"
-                       },
-                       {
-                           "name": "Argyle"
-                       },
-                       {
-                           "name": "Bensheim"
-                       },
-                       {
-                           "name": "Santa Coloma de Gramenet"
-                       },
-                       {
-                           "name": "Killa Saifullah"
-                       },
-                       {
-                           "name": "Serralunga d'Alba"
-                       },
-                       {
-                           "name": "Puno"
-                       },
-                       {
-                           "name": "Hertsberge"
-                       },
-                       {
-                           "name": "Pictou"
-                       },
-                       {
-                           "name": "Neerharen"
-                       },
-                       {
-                           "name": "Talagante"
-                       },
-                       {
-                           "name": "Patna"
-                       },
-                       {
-                           "name": "Akron"
-                       },
-                       {
-                           "name": "Grande Prairie"
-                       },
-                       {
-                           "name": "Thunder Bay"
-                       },
-                       {
-                           "name": "Thirimont"
-                       },
-                       {
-                           "name": "Tavier"
-                       },
-                       {
-                           "name": "Hartlepool"
-                       },
-                       {
-                           "name": "Anápolis"
-                       },
-                       {
-                           "name": "Pulderbos"
-                       },
-                       {
-                           "name": "Robelmont"
-                       },
-                       {
-                           "name": "Desteldonk"
-                       },
-                       {
-                           "name": "Grand Falls"
-                       },
-                       {
-                           "name": "Harrisburg"
-                       },
-                       {
-                           "name": "Toledo"
-                       },
-                       {
-                           "name": "Alva"
-                       },
-                       {
-                           "name": "Independence"
-                       }
-                   ])
 
     centers = [
         {
@@ -1658,4 +1562,3 @@ def upgrade():
 
 def downgrade():
     op.drop_table('centers')
-    op.drop_table('city')

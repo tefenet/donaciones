@@ -8,7 +8,7 @@ from wtforms.validators import ValidationError, DataRequired, Length, length, Em
 from wtforms.fields.html5 import EmailField, TimeField, URLField, DateField
 
 from app.models.center import CENTER_TYPES_ENUM, CENTER_TYPES
-from app.models.city import City
+
 from app.models.role import Role
 from app.models.user import User
 from app.models.shifts import Shifts
@@ -26,10 +26,6 @@ class LoginForm(FlaskForm):
 
 def select_role():
     return Role.query.all()
-
-
-def select_city():
-    return City.query
 
 
 def select_type():
