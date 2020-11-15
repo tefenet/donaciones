@@ -1,0 +1,61 @@
+{% extends "layout.html" %}
+{% block title %}crear Centro{% endblock %}
+{% block head %}
+    {{ super() }}
+    {% include 'components/leaftlet_lib.html' %}
+    <script type="text/javascript" src="../../static/setCityList.js"></script>
+{% endblock %}
+{% set content %}
+<div style="display:flex">
+    <h3 class="mx-auto">Crear un centro</h3>
+</div>
+
+
+<div style="display:flex">
+    <a href="{{ url_for('center_index') }}" class="link mx-auto">Volver</a>
+</div>
+
+<div class="container">
+    <form method=post action="{{ url_for('center_create') }}" enctype=multipart/form-data>
+        {{ form.hidden_tag() }}
+
+        {% for field in form if field.widget.input_type != 'hidden' %}
+            {% if field.name != "csrf_token" %}
+                <div class="row">
+                    <div class="col-25">
+                        {{ field.label() }}
+                    </div>
+                    <div class="col-75">
+                        {{ field(class="js-scroll-trigger") }}
+                    </div>
+                </div>
+            {% endif %}
+            {% if field.errors %}
+                <ul class=errors>
+                    {% for error in field.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endfor %}
+        <div class="row">
+            <div class="col-25">
+                ubicación geográfica
+            </div>
+            <div class="col-75">
+                <div id="mapid"></div>
+            </div>
+        </div>
+
+        <div class="row">
+            <button type="reset" class="btn btn-primary js-scroll-trigger">Limpiar</button>
+            <input type="submit" value="Crear" class="btn btn-primary js-scroll-trigger">
+
+        </div>
+    </form>
+</div>
+{% endset %}
+{% block script %}
+    <script src="{{ url_for('static', filename='marker_latlng.js') }}"></script>
+    <script src="{{ url_for('static', filename='setCityList.js') }}"></script>
+{% endblock %}

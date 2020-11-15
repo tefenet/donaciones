@@ -1,19 +1,19 @@
 from os import environ
-from flask import Flask, render_template, session
+from flask import Flask, render_template
 from flask_session import Session
+
+from app.models import center, shifts
 from config import config
 from app.db import dbSession, init_db
-from app.resources import issue
-from app.resources import user
-from app.resources import auth
-from app.resources import sistema
+from app.resources import issue, center, user, auth, sistema, shifts
 from app.resources.api import issue as api_issue
+from app.resources.api import center as api_center
+from app.resources.api import shifts as api_shifts
 from app.helpers import handler
 from app.helpers import auth as helper_auth
 from app.models.sistema import Sistema as Sys
 from app.resources.sistema import Sistema
 import importlib
-import pymysql
 
 
 def create_app(environment="production"):
@@ -28,20 +28,6 @@ def create_app(environment="production"):
     app.config["SESSION_TYPE"] = "filesystem"
     Session(app)
 
-
-    """
-    # conexion a la BD por pymsql
-    def connection():
-        db_conn = pymysql.connect(
-            host=environ.get("DB_HOST", "localhost"),
-            user=environ.get("DB_USER"),
-            password=environ.get("DB_PASS"),
-            db=environ.get("DB_NAME"),
-            cursorclass=pymysql.cursors.DictCursor,
-        )
-        return db_conn
-    """
-
     # Configure db, decorator cause callback cleanup, to release resources used by a session after request
     @app.teardown_appcontext
     def cleanup(resp_or_exc):
@@ -49,10 +35,8 @@ def create_app(environment="production"):
 
     # Funciones que se exportan al contexto de Jinja2
     app.jinja_env.globals.update(is_authenticated=helper_auth.authenticated)
-    app.jinja_env.globals.update(is_admin=helper_auth.administrator)
+    app.jinja_env.globals.update(has_perm=auth.user_has_permission)
     app.jinja_env.globals.update(site_variables=Sys.get_sistema)
-
-
 
     # Autenticación
     app.add_url_rule("/iniciar_sesion", "auth_login", auth.login)
@@ -76,12 +60,40 @@ def create_app(environment="production"):
                      user.search_by_username)  # recibe string(username)
     app.add_url_rule("/usuarios/buscarPorEstado", "user_search_by_status", user.search_by_status)  # recibe status(bool)
     app.add_url_rule("/usuarios/deleteById", "user_delete_by_id", user.delete_user, methods=["POST"])  # recibe id(int)
-    app.add_url_rule("/usuarios/editar/<int:user_id>", "user_update_by_id", user.update_user_render)
-    app.add_url_rule("/usuarios/editar/<int:user_id>", "user_update_by_id_post", user.update_user, methods=["POST"])
+    app.add_url_rule("/usuarios/editar/<int:object_id>", "user_update_by_id", user.update_user_render)
+    app.add_url_rule("/usuarios/editar/<int:object_id>", "user_update_by_id_post", user.update_user, methods=["POST"])
+
+    # Rutas de Centros
+    app.add_url_rule("/center", "center_index", center.index)
+    app.add_url_rule("/center", "center_create", center.create, methods=['POST'])
+    app.add_url_rule("/center/new", "center_new", center.new)
+    app.add_url_rule("/center/delete", "center_delete", center.delete_center, methods=["POST"])
+    app.add_url_rule("/center/edit/<int:object_id>", "center_update_form", center.update_center_form)
+    app.add_url_rule("/center/edit/<int:object_id>", "center_update", center.update_center, methods=["POST"])
+    app.add_url_rule("/center/publish", "center_publish", center.toogle_publish_center, methods=["POST"])
+    app.add_url_rule("/center/searchByName", "centro_search_by_name", center.search_by_name)
+    app.add_url_rule("/center/searchByState", "centro_search_by_state", center.search_by_state)
+    app.add_url_rule("/center/searchByPublished", "centro_search_by_published", center.search_by_published)
+    app.add_url_rule("/center/approve", "center_approve", center.approve_center, methods=["POST"])
+    app.add_url_rule("/center/reject", "center_reject", center.reject_center, methods=["POST"])
+    app.add_url_rule("/center/review", "center_review", center.review_center, methods=["POST"])
+    app.add_url_rule("/center/protocol/<int:object_id>", "get_protocol", center.get_protocol)
+
+    # Rutas de Turnos
+    app.add_url_rule("/turnos", "turnos_index", shifts.index)
+    app.add_url_rule("/turnos/new/<int:center_id>", "turnos_new", shifts.new_view)
+    app.add_url_rule("/turnos/create/<int:center_id>", "turnos_create", shifts.create_view, methods=["POST"])
+    app.add_url_rule("/turnos/search_by", "turnos_search_by_donor", shifts.search_by_donor_email)
+    app.add_url_rule("/turnos/search_by_cn", "turnos_search_by_center_name", shifts.search_by_center_name)
+    app.add_url_rule("/turnos/deleteById", "turnos_delete_by_id", shifts.delete_shift,
+                     methods=["POST"])  # recibe id(int)
+    app.add_url_rule("/cmd", "update_form", shifts.update_form)
+    # app.add_url_rule("/turnos/choices", "get_choices", center.)
 
     # Rutas de Sistema
     app.add_url_rule("/sistema/configurar", "system_configure", sistema.config_sistema_get)
-    app.add_url_rule("/sistema/configurar", "system_configure_post", sistema.config_sistema_post, methods=["POST"])
+    app.add_url_rule("/sistema/configurar", "system_configure_post", sistema.config_sistema_post)
+
 
     # app.add_url_rule("/usuarios", "system_configure", user.index)
     # app.add_url_rule("/usuarios", "system", user.index)
@@ -91,14 +103,18 @@ def create_app(environment="production"):
     def home():
         return render_template("home.html")
 
-    # Session
-    @app.route('/session')
-    @helper_auth.admin_required
-    def get_session():
-        return render_template('session.html', session=session)
-
-    # Rutas de API-rest
+    # Rutas de API-rest v1.0
+    # api issue
     app.add_url_rule("/api/consultas", "api_issue_index", api_issue.index)
+
+    # Rutas de API-rest centros
+    app.add_url_rule("/api/v1.0/centros/", "api_center_index", api_center.index)
+    app.add_url_rule("/api/v1.0/centros/", "api_center_create", api_center.create, methods=["POST"])
+    app.add_url_rule("/api/v1.0/centros/<int:center_id>/", "centros", api_center.show)
+
+    # api shifts
+    app.add_url_rule("/api/v1.0/centros/<int:id>/turnos_disponibles", "api_shifts_avalaible_by_date", api_shifts.avalaible_by_date)
+    app.add_url_rule("/api/v1.0/centros/<int:id>/reserva", "api_shifts_new", api_shifts.create, methods=["POST"])
 
     # Ruta de configuración del sistema
     app.add_url_rule("/sistema/config-sistema", 'config_sistema_get', sistema.config_sistema_get)

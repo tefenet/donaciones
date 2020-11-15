@@ -37,15 +37,15 @@
                         <td>{{user.email}}</td>
                         <td>{{user.username}}</td>
                         <td>{{user.first_name}} {{user.last_name}}</td>
-                        {% if user_is_admin %}
-                        <td><label class="badge badge-alert">
-                            <a class="text-decoration-none"
-                               href="{{url_for('user_update_by_id', user_id=user.id)}}">Editar</a></label>
+                        {% if has_perm('user_update') %}
+                        <td>
+                            {% import 'components/editButton.html' as editButton %}
+                            {{ editButton.set('user_update_by_id',user.id) }}
                         </td>
                         {% if user.active %}
                         <td><label class="badge badge-success decoration-none">
                             <a class="text-decoration-none"
-                               href="{{url_for('user_deactivate', user_id=user.id)}}">Desactivar</a></label>
+                               href="{{url_for('user_deactivate', user_id=user.id)}}">Bloquear</a></label>
                         </td>
                         {% else %}
                         <td><label class="badge badge-danger">
@@ -53,58 +53,41 @@
                                href="{{url_for('user_activate', user_id=user.id)}}">Activar</a></label>
                         </td>
                         {% endif %}
+                        {% endif %}
+                        {% if has_perm('user_destroy')%}
+
                         <td>
-                            <a class="text-decoration-none"
-                               href="{{url_for('user_delete_by_id', user_id=user.id)}}"><i
-                                    class="fa fa-trash-alt text-danger"></i></a>
-                        </td>
-                        <td>
-                            <button type="button" class="btn btn-danger btn-xs" data-toggle="modal"
-                                    data-target="#modalDeleteUser{{loop.index}}">Eliminar
-                            </button>
+                            {% import 'components/deleteButton.html' as deleteButton %}
+                            {% set body = '¿Estás seguro que queres eliminar al usuario
+                                        <b>{}</b>? Este cambios
+                                        es irreversible'.format(user.username) %}
+                            {% set header = 'Eliminar Usuario' %}
+                            {{ deleteButton.set('user_delete_by_id',user.id, header, body, loop.index ) }}
                         </td>
                         {% endif %}
                     </tr>
 
-                    {# modal delete user #}
-                    <div id="confirm-deletion-user-{{loop.index}}">
-                        <div id="modalDeleteUser{{loop.index}}" class="modal fade" role="dialog">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">Eliminar Usuario</div>
-                                    <div class="modal-body">¿Estás seguro que queres eliminar al usuario
-                                        <b>{{user.username}}</b>? Este cambios
-                                        es irreversible
-                                    </div>
-                                    <div class="modal-footer">
-                                        <form action="{{url_for('user_delete_by_id', user_id=user.id)}}" method="post">
-                                            <button type="submit" class="btn btn-danger">Eliminar</button>
-                                            <button class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
 
                     {% endfor %}
                     </tbody>
                 </table>
                 {% import 'components/pagination.html' as pag %}
                 {% if request.path == url_for('user_index') %}
-                {{ pag.set('user_index',pagination) }}
+                    {{ pag.set('user_index',pagination) }}
                 {% elif request.path == url_for('user_search_by_status') %}
-                {{ pag.set('user_search_by_status',pagination, request.args.get('status')) }}
+                {% set args="{'status':"+ "{}".format(status) + "}" %}
+                    {{ pag.set('user_search_by_status',pagination, args ) }}
                 {% else %}
-                {{ pag.set('user_search_by_username',pagination,request.args.get('username')) }}
+                    {{ pag.set('user_search_by_username',pagination, username) }}
                 {% endif %}
             </div>
         </div>
+        {% if has_perm('user_find') %}
         <div class="m-3">
             <h5>Buscar por nombre de usuario </h5>
             <form class="form-inline my-2  mr-auto  "
                   action="{{url_for('user_search_by_username')}}">
-                <input class="form-control mr-sm-2" type="text" id="username" name="username" placeholder="Username"
+                <input class="form-control mr-sm-2" type="text" id="username" name="args" placeholder="Username"
                        aria-label="Username">
                 <input id="page" name="page" type="hidden" value="1">
                 <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Buscar</button>
@@ -113,10 +96,11 @@
         <div class="m-3">
             <h5>Buscar por estado</h5>
             <a class="btn btn-outline-success my-2 my-sm-0"
-               href="{{url_for('user_search_by_status', status=True, page=1)}}">Activos</a>
+               href="{{url_for('user_search_by_status', args={'status':True}, page=1)}}">Activos</a>
             <a class="btn btn-outline-success my-2 my-sm-0"
-               href="{{url_for('user_search_by_status', status=False, page=1)}}">Inactivos</a>
+               href="{{url_for('user_search_by_status', args={'status':False}, page=1)}}">Inactivos</a>
         </div>
+        {% endif %}
     </div>
 </div>
 {% endset %}

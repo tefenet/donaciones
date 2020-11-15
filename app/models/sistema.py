@@ -48,3 +48,7 @@ class Sistema(Base):
     @classmethod
     def get_sistema(cls):
         return cls.query.first()
+
+    @classmethod
+    def page_count(cls):
+        return cls.query.first().cant_por_pagina

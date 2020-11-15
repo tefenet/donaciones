@@ -1,5 +1,5 @@
 from flask import redirect, render_template, request, url_for, session, flash, current_app as app
-from app.helpers.auth import authenticated, login_required, clear_session
+from app.helpers.auth import authenticated, login_required, clear_session, user_has_perm
 from app.helpers.handler import display_errors
 from app.resources.forms import LoginForm
 from app.models.user import User
@@ -13,8 +13,9 @@ def set_session(user):
     session['user_id'] = user.id
     session['user_email'] = user.email
     session['username'] = user.username
+    session['current_user'] = User.get_by_id(user.id)
     session['logged_in'] = True
-    session['is_admin'] = True if (user.account_type == 1) else False
+    session['is_admin'] = True if (user.has_role("Administrador")) else False
     session['perfil_activo'] = None
 
 
@@ -59,7 +60,7 @@ def authenticate():
             flash("La cuenta que has ingresado se encuentra inactiva.", "danger")
             return redirect(url_for('auth_login'))
 
-        if not sis_config.habilitado and not user.is_admin():
+        if not sis_config.habilitado and not user_has_permission('system_modify_config'):
             flash("No puedes loguearte porque el sitio no esta disponible momentaneamente.", "danger")
             return redirect(url_for('home'))
 
@@ -81,3 +82,9 @@ def logout():
     # clear_session()  # otra forma de limpiar la sesión puede ser recorriendo los items de la sesion y eliminarlos, similar al metodo session.clear() pero implementado por nosotros
     flash("La sesión se cerró correctamente.", "success")
     return redirect(url_for('home'))
+
+
+def user_has_permission(permission_name):
+    if session and session.get('logged_in'):
+        return user_has_perm(permission_name)
+    return False

@@ -1,5 +1,6 @@
 from app.db import Base
 from sqlalchemy import Column, Integer, String
+import json
 
 
 class Issue(Base):
@@ -18,3 +19,15 @@ class Issue(Base):
 
     def __repr__(self):
         return "<Issue(email='{}', id='{}')>".format(self.email, self.id)
+
+    def serialize(self):
+        return {
+            'id': self.id,
+            'email': self.email,
+            'description': self.description,
+            'category_id': self.category_id,
+            'status_id': self.status_id
+        }
+    #
+    # def serialize(self):
+    #     return json.dumps(self._to_dict(), indent=4, sort_keys=True, default=str)

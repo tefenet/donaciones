@@ -41,3 +41,8 @@ class Permission(Base):
         Tiene que llegar si o si un role que este en el permiso, el chequeo debe estar en el controlador
         """
         self.permission_roles.remove(role)
+
+    @classmethod
+    def get_by_name(cls, permission_name):
+        """Retorna el usuario con id user_id"""
+        return cls.query.filter(cls.name.contains(permission_name)).first()

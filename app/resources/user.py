@@ -1,57 +1,51 @@
-from flask import redirect, render_template, request, url_for, session, abort, flash, current_app as app
+from flask import redirect, render_template, request, url_for, session, abort, flash
 from app.db import dbSession
+
 from app.models.sistema import Sistema
 from app.models.user import User
-from app.helpers.auth import login_required, admin_required, administrator
+from app.helpers.auth import login_required, restricted, is_not_admin
 from app.helpers.handler import display_errors
 from app.resources.forms import CreateUserForm, EditUserForm
 from werkzeug.exceptions import BadRequestKeyError
 from pymysql import escape_string as thwart
 from sqlalchemy.exc import IntegrityError
-from app.helpers.pagination import paginate
+from app.helpers.pagination import Page
 
 
-def is_administator(user_id):
-    user = User.get_by_id(user_id)
-    if user is None:
-        return False
-    return user.is_admin()
-
-
+@restricted(perm='user_update')
 def activate(user):
     user.activate()
-    flash("El usuario {} fue activado exitosamente".format(user.email), "success")
     return True
 
 
+@restricted(perm='user_update')
+@is_not_admin()
 def deactivate(user):
-    if not is_administator(user.id):
-        user.deactivate()
-        flash("El usuario {} fue desactivado exitosamente".format(user.email), "success")
-        return True
-    flash("Error al desactivar usuario. No podés desactivar a un administrador")
-    return False
+    user.deactivate()
+    return True
 
 
+@restricted(perm='user_find')
 def find_by_username_paginated(username, page=1):
     """Retorna una paginación con los usuarios que contengan username en su nombre de usuario"""
     sys = Sistema.get_sistema()
     query = User.query_by_username(username)
-    return paginate(query, page, sys.cant_por_pagina)
+    return Page(query, page, sys.cant_por_pagina)
 
 
-def find_by_status_paginated(status=True, page=1):
+@restricted(perm='user_find')
+def find_by_status_paginated(status, page=1):
     """Retornauna paginación con los usuarios con el estado recibido"""
     query = User.query_by_status(status)
     sys = Sistema.get_sistema()
-    return paginate(query, page, sys.cant_por_pagina)
+    return Page(query, page, sys.cant_por_pagina)
 
 
 # Protected resources
 
 #####
 # Index
-@admin_required
+@restricted(perm='user_index')
 def index():
     sys = Sistema.get_sistema()
     try:
@@ -59,22 +53,21 @@ def index():
     except (BadRequestKeyError, ValueError):
         page = 1
     try:
-        res = paginate(User.query, page, sys.cant_por_pagina)  # check User.query
+        res = Page(User.query, page, sys.cant_por_pagina)  # check User.query
     except AttributeError:  # AttributeError raise when page<1
         return redirect(url_for('user_index'))
-    user_is_admin = is_administator(session['user_id'])
-    return render_template("user/index.html", pagination=res, user_is_admin=user_is_admin)
+    return render_template("user/index.html", pagination=res)
 
 
 #####
 # Create
-@admin_required
+@restricted(perm='user_new')
 def new():
     form = CreateUserForm()
     return render_template("user/new.html", form=form)
 
 
-@admin_required
+@restricted(perm='user_new')
 def create():
     """ Da de alta un usuario en la base de datos."""
     form = CreateUserForm(request.form)
@@ -82,6 +75,7 @@ def create():
         user = User(email=thwart(form.email.data), username=thwart(form.username.data),
                     first_name=thwart(form.first_name.data), last_name=thwart(form.last_name.data),
                     active=form.active.data)
+        user.set_roles(list(form.user_roles.data))
         user.set_password(thwart(form.password.data))  # envio la pw para guardar el hash en la db.
         dbSession.add(user)
         dbSession.commit()
@@ -95,20 +89,20 @@ def create():
 #####
 # Update user
 
-@admin_required
-def update_user_render(user_id):
-    user = User.get_by_id(user_id)
+@restricted(perm='user_update')
+def update_user_render(object_id):
+    user = User.get_by_id(object_id)
     if user:
         form = EditUserForm(obj=user)
-        return render_template('user/update.html', form=form, user_id=user_id)
-    abort(500, "ERROR: Error al obtener usuario. id = {}".format(user_id))
+        return render_template('user/update.html', form=form, user_id=object_id)
+    abort(500, "ERROR: Error al obtener usuario. id = {}".format(object_id))
 
 
-@admin_required
-def update_user(user_id):
+@restricted(perm='user_update')
+def update_user(object_id):
     form = EditUserForm(request.form)
     if form.validate():
-        u = User.get_by_id(user_id)
+        u = User.get_by_id(object_id)
         if u:
             u.update(email=thwart(form.email.data), username=thwart(form.username.data),
                      first_name=thwart(form.first_name.data), last_name=thwart(form.last_name.data))
@@ -116,12 +110,13 @@ def update_user(user_id):
                 u.set_password(thwart(form.password.data))
             if form.active.data != u.active:
                 activate(u) if form.active.data else deactivate(u)
+            u.set_roles(list(form.user_roles.data))
             try:
                 u.updated()
                 dbSession.commit()
             except IntegrityError:
                 flash("Ya existe un usuario con ese correo/username", "danger")
-                return render_template('user/update.html', form=form, user_id=user_id)
+                return render_template('user/update.html', form=form, user_id=object_id)
             flash("Usuario {} actualizado exitosamente.".format(u.username), "success")
             return redirect(url_for("user_index"))
     if form.errors:
@@ -134,9 +129,10 @@ def update_user(user_id):
 #####
 # Deactivate user accounts
 
-@admin_required
+@restricted(perm='user_update')
 def deactive_account(user_id=None):
-    """Recibe un id de usuario. Si el usuario existe y su estado es activo, desactiva la cuenta seteando el campo active a False."""
+    """Recibe un id de usuario. Si el usuario existe y su estado es activo,
+     desactiva la cuenta seteando el campo active a False."""
     user = User.get_by_id(user_id)
     if user and user.active:
         deactivate(user)
@@ -147,9 +143,10 @@ def deactive_account(user_id=None):
     return redirect(url_for("user_index", page=1))
 
 
-@admin_required
+@restricted(perm='user_update')
 def activate_account(user_id=None):
-    """Recibe un id de usuario. Si el usuario existe y su estado es inactivo, activa la cuenta seteando el campo active a True."""
+    """Recibe un id de usuario. Si el usuario existe y su estado es inactivo,
+     activa la cuenta seteando el campo active a True."""
     user = User.get_by_id(user_id)
     if user and user.active is False:
         activate(user)
@@ -163,25 +160,22 @@ def activate_account(user_id=None):
 #####
 # Delete User
 
-@admin_required
-def __delete(user_id):
+@restricted(perm='user_destroy')
+@is_not_admin()
+def __delete(user):
     """Elimina un usuario del sistema de manera definitiva.
     Retorna True si pudo eliminar el usuario, caso contrario retorna false"""
-    u = User.get_by_id(user_id)
-    if u and not u.is_admin():
-        if User.delete_by_id(user_id):
-            dbSession.commit()
-            return True
-    if u.is_admin():
-        raise PermissionError
-    return False
+    if User.delete_by_id(user.id):
+        dbSession.commit()
+    return True
 
 
-@admin_required
+@restricted(perm='user_destroy')
 def delete_user():
     try:
-        user_id = request.args['user_id']
-        if __delete(user_id):
+        user_id = request.args['object_id']
+        u = User.get_by_id(user_id)
+        if __delete(u):
             flash("Usuario id {} eliminado exitosamente".format(user_id), "success")
     except BadRequestKeyError:
         flash("ERROR: id usuario no recibido", "danger")
@@ -194,16 +188,15 @@ def delete_user():
 #####
 # Search users
 
-@admin_required
+@restricted(perm='user_find')
 def search_by_status():
     """Busca usuarios por estado(activo/inactivo).
     Recibe status, que es un booleano, devuelve una lista de usuarios """
     try:
-        status = False if request.args['status'] == "False" else True
+        status = eval(request.args['args'])['status']
         page = int(request.args['page'])
-        user_is_admin = is_administator(session['user_id'])
-    except (BadRequestKeyError, ValueError) as e:  # no se que es este error pero la paginación es incorrecta
-        # flash("ERROR: {}".format(e), e)
+    except (BadRequestKeyError, ValueError) as e:
+        flash("ERROR: {}".format(e), e)
         return redirect(url_for('user_index'))
 
     try:
@@ -211,19 +204,19 @@ def search_by_status():
     except AttributeError:  # raised when page < 1
         page = 1
         pagination = find_by_status_paginated(status, page)
-    return render_template("user/index.html", pagination=pagination, user_is_admin=user_is_admin)
+    context = {'pagination': pagination, 'status': status}
+    return render_template("user/index.html", **context)
 
 
-@admin_required
+@restricted(perm='user_find')
 def search_by_username():
     """Busca usuarios por nombre de usuario.
     Recibe status, que es un booleano, devuelve una lista de usuarios """
     try:
-        username = request.args['username']
+        username = thwart(request.args['args'])
         page = int(request.args['page'])
-        user_is_admin = is_administator(session['user_id'])
-    except (BadRequestKeyError, ValueError) as e:  # no se que es este error pero la paginación es incorrecta
-        # flash("ERROR: {}".format(e), e)
+    except (BadRequestKeyError, ValueError) as e:
+        flash("ERROR: {}".format(e), e)
         return redirect(url_for('user_index'))
 
     try:
@@ -231,7 +224,8 @@ def search_by_username():
     except AttributeError:  # raised when page < 1
         page = 1
         pagination = find_by_username_paginated(username, page)
-    return render_template("user/index.html", pagination=pagination, user_is_admin=user_is_admin)
+    context = {'pagination': pagination, 'username': username}
+    return render_template("user/index.html", **context)
 
 
 #####

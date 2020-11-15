@@ -1,4 +1,3 @@
-from app.models.sistema import Sistema
 from app.db import Base
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy import Column, Integer, String, Boolean, DateTime, SmallInteger
@@ -8,20 +7,15 @@ from app.models.role import user_has_role
 
 
 class User(Base):
-    """
-    account type = 1 --> administrator
-    account type != 1 --> user
-    """
 
     __tablename__ = 'users'
     id = Column(Integer, primary_key=True, autoincrement=True)
     email = Column(String, nullable=False, unique=True, index=True)
     username = Column(String, nullable=False, unique=True, index=True)
     password_hash = Column(String, nullable=False)
-    first_name = Column(String, index=True)
-    last_name = Column(String, index=True)
+    first_name = Column(String)
+    last_name = Column(String)
     active = Column(Boolean, index=True)
-    account_type = Column(SmallInteger, default=2)
     create_date = Column(DateTime, default=datetime.now())
     update_date = Column(DateTime, default=None)
     user_roles = relationship(
@@ -29,14 +23,12 @@ class User(Base):
         secondary=user_has_role,
         back_populates="role_users")
 
-    def __init__(self, email=None, username=None, password=None, first_name=None, last_name=None, account_type=2,
-                 active=None):
+    def __init__(self, email=None, username=None, password=None, first_name=None, last_name=None, active=None):
         self.email = email
         self.username = username
         self.password_hash = password
         self.first_name = first_name
         self.last_name = last_name
-        self.account_type = account_type
         self.active = active
 
     def __repr__(self):
@@ -104,12 +96,6 @@ class User(Base):
         """Elimina un usuario de la base de datos de forma permanente"""
         return cls.query.filter(cls.id == id).delete()
 
-    # PENDIENTE: remplazar este chequeo y hacerlo sobre la tabla de roles
-    def is_admin(self):
-        if self.account_type == 1:
-            return True
-        return False
-
     def roles(self):
         """Retorna una lista con todos los roles del usuario"""
         return self.user_roles
@@ -129,6 +115,11 @@ class User(Base):
         """
         self.user_roles.remove(role)
 
-    # def role():
-#     """Retorna el rol del user"""
-#     return ('Pendiente')
+    def set_roles(self, roles):
+        self.user_roles = roles
+
+
+    def has_permission(self, perm):
+        """Retorna el rol del user"""
+        my_roles = list(self.user_roles)
+        return any(role.has_permission(perm) for role in my_roles)

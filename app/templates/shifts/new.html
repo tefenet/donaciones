@@ -1,0 +1,80 @@
+{% extends "layout.html" %}
+{% block title %}Turnos{% endblock %}
+{% block head %}
+    {{ super() }}
+    <script type="text/javascript">
+        function cmd(e) {
+            console.log(e.target.value)
+            $.get({
+                url: '/cmd?center_id={{center.id}}',
+                data: {date: e.target.value}
+            })
+                .done(
+                    function (data) {
+                        console.log(data)
+                        select = document.getElementById('start_time')
+                        while (select.childNodes.length >= 1) {
+                            select.removeChild(select.firstChild);
+                        }
+                        if (data.length === 0) {
+                            newOption = document.createElement('option');
+                            newOption.value = "No hay turnos disponibles";
+                            newOption.text = "No hay turnos disponibles";
+                            select.appendChild(newOption);
+                        } else {
+                            for (var i = 0; i < data.length; i++) {
+                                newOption = document.createElement('option');
+                                newOption.value = data[i];
+                                newOption.text = data[i];
+                                select.appendChild(newOption);
+                            }
+                        }
+                        ;
+                    });
+        }
+    </script>
+{% endblock %}
+{% set content %}
+<div style="display:flex">
+    <h3 class="mx-auto">Agregar un turno al centro {{ center.name }}</h3>
+</div>
+
+
+<div style="display:flex">
+    <a href="{{ url_for('turnos_index', page=1) }}" class="link mx-auto">Volver</a>
+</div>
+
+<div class="container">
+    <form method=post action="{{ url_for('turnos_create', center_id=center.id) }}">
+        {{ form.hidden_tag() }}
+        {% for field in form %}
+            {% if field.name != "csrf_token" %}
+                <div class="row">
+                    <div class="col-25">
+                        {{ field.label() }}
+                    </div>
+                    {% if field.id == 'date' %}
+                        <div class="col-75">
+                            {{ field(class="js-scroll-trigger", onChange="cmd(event)") }}
+                        </div>
+                    {% elif field.id == 'start_time' %}
+                        <div class="col-75">
+                            {{ field(class="js-scroll-trigger") }}
+                        </div>
+                    {% else %}
+                        <div class="col-75">
+                            {{ field(class="js-scroll-trigger") }}
+                        </div>
+                    {% endif %}
+                </div>
+            {% endif %}
+        {% endfor %}
+        <div class="row">
+            <button type="reset" class="btn btn-primary js-scroll-trigger">Limpiar</button>
+            <input type="submit" value="Crear" class="btn btn-primary js-scroll-trigger">
+
+        </div>
+
+    </form>
+</div>
+{% endset %}

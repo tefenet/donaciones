@@ -1,7 +1,7 @@
 """create users table v2
 
 Revision ID: 8f43b2ceeda9
-Revises: 2f60ede5f8b6
+Revises:
 Create Date: 2020-10-15 21:52:35.127734
 
 """
@@ -11,7 +11,7 @@ from datetime import datetime
 
 # revision identifiers, used by Alembic.
 revision = '8f43b2ceeda9'
-down_revision = '2f60ede5f8b6'
+down_revision = None
 branch_labels = None
 depends_on = None
 
@@ -34,10 +34,9 @@ def upgrade():
         sa.Column('email', sa.String(100), nullable=False, unique=True, index=True),
         sa.Column('username', sa.String(100), nullable=False, unique=True, index=True),
         sa.Column('password_hash', sa.String(100), nullable=True),
-        sa.Column('first_name', sa.String(100), index=True),
-        sa.Column('last_name', sa.String(100), index=True),
+        sa.Column('first_name', sa.String(100)),
+        sa.Column('last_name', sa.String(100)),
         sa.Column('active', sa.Boolean(), default=False, index=True),
-        sa.Column('account_type', sa.SmallInteger(), default=2),
         sa.Column('create_date', sa.DateTime, default=datetime.now())
     )
 
@@ -52,7 +51,6 @@ def upgrade():
                            'last_name': 'Admin',
                            'email': 'admin@donaciones.gov',
                            'active': True,
-                           'account_type': 1,
                        },
                        {
                            'username': 'creepy29',
@@ -61,7 +59,6 @@ def upgrade():
                            'last_name': 'Doe',
                            'email': 'john@donaciones.gov',
                            'active': True,
-                           'account_type': 1,
                        },
                        {
                            'username': 'ediaz',
@@ -70,7 +67,6 @@ def upgrade():
                            'last_name': 'Diaz',
                            'email': 'ediaz@donaciones.gov',
                            'active': False,
-                           'account_type': 2,
                        },
                        {
                            'username': 'ramond',
@@ -79,7 +75,6 @@ def upgrade():
                            'last_name': 'Diaz',
                            'email': 'ramond@donaciones.gov',
                            'active': True,
-                           'account_type': 2,
                        },
                        {
                            'username': 'jsv11',
@@ -88,7 +83,6 @@ def upgrade():
                            'last_name': 'Veron',
                            'email': 'jsv11@donaciones.gov',
                            'active': True,
-                           'account_type': 2,
                        },
                        {
                            'username': 'petertroglio',
@@ -97,7 +91,6 @@ def upgrade():
                            'last_name': 'Troglio',
                            'email': 'petertroglio@donaciones.gov',
                            'active': False,
-                           'account_type': 2,
                        },
                        {
                            'username': 'nassuti_c',
@@ -106,7 +99,6 @@ def upgrade():
                            'last_name': 'Nassuti',
                            'email': 'cnassuti@donaciones.gov',
                            'active': False,
-                           'account_type': 2,
                        },
                        {
                            'username': 'diego',
@@ -115,7 +107,6 @@ def upgrade():
                            'last_name': 'Marado',
                            'email': 'dieguito@donaciones.gov',
                            'active': True,
-                           'account_type': 2,
                        },
                        {
                            'username': 'pepechatruc',
@@ -124,7 +115,6 @@ def upgrade():
                            'last_name': 'Chatruc',
                            'email': 'pepechatruc@donaciones.gov',
                            'active': False,
-                           'account_type': 2,
                        },
                        {
                            'username': 'diSefano',
@@ -133,7 +123,6 @@ def upgrade():
                            'last_name': 'Di Stefano',
                            'email': 'alfredo@donaciones.gov',
                            'active': True,
-                           'account_type': 2,
                        },
                        {
                            'username': 'toni23',
@@ -142,7 +131,6 @@ def upgrade():
                            'last_name': 'Capone',
                            'email': 'tonicapone@donaciones.gov',
                            'active': False,
-                           'account_type': 2,
                        },
                        {
                            'username': 'brunodiaz',
@@ -151,7 +139,6 @@ def upgrade():
                            'last_name': 'Diaz',
                            'email': 'bdiaz@donaciones.gov',
                            'active': True,
-                           'account_type': 2,
                        },
                        {
                            'username': 'ramonete',
@@ -160,7 +147,6 @@ def upgrade():
                            'last_name': 'Ayala',
                            'email': 'pepeayala@donaciones.gov',
                            'active': True,
-                           'account_type': 2,
                        },
                        {
                            'username': 'pepe',
@@ -169,7 +155,6 @@ def upgrade():
                            'last_name': 'Diaz',
                            'email': 'd.pepe@donaciones.gov',
                            'active': True,
-                           'account_type': 2,
                        },
                        {
                            'username': 'usuario',
@@ -178,7 +163,6 @@ def upgrade():
                            'last_name': 'user',
                            'email': 'default@donaciones.gov',
                            'active': True,
-                           'account_type': 2,
                        },
                        {
                            'username': 'testing',
@@ -187,7 +171,6 @@ def upgrade():
                            'last_name': 'test',
                            'email': 'test@donaciones.gov',
                            'active': False,
-                           'account_type': 2,
                        },
                        {
                            'username': 'juan',
@@ -196,7 +179,14 @@ def upgrade():
                            'last_name': 'Lopez',
                            'email': 'juan@donaciones.gov',
                            'active': True,
-                           'account_type': 2,
+                       },
+                       {
+                           'username': 'operador',
+                           'password_hash': 'pbkdf2:sha256:150000$QhWXVmaA$2028ef705c136b76d37f8e306cb8f4fab11fc63a58a8dd7ed6ea150a385a4579',
+                           'first_name': 'operador',
+                           'last_name': 'del centro',
+                           'email': 'operador@donaciones.gov',
+                           'active': True,
                        },
                    ]
                    )

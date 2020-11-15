@@ -17,11 +17,17 @@
                     </a>
                     <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                         <a class="nav-link dropdown-item" href="{{ url_for('issue_index') }}">Consultas</a>
-                        {% if is_admin(session) %}
-                        <a class="nav-link dropdown-item" href="{{ url_for('config_sistema_get') }}">Configuracion del Sistema</a>
+                        {% if is_authenticated(session) and has_perm('system_modify_config') %}
+                            <a class="nav-link dropdown-item" href="{{ url_for('config_sistema_get') }}">Configuracion del Sistema</a>
                         {% endif %}
-                        {% if is_admin(session) %}
-                        <a class="nav-link dropdown-item" href="{{ url_for('user_index', page=1) }}">Usuarios</a>
+                        {% if is_authenticated(session) and has_perm('user_index') %}
+                            <a class="nav-link dropdown-item" href="{{ url_for('user_index', page=1) }}">Usuarios</a>
+                        {% endif %}
+                        {% if is_authenticated(session) and has_perm('centro_index') %}
+                            <a class="nav-link dropdown-item" href="{{ url_for('center_index', page=1) }}">Centros</a>
+                        {% endif %}
+                        {% if is_authenticated(session) and has_perm('shifts_index') %}
+                            <a class="nav-link dropdown-item" href="{{ url_for('turnos_index', page=1) }}">Turnos</a>
                         {% endif %}
                     </div>
                 </li>
