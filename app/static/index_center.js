@@ -8,7 +8,7 @@ let esparta = (index,ev) => {
     key=muni.accessKey
     getAjax(key).done((jsonResponse)=>{        
     muni.innerText = 'Municipio: '+jsonResponse.data.Town[key].name    
-     )
+    })
 }
 
 $(document).ready(function () {

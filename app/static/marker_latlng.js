@@ -59,14 +59,26 @@ function update_coordenadas(latlng) {
 //este diccionario hay que completar con coordenadas de municipios
 geo_locations={"Almirante Brown":{"lat":-34.829578,"lng":-58.370357}}
 
-field_select.onchange=(ev)=>{    
-    loc=geo_locations[field_select.selectedOptions[0].text]
-    loc=loc?loc:{"lat":-34.829578,"lng":-58.370357}//porque el dict está incompleto    
-    field_lat.value = loc.lat;
-    field_lng.value = loc.lng;
+function getAjaxx(name) {
+    return $.get({
+      url: 'https://apis.datos.gob.ar/georef/api/municipios?formato=json&provincia=buenos+aires&nombre='+ encodeURIComponent(name)
+    })
+  }
+  function setCentroide(jsonResponse) {
+    let centroide = jsonResponse.municipios[0].centroide
+    
+    field_lat.value = centroide.lat;
+    field_lng.value = centroide.lon;
     if (marker) { // check
         mymap.removeLayer(marker); // remove
     }
-    marker = L.marker([loc.lat, loc.lng]).addTo(mymap);
-    mymap.setView([loc.lat, loc.lng], 12);
+    marker = L.marker([centroide.lat, centroide.lon]).addTo(mymap);
+    mymap.setView([centroide.lat, centroide.lon], 10);
+  }
+
+
+field_select.onchange=(ev)=>{    
+    nombre=field_select.selectedOptions[0].text
+    getAjaxx(nombre).done(setCentroide)    
+    console.log(nombre)
 }
