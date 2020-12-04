@@ -101,6 +101,7 @@ class Center(Base):
     def serialized(self):
         """Serializa un centro de ayuda"""
         return {
+            "id": self.id,
             "nombre": self.name,
             "direccion": self.address,
             "telefono": self.phone,
