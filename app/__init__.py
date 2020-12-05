@@ -38,6 +38,9 @@ def create_app(environment="production"):
     app.jinja_env.globals.update(has_perm=auth.user_has_permission)
     app.jinja_env.globals.update(site_variables=Sys.get_sistema)
 
+    #permite usar URLs con o sin trailing slahses forma indistinta
+    app.url_map.strict_slashes = False
+
     # Autenticación
     app.add_url_rule("/iniciar_sesion", "auth_login", auth.login)
     app.add_url_rule("/cerrar_sesion", "auth_logout", auth.logout)
