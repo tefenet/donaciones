@@ -153,3 +153,4 @@ atlassian-ide-plugin.xml
 
 # alembic migrations
 alembic.ini
+web/node_modules/
