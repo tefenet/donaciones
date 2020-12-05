@@ -153,4 +153,5 @@ atlassian-ide-plugin.xml
 
 # alembic migrations
 alembic.ini
-web/node_modules/
+node_modules/
+package-lock.json
