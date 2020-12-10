@@ -218,5 +218,7 @@ class Shifts(Base):
 
     @classmethod
     def get_donor_email_set(cls):
-        return set(map(lambda s: s.donor_email, cls.query.all()))
+        a = set(map(lambda s: s.donor_email, cls.query.all()))
+        print(a)
+        return a
         # return cls.query.distinct(cls.donor_email)
