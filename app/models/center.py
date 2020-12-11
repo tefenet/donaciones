@@ -109,7 +109,9 @@ class Center(Base):
             "hora_cierre": self.closing.isoformat(),
             "tipo": self.center_type,
             "web": self.web_site,
-            "email": self.email
+            "email": self.email,
+            "latitud": self.gl_lat,
+            "longitud": self.gl_long
         }
 
 

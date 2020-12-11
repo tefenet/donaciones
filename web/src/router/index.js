@@ -3,7 +3,7 @@ import VueRouter from 'vue-router'
 
 import Home from '@/components/Home'
 import Estadisticas from '@/components/Estadisticas'
-import Mapa from '@/components/Mapa'
+import Map from '@/components/Map'
 import SolicitudCentro from '@/components/SolicitudCentro'
 import Solicitudes from '@/components/Solicitudes'
 import SolicitudesTurno from '@/components/SolicitudTurno'
@@ -24,7 +24,7 @@ const routes = [
     {
         path: '/Mapa',
         name: 'Mapa',
-        component: Mapa
+        component: Map
     },
     {
         path: '/solicitudes',
