@@ -14,11 +14,13 @@ from app.helpers import auth as helper_auth
 from app.models.sistema import Sistema as Sys
 from app.resources.sistema import Sistema
 import importlib
+from flask_cors import CORS
 
 
 def create_app(environment="production"):
     # Configuración inicial de la app
     app = Flask(__name__)
+    cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 
     # Carga de la configuración
     env = environ.get("FLASK_ENV", environment)

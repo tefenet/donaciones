@@ -1,5 +1,5 @@
 <template>
-  <div style="height: 350px;width:700px">
+  <div style="height: 350px; width: 700px">
     <!-- <div class="info" style="height: 15%">
       <span>Center: {{ center }}</span>
       <span>Zoom: {{ zoom }}</span>
@@ -15,13 +15,19 @@
       @click="addPoint"
     >
       <l-tile-layer :url="url"></l-tile-layer>
-      <l-marker v-for="(point,index) in points" :lat-lng="point" v-bind:key="index" @click="removePoint(point)" ></l-marker>
+      <l-marker
+        v-for="(point, index) in points"
+        :lat-lng="point"
+        v-bind:key="index"
+        @click="removePoint(point)"
+      ></l-marker>
     </l-map>
   </div>
 </template>
 
 <script>
-import {LMap, LTileLayer, LMarker} from 'vue2-leaflet';
+import { LMap, LTileLayer, LMarker } from "vue2-leaflet";
+import axios from "axios";
 
 export default {
   components: {
@@ -29,37 +35,58 @@ export default {
     LTileLayer,
     LMarker,
   },
-  data () {
+  data() {
     return {
-      url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+      url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
       zoom: 12,
       center: [-34.9187, -57.956],
-      bounds: null,      
-      points:[[-34.9187, -57.958],[-34.9187, -57.960],[-34.9187, -57.950],[-34.9180, -57.956]]
+      bounds: null,
+      centers: Array,
+      points: Array,
     };
   },
   methods: {
-    zoomUpdated (zoom) {
+    zoomUpdated(zoom) {
       this.zoom = zoom;
     },
-    centerUpdated (center) {
+    centerUpdated(center) {
       this.center = center;
     },
-    boundsUpdated (bounds) {
+    boundsUpdated(bounds) {
       this.bounds = bounds;
     },
-    addPoint(point){
-       this.points.push(point.latlng)
+    addPoint(point) {
+      this.points.push(point.latlng);
     },
-    removePoint(point){
-        const index= this.points.indexOf(point)
-        this.points.splice(index,1)
-    } 
-  }
-}
+    removePoint(point) {
+      const index = this.points.indexOf(point);
+      this.points.splice(index, 1);
+    },
+  },
+  mounted() {
+    axios
+      .create({
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+        },
+      })
+      .get("http://127.0.0.1:5000/api/v1.0/centros")
+      .then((res) => {
+        this.centers = res.data.centros;
+        this.points = this.centers.map((c) => [
+          parseFloat(c.latitud),
+          parseFloat(c.longitud),
+        ]);
+        console.log(this.centers);
+      })
+      .catch((error) => {
+        console.log(error);
+        // Manage errors if found any
+      });
+  },
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
 </style>
