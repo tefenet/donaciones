@@ -21,7 +21,11 @@ def show(center_id):
 
 def index():
     """retorna en formato JSON los datos de todos los centros de ayuda publicados en el sitio"""
-    cant_pagina = Sistema.get_sistema().cant_por_pagina
+    if 'max' in request.args:
+        cant_pagina = int(request.args['max'])
+    else:
+        cant_pagina = Sistema.get_sistema().cant_por_pagina
+
     if 'page' in request.args:
         page = int(request.args['page'])
     else:
