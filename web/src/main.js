@@ -6,6 +6,8 @@ import 'bootstrap/dist/css/bootstrap.css' // importo los estilos de vbootstrap
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 import 'leaflet/dist/leaflet.css';
 import {Icon} from 'leaflet';
+require('./plugins/fontawesome');
+
 
 delete Icon.Default.prototype._getIconUrl;
 Icon.Default.mergeOptions({
