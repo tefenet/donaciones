@@ -14,11 +14,13 @@ from app.helpers import auth as helper_auth
 from app.models.sistema import Sistema as Sys
 from app.resources.sistema import Sistema
 import importlib
+from flask_cors import CORS
 
 
 def create_app(environment="production"):
     # Configuración inicial de la app
     app = Flask(__name__)
+    cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 
     # Carga de la configuración
     env = environ.get("FLASK_ENV", environment)
@@ -37,6 +39,9 @@ def create_app(environment="production"):
     app.jinja_env.globals.update(is_authenticated=helper_auth.authenticated)
     app.jinja_env.globals.update(has_perm=auth.user_has_permission)
     app.jinja_env.globals.update(site_variables=Sys.get_sistema)
+
+    #permite usar URLs con o sin trailing slahses forma indistinta
+    app.url_map.strict_slashes = False
 
     # Autenticación
     app.add_url_rule("/iniciar_sesion", "auth_login", auth.login)

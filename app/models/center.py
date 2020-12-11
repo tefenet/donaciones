@@ -101,6 +101,7 @@ class Center(Base):
     def serialized(self):
         """Serializa un centro de ayuda"""
         return {
+            "id": self.id,
             "nombre": self.name,
             "direccion": self.address,
             "telefono": self.phone,
@@ -108,7 +109,9 @@ class Center(Base):
             "hora_cierre": self.closing.isoformat(),
             "tipo": self.center_type,
             "web": self.web_site,
-            "email": self.email
+            "email": self.email,
+            "latitud": self.gl_lat,
+            "longitud": self.gl_long
         }
 
 

@@ -10,12 +10,16 @@ LISTAR TURNOS:
 
 CASO EXITOSO:
 
+curl localhost:5000/api/v1.0/centros/1/turnos_disponibles?fecha=2020-10-12
+
+CASO SOLICITUD SIN FECHA:
+
 curl localhost:5000/api/v1.0/centros/1/turnos_disponibles
 
 
 CENTRO INEXISTENTE:  //retorna error 422
 
-curl localhost:5000/api/v1.0/centros/9999/turnos_disponibles
+curl localhost:5000/api/v1.0/centros/9999/turnos_disponibles?fecha=2020-10-12
 
 
 
@@ -80,23 +84,26 @@ CASO EXITOSO:
 
 curl  localhost:5000/api/v1.0/centros/
 
+CASO EXITOSO (ESPECIFICANDO PAGINA):
+
+curl  localhost:5000/api/v1.0/centros/?page=2
 
 ---------------------------------------------------------------------------------------------------------------
 MOSTRAR CENTRO:
 
 CASO EXITOSO:
 
-curl  localhost:5000/api/v1.0/centros/1/
+curl localhost:5000/api/v1.0/centros/1/
 
 
 CENTRO INEXISTENTE: //da error 404 not found
 
-curl  localhost:5000/api/v1.0/centros/9999999/
+curl localhost:5000/api/v1.0/centros/9999999/
 
 
 EL CENTRO NO ESTA DISPONIBLE PUBLICAMENTE: //da error 420 invalid request
 
-curl  localhost:5000/api/v1.0/centros/11/
+curl localhost:5000/api/v1.0/centros/11/
 
 
 ---------------------------------------------------------------------------------------------------------------

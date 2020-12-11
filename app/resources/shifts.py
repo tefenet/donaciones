@@ -61,10 +61,10 @@ def index(date_start=date.today(), date_end=(datetime.now() + timedelta(2)).date
             return redirect(url_for('turnos_index'))
     except (BadRequestKeyError, ValueError):
         page = 1
-
     res = Page(Shifts.query_shifts_between(date_start, date_end), page, sys.cant_por_pagina)
+    search_donor_form = SearchDonorEmailForm()
     return render_template("shifts/index.html", pagination=res, date_start=date_start, date_end=date_end, shifts=shifts,
-                           search_donor_form=SearchDonorEmailForm())
+                           search_donor_form=search_donor_form)
 
 
 @restricted(perm='shifts_search')
@@ -81,8 +81,9 @@ def search_by_donor_email():
         flash("ERROR: {}".format(e), e)
         return redirect(url_for('turnos_index'))
     pagination = Shifts.search_by_donor_email_paginated(donor_email, page)
+    search_donor_form = SearchDonorEmailForm()
     return render_template("shifts/index.html", pagination=pagination, shifts=True, donor_email=donor_email,
-                           search_donor_form=SearchDonorEmailForm())
+                           search_donor_form=search_donor_form)
 
 
 @restricted(perm='shifts_search')
@@ -101,8 +102,9 @@ def search_by_center_name():
 
     c = Center.get_by_name(center_name)
     pagination = Shifts.search_by_center_name_paginated(c, page)
+    search_donor_form = SearchDonorEmailForm()
     return render_template("shifts/index.html", pagination=pagination, shifts=True, center_name=center_name,
-                           search_donor_form=SearchDonorEmailForm())
+                           search_donor_form=search_donor_form)
 
 
 def update_form():
