@@ -18,7 +18,7 @@
           <b-card :img-src=mapaBa
                   title="Mapa de Centros"
                   img-alt=img-top
-                  tag="mapa"
+                  tag="article"
                   style="max-width: 20rem;"
                   class="mb-2"
           >
@@ -34,7 +34,7 @@
           <b-card :img-src=logoBa
                   title="Solicitudes"
                   img-alt=img-top
-                  tag="solicitudes"
+                  tag="article"
                   style="max-width: 20rem;"
                   class="mb-2"
           >
@@ -50,7 +50,7 @@
           <b-card :img-src=estadisticas
                   title="Estadísticas"
                   img-alt=img-top
-                  tag="estadísticas"
+                  tag="article"
                   style="max-width: 20rem;"
                   class="mb-2"
           >
