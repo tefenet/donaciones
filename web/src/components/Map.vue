@@ -38,8 +38,8 @@ export default {
   data() {
     return {
       url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-      zoom: 12,
-      center: [-34.9187, -57.956],
+      zoom: 5,
+      center: [-36.9187, -64.956],
       bounds: null,
       centers: Array,
       points: Array,
@@ -70,7 +70,7 @@ export default {
           "Access-Control-Allow-Origin": "*",
         },
       })
-      .get("http://127.0.0.1:5000/api/v1.0/centros")
+      .get("http://127.0.0.1:5000/api/v1.0/centrosAll")
       .then((res) => {
         this.centers = res.data.centros;
         this.points = this.centers.map((c) => [

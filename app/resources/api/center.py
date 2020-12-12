@@ -45,6 +45,23 @@ def index():
     }
     return jsonify(result)
 
+def indexUnpaginated():
+    """retorna en formato JSON los datos de todos los centros de ayuda publicados en el sitio de forma NO paginada"""
+    try:
+        centers = Center.query_by_published(True)
+    except ():
+        return jsonify({'error': [{'status': 'Internal Server Error', 'error_msg': 'Error interno del servidor',
+                        'error_code': 500}]}), 500
+    listado = []
+    for center in centers:
+        listado.append(center.serialized())
+    result = {
+        'centros': listado,
+    }
+    return jsonify(result)
+
+
+
 
 def create():
     """crea un nuevo centro de ayuda"""

@@ -22,11 +22,6 @@ CENTER_TYPES_ENUM = ENUM(*CENTER_TYPES, name='type')
 
 
 def upgrade():
-    # city_table = op.create_table(
-    #     'city',
-    #     sa.Column('id', sa.Integer, primary_key=True, autoincrement=True),
-    #     sa.Column('name', sa.String(100), nullable=False),
-    # )
     centers_table = op.create_table(
         'centers',
         sa.Column('id', sa.Integer, primary_key=True, autoincrement=True),
@@ -1546,6 +1541,21 @@ def upgrade():
             "published": False,
 
             "geo_location": "-82.6036, 76.94164"
+        },
+        {
+            "name": "Colegio Sagrado Corazon de Jesus",
+            "address": "Diagonal 73 nro 1900",
+            "phone": "(221) 426-5424",
+            "email": "colegiosagradocorazon@hotmail.com",
+            "web_site": "www.colegiosagradolaplata.com.ar",
+            "city_id": 31,
+            "type": "alimentos",
+            "opening": "08:00:00",
+            "closing": "16:00:00",
+            "state": "approved",
+            "published": True,
+
+            "geo_location": "-34.92071991722597, -57.94590649040175"
         }
     ]
 
