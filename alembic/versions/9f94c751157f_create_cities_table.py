@@ -26,6 +26,24 @@ def upgrade():
 
     op.bulk_insert(city_table, [
         {
+           "name": "La Plata"
+        },
+        {
+           "name": "Buenos Aires"
+        },
+        {
+           "name": "Bahia Blanca"
+        },
+        {
+           "name": "Quilmes"
+        },
+        {
+           "name": "Tandil"
+        },
+        {
+           "name": "Neuquen"
+        },
+        {
            "name": "Bengkulu"
         },
         {
@@ -114,18 +132,6 @@ def upgrade():
         },
         {
            "name": "Independence"
-        },
-        {
-           "name": "La Plata"
-        },
-        {
-           "name": "Bahia Blanca"
-        },
-        {
-           "name": "Tandil"
-        },
-        {
-           "name": "Neuquen"
         }
         ])
 
