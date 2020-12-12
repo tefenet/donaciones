@@ -5,6 +5,19 @@
       <span>Zoom: {{ zoom }}</span>
       <span>Bounds: {{ bounds }}</span>
     </div> -->
+    <b-container>
+      <p><span class="titulo">Mapa </span><span class="titulo tituloba">Centros
+        <br/>de Ayuda</span>
+      </p>
+      <!--      <img :src="require('@/assets/logo_gba.png')" class="img-fluid h-25 w-25"/>-->
+      <p>
+        <span>
+          Mapa con las ubicaciones geográficas de los Centros de Ayuda de la provincia de Buenos Aires. En cada punto
+          vas a encontrar información de cada centro(horario de apertura y cierre, dirección y teléfono).
+        </span>
+      </p>
+    </b-container>
+    <hr class="mb-4">
     <l-map
         style="height: 80%; width: 100%"
         :zoom="zoom"
@@ -22,11 +35,21 @@
           @click="locationMarkerOnClick(index)"
       >
         <l-tooltip>{{ center.nombre }}</l-tooltip>
-        <b-modal :id="'modal-'+index" :title="'Centro:  '+center.nombre" ok-only>
-          <p class="my-4">direccion: {{ center.direccion }}</p>
-          <p class="my-4">telefono: {{ center.telefono }}</p>
-          <p class="my-4">abre: {{ center.hora_apertura }}hs</p>
-          <p class="my-4">cierra: {{ center.hora_cierre }}hs</p>
+        <b-modal :header-bg-variant="headerBgVariant"
+                 :header-text-variant="headerTextVariant"
+                 :id="'modal-'+index" :title="'Centro:  '+center.nombre"
+                 ok-only
+                 ok-title="Cerrar"
+                 ok-variant="info">
+          <p class="titulo-text">
+            <span><font-awesome-icon :icon="['fa', 'map-marker-alt']"
+                                     style="color: darkcyan;"/> direccion: {{ center.direccion }}</span><br>
+            <span><font-awesome-icon :icon="['fa', 'phone']" style="color: darkcyan;"/> telefono: {{ center.telefono }}</span><br>
+            <span><font-awesome-icon :icon="['fa', 'door-open']"
+                                     style="color: darkcyan;"/> abre: {{ center.hora_apertura }}hs</span><br>
+            <span><font-awesome-icon :icon="['fa', 'door-closed']"
+                                     style="color: darkcyan;"/> cierra: {{ center.hora_cierre }}hs</span>
+          </p>
         </b-modal>
       </l-marker>
     </l-map>
@@ -52,6 +75,8 @@ export default {
       bounds: null,
       centers: Array,
       points: Array,
+      headerBgVariant: 'info',
+      headerTextVariant: 'white titulo',
     };
   },
   methods: {

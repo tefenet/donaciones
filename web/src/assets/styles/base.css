@@ -28,13 +28,9 @@
 
 .titulo {
     font-family: 'Hammersmith One', sans-serif;
-    background-size: cover;
-    -moz-background-clip: text;
-    -webkit-background-clip: text;
     text-transform: uppercase;
     font-size: 4vh;
     line-height: .75;
-    margin: 10px 0;
     color: #6d696e;
 }
 
@@ -42,3 +38,7 @@
     color: darkcyan !important;
 }
 
+.titulo-text {
+  font-family: 'Quicksand', sans-serif;
+  text-transform: uppercase;
+}
