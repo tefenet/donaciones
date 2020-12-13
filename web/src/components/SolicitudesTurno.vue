@@ -108,7 +108,7 @@ export default {
           this.errored = true;
         })
     axios
-        .get('http://127.0.0.1:5000/api/v1.0/centrosAll')
+        .get('https://admin-grupo56.proyecto2020.linti.unlp.edu.ar/api/v1.0/centrosAll')
         .then(response => {
           this.centros = response.data.centros;
         })
