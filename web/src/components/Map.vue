@@ -59,6 +59,7 @@
 <script>
 import {LMap, LTooltip, LTileLayer, LMarker} from "vue2-leaflet";
 import axios from "axios";
+import {API_LOCATION} from '@/config';
 
 export default {
   components: {
@@ -112,7 +113,7 @@ export default {
             "Access-Control-Allow-Origin": "*",
           },
         })
-        .get("https://admin-grupo56.proyecto2020.linti.unlp.edu.ar/api/v1.0/centrosAll")
+        .get(API_LOCATION + 'centrosAll')
         .then((res) => {
           this.centers = res.data.centros;
           this.points = this.centers.map((c) => [

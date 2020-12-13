@@ -67,6 +67,7 @@
 
 <script>
 import axios from 'axios';
+import {API_LOCATION, API_REF_LOCATION} from '@/config';
 
 export default {
   name: 'SolicitudTurno',
@@ -98,7 +99,7 @@ export default {
   },
   mounted() {
     axios
-        .get('https://api-referencias.proyecto2020.linti.unlp.edu.ar/municipios?per_page=1000')
+        .get(API_REF_LOCATION + 'municipios?per_page=1000')
         .then(response => {
           this.ciudades = response.data.data.Town;
           console.log(this.ciudades);
@@ -106,9 +107,9 @@ export default {
         .catch(error => {
           console.log(error);
           this.errored = true;
-        })
+        });
     axios
-        .get('https://admin-grupo56.proyecto2020.linti.unlp.edu.ar/api/v1.0/centrosAll')
+        .get(API_LOCATION + 'centrosAll')
         .then(response => {
           this.centros = response.data.centros;
         })

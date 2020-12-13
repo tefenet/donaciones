@@ -17,6 +17,7 @@
     "bootstrap-vue": "^2.20.1",
     "core-js": "^3.6.5",
     "leaflet": "^1.7.1",
+    "moment": "^2.29.1",
     "popper": "^1.0.1",
     "vue": "^2.6.12",
     "vue-fontawesome": "0.0.2",
