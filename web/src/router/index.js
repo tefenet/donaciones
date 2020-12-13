@@ -6,7 +6,8 @@ import Estadisticas from '@/components/Estadisticas'
 import Map from '@/components/Map'
 import SolicitudCentro from '@/components/SolicitudCentro'
 import Solicitudes from '@/components/Solicitudes'
-import SolicitudesTurno from '@/components/SolicitudTurno'
+import SolicitudTurno from '@/components/SolicitudTurno'
+import SolicitudesTurno from '@/components/SolicitudesTurno'
 import NotFound404 from '@/components/NotFound404'
 
 Vue.use(VueRouter)
@@ -44,9 +45,15 @@ const routes = [
     },
     {
         path: '/solicitudTurno',
-        name: 'SolicitudTurno',
+        name: 'SolicitudesTurno',
         component: SolicitudesTurno,
-        meta: {title: 'Solicitud Turno'}
+        meta: {title: 'Solicitudes Turno'}
+    },
+    {
+        path: '/reservaTurno/:centro_id',
+        name: 'ReservaTurno',
+        component: SolicitudTurno,
+        meta: {title: 'Reservar Turno'}
     },
     {
         path: "*",
