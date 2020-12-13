@@ -34,6 +34,11 @@ def avalaible_by_date(id):
     try:
         fecha = datetime.strptime(request.args['fecha'], '%Y-%m-%d').date()
         center = Center.get_by_id(id)
+        # fecha2 = datetime.strptime("2020-12-13", '%Y-%m-%d').date()
+        # if fecha == fecha2:
+        #     return get_json_error_msg(center_info={"centro_id": center.id, "fecha": fecha.isoformat()},
+        #                               status="shifts not available", error_code=404,
+        #                               error_msg="no hay turnos disponibles".format(center.id))
         if center.published is False:
             raise ValueError(
                 "centro id={} no se encuentra activo".format(center.id))  # podria implementarse en el metodo
@@ -52,7 +57,7 @@ def avalaible_by_date(id):
     if turnos:
         return get_json_turnos(turnos=turnos, fecha=fecha, centro_id=center.id), 200
     return get_json_error_msg(center_info={"centro_id": center.id, "fecha": fecha.isoformat()},
-                              status="shifts not available", error_code=200,
+                              status="shifts not available", error_code=404,
                               error_msg="no hay turnos disponibles".format(center.id))
 
 
@@ -70,7 +75,7 @@ def create(id):
         datos_turno['fecha'] = str_date_to_datetime(datos_turno['fecha']).date()
         shift = Shifts.populate_from_api(datos_turno)
         created_shift = Shifts.create_shift(shift, center)  # errores posibles capturados
-        return jsonify({"atributos": created_shift.serialize()})
+        return jsonify({"atributos": created_shift.serialize()}), 200
 
     except (BadRequestKeyError, ValueError, KeyError, AttributeError, NoResultFound) as err:
         app.logger.info(traceback.format_exc())
