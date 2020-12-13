@@ -5,7 +5,7 @@
         <br/><span class="titulo"> Ayuda</span> <span class="titulo tituloba"> BA</span>
       </p>
       <!--      <img :src="require('@/assets/logo_gba.png')" class="img-fluid h-25 w-25"/>-->
-    </b-container>>
+    </b-container>
     <b-container>
       <p>
         <span>Bienvenido/a al sitio de Centros de Ayuda de la Provincia de Buenos Aires. A continuación vas a encontrar
@@ -20,7 +20,6 @@
                     title="Mapa de Centros"
                     img-alt=img-top
                     tag="article"
-                    style="max-width: 20rem;"
                     class="mb-2"
             >
               <b-card-text>
@@ -32,11 +31,10 @@
             </b-card>
           </b-col>
           <b-col md="4" class="mt-4">
-            <b-card :img-src=logoBa
+            <b-card :img-src=imgSolicitudes
                     title="Solicitudes"
                     img-alt=img-top
                     tag="article"
-                    style="max-width: 20rem;"
                     class="mb-2"
             >
               <b-card-text>
@@ -52,7 +50,6 @@
                     title="Estadísticas"
                     img-alt=img-top
                     tag="article"
-                    style="max-width: 20rem;"
                     class="mb-2"
             >
               <b-card-text>
@@ -74,6 +71,7 @@
 import mapaBa from "@/assets/mapa_ba.jpg"
 import logoBa from "@/assets/logo_gba_card.png"
 import estadisticas from "@/assets/estadisticas.jpg"
+import imgSolicitudes from "@/assets/centro_home.jpg";
 
 export default {
 
@@ -85,6 +83,7 @@ export default {
     return {
       mapaBa: mapaBa,
       logoBa: logoBa,
+      imgSolicitudes: imgSolicitudes,
       estadisticas: estadisticas,
     }
   }
