@@ -112,7 +112,7 @@ export default {
             "Access-Control-Allow-Origin": "*",
           },
         })
-        .get("http://127.0.0.1:5000/api/v1.0/centrosAll")
+        .get("https://admin-grupo56.proyecto2020.linti.unlp.edu.ar/api/v1.0/centrosAll")
         .then((res) => {
           this.centers = res.data.centros;
           this.points = this.centers.map((c) => [
