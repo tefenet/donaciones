@@ -1,11 +1,11 @@
 <template>
-  <div class="footer-bottom p-3">
+  <footer class="footer">
     <b-container>
       <b-row>
-        <b-col>
+        <b-col md="4" sm="12">
           <img :src="require('@/assets/logo_gba_footer_blanco.svg')" class="img-fluid w-50"/>
         </b-col>
-        <b-col class="mt-4">
+        <b-col md="4" sm="6">
           <ul class="list-inline social-buttons">
             <li class="list-inline-item">
               <a href="#">
@@ -24,13 +24,12 @@
             </li>
           </ul>
         </b-col>
-        <b-col>
-          <br/>
-          <span class="text-white p-4 font-weight-bold text-copy">&copy; GRUPO 56</span>
+        <b-col md="4" sm="6">
+          <span class="text-white font-weight-bold text-copy">&copy; GRUPO 56</span>
         </b-col>
       </b-row>
     </b-container>
-  </div>
+  </footer>
 </template>
 
 
@@ -41,13 +40,6 @@ export default {
 </script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@500&display=swap');
-
-.footer-bottom {
-  width: 100%;
-  position: absolute;
-  bottom: 0;
-  background-color: #212529;
-}
 
 a {
   color: #6c757d;

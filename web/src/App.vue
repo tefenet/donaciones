@@ -1,9 +1,9 @@
 <template>
   <div id="app">
     <Navigation></Navigation>
-    <div class="mt-5"></div>
-    <router-view/>
-    <div class="mb-5 text-white">.</div>
+    <b-container fluid="100%" class="pt-5 pb-5">
+      <router-view/>
+    </b-container>
     <Footer></Footer>
   </div>
 </template>
@@ -22,14 +22,10 @@ export default {
 </script>
 
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+@import './assets/styles/base.css';
+
+html {
   position: relative;
-  min-height: 100vh;
-  padding-bottom: 60px;
+  min-height: 100%;
 }
 </style>

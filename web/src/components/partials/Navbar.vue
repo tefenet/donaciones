@@ -2,26 +2,21 @@
   <div>
     <b-navbar toggleable="lg" type="dark" variant="info" class="p-4">
       <router-link v-bind:to='`/`'>
-<!--        <img :src="require('@/assets/logo_gba_footer_blanco.svg')" class="img-fluid"/>-->
-        <b-navbar-brand class="navbar-titulo">Centros de Ayuda BA</b-navbar-brand>
+        <b-navbar-brand class="navbar-titulo font-weight-bold">Centros de Ayuda BA</b-navbar-brand>
       </router-link>
       <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
-      <b-collapse id="nav-collapse" class="d-flex" is-nav>
-        <!-- Right aligned nav items -->
+      <b-collapse id="nav-collapse" is-nav>
         <b-navbar-nav class="ml-auto">
-          <b-navbar-nav>
-            <router-link class="spacing text-white" v-for="routes in links"
-                         v-bind:key="routes.id"
-                         :to="`${routes.page}`">{{ routes.text }}
-            </router-link>
-          </b-navbar-nav>
+          <router-link class="spacing text-white navbar-titulo" v-for="routes in links"
+                       v-bind:key="routes.id"
+                       :to="`${routes.page}`">{{ routes.text }}
+          </router-link>
         </b-navbar-nav>
       </b-collapse>
     </b-navbar>
   </div>
 </template>
-
 
 <script>
 export default {

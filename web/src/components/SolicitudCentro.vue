@@ -7,7 +7,7 @@
 
 <script>
 export default {
-  name: 'SolicitudCentro' //this is the name of the component
+  name: 'SolicitudCentro'
 }
 </script>
 <style>

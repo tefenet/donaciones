@@ -9,7 +9,6 @@ from sqlalchemy import Column, Integer, String, Boolean, DateTime, LargeBinary, 
 from datetime import datetime, date
 import enum
 
-
 from app.models.shifts import Shifts
 
 STATES = ('pending', 'approved', 'rejected')
@@ -97,7 +96,6 @@ class Center(Base):
         """Chequeo que el horario del turno pertenezca a un horario válido"""
         return self.opening <= start_time < self.closing
 
-
     def serialized(self):
         """Serializa un centro de ayuda"""
         return {
@@ -111,14 +109,13 @@ class Center(Base):
             "web": self.web_site,
             "email": self.email,
             "latitud": self.gl_lat,
-            "longitud": self.gl_long
+            "longitud": self.gl_long,
+            "city_id": self.city_id
         }
-
 
     def to_json(self):
         """Convierte un centro de ayuda a formato JSON"""
         return jsonify(self.serialized())
-
 
     @classmethod
     def delete_by_id(cls, id):
@@ -156,4 +153,3 @@ class Center(Base):
     def query_by_published(cls, published):
         """Recibe un string indicando el estado. Retorna una Query"""
         return cls.query.filter(cls.published == published)
-

@@ -22,11 +22,6 @@ CENTER_TYPES_ENUM = ENUM(*CENTER_TYPES, name='type')
 
 
 def upgrade():
-    # city_table = op.create_table(
-    #     'city',
-    #     sa.Column('id', sa.Integer, primary_key=True, autoincrement=True),
-    #     sa.Column('name', sa.String(100), nullable=False),
-    # )
     centers_table = op.create_table(
         'centers',
         sa.Column('id', sa.Integer, primary_key=True, autoincrement=True),
@@ -47,6 +42,81 @@ def upgrade():
     )
 
     centers = [
+        {
+            "name": "Colegio Sagrado Corazon de Jesus",
+            "address": "Diagonal 73 nro 1900",
+            "phone": "(221) 426-5424",
+            "email": "colegiosagradocorazon@hotmail.com",
+            "web_site": "www.colegiosagradolaplata.com.ar",
+            "city_id": 1,
+            "type": "alimentos",
+            "opening": "08:00:00",
+            "closing": "16:00:00",
+            "state": "approved",
+            "published": True,
+
+            "geo_location": "-34.92071991722597, -57.94590649040175"
+        },
+        {
+            "name": "Hospital Garrahan",
+            "address": "Pichincha 1890, C1245 CABA",
+            "phone": "011 422-5624",
+            "email": "hospitalgarrahan@hotmail.com",
+            "web_site": "www.hospitalgarrahan.com.ar",
+            "city_id": 2,
+            "type": "salud",
+            "opening": "08:00:00",
+            "closing": "16:00:00",
+            "state": "approved",
+            "published": True,
+
+            "geo_location": "-34.63065329193494, -58.393359430692904"
+        },
+        {
+            "name": "Hospital Italiano de Buenos Aires",
+            "address": "Pres. Tte. Gral. Juan Domingo Perón 4190, C1199 Buenos Aires",
+            "phone": "011 452-5226",
+            "email": "hospitalitaliano@hotmail.com",
+            "web_site": "www.hospitalitalianoBSAS.com.ar",
+            "city_id": 2,
+            "type": "salud",
+            "opening": "08:00:00",
+            "closing": "16:00:00",
+            "state": "approved",
+            "published": True,
+
+            "geo_location": "-34.60601607563314, -58.425758801858386"
+        },
+        {
+            "name": "Parroquia Santisimo Sacramento",
+            "address": "Belgrano 514",
+            "phone": "(225) 427-5474",
+            "email": "",
+            "web_site": "",
+            "city_id": 5,
+            "type": "alimentos",
+            "opening": "10:00:00",
+            "closing": "18:00:00",
+            "state": "approved",
+            "published": True,
+
+            "geo_location": "-37.32932776782616, -59.13628374661565"
+        },
+        {
+            "name": "Instituto Medico Plantense",
+            "address": "Av. 51 n 315",
+            "phone": "(221) 425 8394",
+            "email": "donaciones@institutomedicoplatense.com.ar",
+            "web_site": "institutomedicoplatense.com.ar",
+            "city_id": 1,
+            "type": "salud",
+            "opening": "10:00:00",
+            "closing": "18:00:00",
+            "state": "approved",
+            "published": True,
+
+            "geo_location": "-34.90965038981363, -57.943757871434286"
+        },
         {
             "name": "Deacon Mcgowan",
             "address": "569 Proin Ave",
@@ -957,8 +1027,8 @@ def upgrade():
             "type": "salud",
             "opening": "09:00:00",
             "closing": "16:00:00",
-            "state": "approved",
-            "published": True,
+            "state": "rejected",
+            "published": False,
 
             "geo_location": "72.85296, -37.94386"
         },
@@ -972,8 +1042,8 @@ def upgrade():
             "type": "salud",
             "opening": "09:00:00",
             "closing": "16:00:00",
-            "state": "approved",
-            "published": True,
+            "state": "rejected",
+            "published": False,
 
             "geo_location": "-52.75021, 56.39467"
         },
@@ -987,8 +1057,8 @@ def upgrade():
             "type": "salud",
             "opening": "09:00:00",
             "closing": "16:00:00",
-            "state": "approved",
-            "published": True,
+            "state": "rejected",
+            "published": False,
 
             "geo_location": "-57.35384, -96.19838"
         },
@@ -1002,8 +1072,8 @@ def upgrade():
             "type": "salud",
             "opening": "09:00:00",
             "closing": "16:00:00",
-            "state": "approved",
-            "published": True,
+            "state": "rejected",
+            "published": False,
 
             "geo_location": "-83.85124, 48.28826"
         },
@@ -1017,8 +1087,8 @@ def upgrade():
             "type": "salud",
             "opening": "09:00:00",
             "closing": "16:00:00",
-            "state": "approved",
-            "published": True,
+            "state": "rejected",
+            "published": False,
 
             "geo_location": "64.14131, -5.45627"
         },
@@ -1032,8 +1102,8 @@ def upgrade():
             "type": "salud",
             "opening": "09:00:00",
             "closing": "16:00:00",
-            "state": "approved",
-            "published": True,
+            "state": "rejected",
+            "published": False,
 
             "geo_location": "39.49738, -62.82087"
         },
@@ -1047,8 +1117,8 @@ def upgrade():
             "type": "salud",
             "opening": "09:00:00",
             "closing": "16:00:00",
-            "state": "approved",
-            "published": True,
+            "state": "rejected",
+            "published": False,
 
             "geo_location": "28.70681, 169.15634"
         },
@@ -1062,8 +1132,8 @@ def upgrade():
             "type": "salud",
             "opening": "09:00:00",
             "closing": "16:00:00",
-            "state": "approved",
-            "published": True,
+            "state": "rejected",
+            "published": False,
 
             "geo_location": "66.44082, 61.57636"
         },
@@ -1077,8 +1147,8 @@ def upgrade():
             "type": "salud",
             "opening": "09:00:00",
             "closing": "16:00:00",
-            "state": "approved",
-            "published": True,
+            "state": "rejected",
+            "published": False,
 
             "geo_location": "56.85814, -44.87736"
         },
@@ -1546,7 +1616,7 @@ def upgrade():
             "published": False,
 
             "geo_location": "-82.6036, 76.94164"
-        }
+        },
     ]
 
     for center in centers:

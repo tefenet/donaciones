@@ -1,0 +1,60 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&display=swap');
+
+#app {
+    font-family: 'Open Sans', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-align: center;
+    color: #2c3e50;
+    margin-bottom: 100px; /* Margin bottom by footer height */
+}
+
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 100px; /* Set the fixed height of the footer here */
+    line-height: 100px; /* Vertically center the text there */
+    background-color: #212529;
+}
+
+.titulo {
+    font-family: 'Hammersmith One', sans-serif;
+    text-transform: uppercase;
+    font-size: 4vh;
+    line-height: .75;
+    color: #6d696e;
+}
+
+.tituloba {
+    color: darkcyan !important;
+}
+
+.titulo-text {
+    text-transform: uppercase;
+}
+
+.card-solicitud {
+    max-width: 400px;
+    font-size: 14px;
+}
+
+.texto-centro{
+    font-size: 12px;
+}
+
+@media (max-width: 768px) {
+    #app {
+        margin-bottom: 210px; /* Margin bottom by footer height */
+    }
+
+    .footer {
+        height: 200px; /* Set the fixed height of the footer here */
+    }
+
+    .card-solicitud {
+        max-width: 100%;
+        width: 100% !important;
+    }
+}
+
