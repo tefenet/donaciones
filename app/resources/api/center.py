@@ -15,7 +15,7 @@ def show(center_id):
             {'status': 'Not Found', 'error_msg': str(error_message), 'error_code': 404}]}), 404
     if not center.published:
         return jsonify({'error': [{'status': 'Invalid Request', 'error_msg':
-        'El centro con id: %d no se encuentra disponible publicamente' % center_id, 'error_code': 420}]}), 420
+            'El centro con id: %d no se encuentra disponible publicamente' % center_id, 'error_code': 420}]}), 420
     return jsonify({'centro': center.serialized()})
 
 
@@ -37,7 +37,7 @@ def index():
             raise ValueError('Pagina no valida')
     except (ValueError, AttributeError):
         return jsonify({'error': [{'status': 'Invalid Request', 'error_msg': 'Pagina no disponible',
-                        'error_code': 420}]}), 420
+                                   'error_code': 420}]}), 420
     listado = []
     for center in result.items:
         center_serialized = center.serialized()
@@ -49,13 +49,14 @@ def index():
     }
     return jsonify(result)
 
+
 def indexUnpaginated():
     """retorna en formato JSON los datos de todos los centros de ayuda publicados en el sitio de forma NO paginada"""
     try:
         centers = Center.query_by_published(True)
     except ():
         return jsonify({'error': [{'status': 'Internal Server Error', 'error_msg': 'Error interno del servidor',
-                        'error_code': 500}]}), 500
+                                   'error_code': 500}]}), 500
     listado = []
     for center in centers:
         listado.append(center.serialized())
@@ -65,12 +66,10 @@ def indexUnpaginated():
     return jsonify(result)
 
 
-
-
 def create():
     """crea un nuevo centro de ayuda"""
     try:
-        data = request.get_json()  #si el mimetype no indica JSON retorna None
+        data = request.get_json()  # si el mimetype no indica JSON retorna None
         if data is None:
             return jsonify({'error': [
                 {'status': 'Bad Request', 'error_msg': 'Solicitud no valida', 'error_code': 400}]}), 400
@@ -83,10 +82,14 @@ def create():
         new_center.type = data['tipo']
         new_center.web_site = data['web']
         new_center.email = data['email']
+        if 'ciudad_id' in data.keys():
+            new_center.city_id = data['ciudad_id']
+        if 'gl_lat' and 'gl_long' in data.keys():
+            new_center.gl_lat = data['gl_lat']
+            new_center.gl_long = data['gl_long']
+
         dbSession.add(new_center)
         dbSession.commit()
         return jsonify({'atributos': new_center.serialized()}), 201
     except:
         return jsonify(error_code=500, error_msg="Error inesperado", status="internal server error"), 500
-
-
