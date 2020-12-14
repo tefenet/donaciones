@@ -133,6 +133,16 @@
                     readonly
                 ></b-form-input>
               </b-form-group>
+              <div class="form-group row">
+                <label for="robot" class="col-sm-2 col-form-label"></label>
+                <div class="col-sm-10">
+                  <vue-recaptcha ref="recaptcha"
+                                 @verify="onVerify" sitekey="6Ld1mwUaAAAAAJXmnW-cIA3lSU_rzgGlsJxjpczd"
+                                 accesskey="6Ld1mwUaAAAAAMGTFRRxhi518S_TIr1Bl-Giks80"
+                                 :loadRecaptchaScript="true">
+                  </vue-recaptcha>
+                </div>
+              </div>
 
               <b-button type="submit" variant="info" :disabled="disableEnviar">Enviar</b-button>
               <b-button type="reset" variant="danger">Reset</b-button>
@@ -155,6 +165,7 @@ import {latLng} from "leaflet";
 import {LMap, LTileLayer, LMarker} from "vue2-leaflet";
 import axios from "axios";
 import {API_LOCATION, API_REF_LOCATION} from "@/config";
+import VueRecaptcha from 'vue-recaptcha';
 
 
 export default {
@@ -163,6 +174,7 @@ export default {
     LMap,
     LTileLayer,
     LMarker,
+    'vue-recaptcha': VueRecaptcha,
   },
 
   data() {
@@ -192,6 +204,7 @@ export default {
         ciudad_id: '',
         gl_long: '',
         gl_lat: '',
+        robot: false,
       },
       showErrorAlert: false,
       showSuccessAlert: false,
@@ -206,11 +219,11 @@ export default {
         alert("Seleccioná un punto en el mapa!");
       } else {
         var data = JSON.stringify(this.form);
-        console.log(data);
-        this.cargarCentro(data);
+        if (this.form.robot) {
+          this.cargarCentro(data);
+        }
       }
-    }
-    ,
+    },
     resetForm() {
       this.form.nombre = ''
       this.form.direccion = ''
@@ -265,6 +278,9 @@ export default {
             this.showErrorAlert = true;
             // this.resetForm();
           })
+    },
+    onVerify: function (response) {
+      if (response) this.form.robot = true;
     },
   },
   mounted() {
