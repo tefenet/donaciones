@@ -55,9 +55,10 @@
             <b-form-group id="telefono-group" label="Teléfono:" label-for="input-telefono">
               <b-form-input
                   id="input-telefono"
+                  type="number"
                   v-model="form.telefono_donante"
                   required
-                  placeholder="221 555 5555"
+                  placeholder="2215555555"
               ></b-form-input>
             </b-form-group>
 
@@ -73,11 +74,12 @@
             </b-form-group>
 
             <b-form-group id="horario-group" label="Horario:" label-for="input-horario">
-              <b-form-select id="input-horario" v-model="form.hora_inicio" :options="horarios" size="sm">
+              <b-form-select id="input-horario" v-model="form.hora_inicio" :options="horarios" size="sm"
+                             @change="toggleReservar">
 
               </b-form-select>
             </b-form-group>
-            <b-button type="submit" variant="info" size="sm">Reservar</b-button>
+            <b-button type="submit" variant="info" size="sm" :disabled="botonReservar">Reservar</b-button>
             <b-button type="reset" variant="danger" size="sm">Resetear</b-button>
           </b-form>
         </b-container>
@@ -105,6 +107,7 @@ export default {
       ciudad: {},
       loading: true,
       errored: false,
+      botonReservar: true,
       min: minDate,
       form: {
         email_donante: '',
@@ -163,6 +166,7 @@ export default {
           .get(API_LOCATION + 'centros/' + this.centro.id + '/turnos_disponibles?fecha=' + fecha)
           .then(response => {
             let listaHorarios = this.listarHorarios(response.data.turnos);
+            // this.toggleReservar = !(listaHorarios.length > 0);
             this.horarios = listaHorarios.length > 0 ? listaHorarios : [{
               text: "No hay turnos disponibles",
               value: '',
@@ -189,6 +193,11 @@ export default {
       console.log(this.form.fecha);
       this.setHorariosDisponibles(this.form.fecha);
     },
+    toggleReservar() {
+      if (this.form.hora_inicio.length < 6) {
+        this.botonReservar = false;
+      }
+    }
   },
   mounted() {
     axios
@@ -207,7 +216,6 @@ export default {
         })
         .catch(error => {
           console.log(error);
-          console.log("asdasdasda");
           this.errored = true;
         })
         .finally(() => {
