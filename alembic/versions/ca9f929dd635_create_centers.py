@@ -119,7 +119,7 @@ def upgrade():
         },
         {
             "name": "Deacon Mcgowan",
-            "address": "569 Proin Ave",
+            "address": "Av Mariano Castex 1412",
             "phone": "(113) 744-3458",
             "email": "luctus.et.ultrices@vestibulumlorem.com",
             "web_site": "https://www.Felicia.com",
@@ -128,13 +128,13 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "pending",
-            "published": False,
+            "published": True,
 
             "geo_location": "-39.42783, -131.22992"
         },
         {
             "name": "Yuli Powell",
-            "address": "P.O. Box 609, 8564 Metus. Road",
+            "address": "Iparraguirre 1701",
             "phone": "(934) 281-6656",
             "email": "vel@tellus.edu",
             "web_site": "https://www.Tatiana.com",
@@ -143,13 +143,13 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "pending",
-            "published": False,
+            "published": True,
 
-            "geo_location": "-73.07459, 110.51013"
+            "geo_location": "-34.745573, -58.451698"
         },
         {
             "name": "Linus Camacho",
-            "address": "P.O. Box 698, 9129 Fringilla. St.",
+            "address": "Banfield 1234.",
             "phone": "(872) 148-4734",
             "email": "ut@euligulaAenean.com",
             "web_site": "https://www.Jane.com",
@@ -158,13 +158,13 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "pending",
-            "published": False,
+            "published": True,
 
-            "geo_location": "43.8134, -68.89941"
+            "geo_location": "-34.747447, -58.383987"
         },
         {
             "name": "Joshua Blankenship",
-            "address": "428-1289 Urna. Av.",
+            "address": "Santiago del Estero 129",
             "phone": "(473) 165-2064",
             "email": "Suspendisse.sagittis.Nullam@Proin.org",
             "web_site": "https://www.Angelica.com",
@@ -173,13 +173,13 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "pending",
-            "published": False,
+            "published": True,
 
-            "geo_location": "-20.41078, -23.12832"
+            "geo_location": "-34.773909, -58.361731"
         },
         {
             "name": "Chaim Watson",
-            "address": "P.O. Box 858, 5148 Duis Av.",
+            "address": "Federico Lacroze 914",
             "phone": "(961) 321-3809",
             "email": "ullamcorper.Duis.at@non.co.uk",
             "web_site": "https://www.Renee.com",
@@ -188,13 +188,13 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "pending",
-            "published": False,
+            "published": True,
 
-            "geo_location": "60.17464, -108.22611"
+            "geo_location": "-34.517665, -58.763253"
         },
         {
             "name": "Fulton Simon",
-            "address": "966 Feugiat Avenue",
+            "address": "Faclucho 1239",
             "phone": "(995) 878-8690",
             "email": "Donec@ullamcorper.edu",
             "web_site": "https://www.Ciara.com",
@@ -203,13 +203,13 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "pending",
-            "published": False,
+            "published": True,
 
-            "geo_location": "-72.98666, -121.59964"
+            "geo_location": "-34.467201, -58.733340"
         },
         {
             "name": "Bert Marquez",
-            "address": "Ap #445-6941 Curabitur Street",
+            "address": "Combate de Ensenada 97",
             "phone": "(935) 722-0605",
             "email": "vulputate.mauris@sagittis.co.uk",
             "web_site": "https://www.Lunea.com",
@@ -218,13 +218,13 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "pending",
-            "published": False,
+            "published": True,
 
-            "geo_location": "8.67668, -155.07677"
+            "geo_location": "-34.449221, -58.790768"
         },
         {
             "name": "Paul Howell",
-            "address": "Ap #703-6249 Lorem Street",
+            "address": "General Guemes 2386",
             "phone": "(428) 942-5676",
             "email": "Donec.consectetuer.mauris@fermentumconvallisligula.com",
             "web_site": "https://www.Xena.com",
@@ -233,9 +233,9 @@ def upgrade():
             "opening": "09:00:00",
             "closing": "16:00:00",
             "state": "pending",
-            "published": False,
+            "published": True,
 
-            "geo_location": "54.42302, 10.20175"
+            "geo_location": "-34.422193, -58.595917"
         },
         {
             "name": "Berk Phillips",
