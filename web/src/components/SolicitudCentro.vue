@@ -5,7 +5,7 @@
     </section>
 
     <section v-else>
-      <p><span class="titulo">Solicitar lacarga de un nuevo</span><br/>
+      <p><span class="titulo">Solicitar la carga de un nuevo</span><br/>
         <span class="titulo tituloba">Centro de Ayuda</span>
       </p>
       <b-container class="mt-5">
@@ -80,12 +80,8 @@
                   label="Tipo de Centro:"
                   label-for="input-tipo"
               >
-                <b-form-input
-                    id="input-tipo"
-                    v-model="form.tipo"
-                    required
-                    placeholder="Merendero"
-                ></b-form-input>
+               <b-form-select v-model="form.tipo" :options="options" required></b-form-select>
+
               </b-form-group>
 
               <b-form-group
@@ -192,13 +188,19 @@ export default {
       errored: false,
       disableEnviar: true,
       marker: latLng(0, 0),
+      options: [
+          { value: null, text: 'Selecciona el tipo de centro' },
+          { value: 'alimentos', text: 'alimentos' },
+          { value: 'salud', text: 'salud' },
+          { value: 'general' , text: 'general' }
+      ],
       form: {
         nombre: '',
         direccion: '',
         telefono: '',
         hora_apertura: '',
         hora_cierre: '',
-        tipo: '',
+        tipo: null,
         web: '',
         email: '',
         ciudad_id: '',
@@ -230,7 +232,7 @@ export default {
       this.form.telefono = ''
       this.form.hora_apertura = ''
       this.form.hora_cierre = ''
-      this.form.tipo = ''
+      this.form.tipo = null
       this.form.web = ''
       this.form.email = ''
       this.form.ciudad_id = ''
@@ -277,6 +279,7 @@ export default {
           .catch(() => {
             this.showErrorAlert = true;
             // this.resetForm();
+            console.log('Error al subir el formulario')
           })
     },
     onVerify: function (response) {

@@ -73,13 +73,16 @@ def create():
         if data is None:
             return jsonify({'error': [
                 {'status': 'Bad Request', 'error_msg': 'Solicitud no valida', 'error_code': 400}]}), 400
+        if data['tipo'] not in (Center.available_center_types()):
+            return jsonify({'error': [
+                {'status': 'Bad Request', 'error_msg': 'El tipo de centro no es valido', 'error_code': 400}]}), 400
         new_center = Center()
         new_center.name = data['nombre']
         new_center.address = data['direccion']
         new_center.phone = data['telefono']
         new_center.opening = data['hora_apertura']
         new_center.closing = data['hora_cierre']
-        new_center.type = data['tipo']
+        new_center.center_type = data['tipo']
         new_center.web_site = data['web']
         new_center.email = data['email']
         if 'ciudad_id' in data.keys():
