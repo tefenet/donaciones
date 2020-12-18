@@ -9,6 +9,7 @@ from app.resources import issue, center, user, auth, sistema, shifts
 from app.resources.api import issue as api_issue
 from app.resources.api import center as api_center
 from app.resources.api import shifts as api_shifts
+from app.resources.api import stats as api_stats
 from app.helpers import handler
 from app.helpers import auth as helper_auth
 from app.models.sistema import Sistema as Sys
@@ -122,6 +123,8 @@ def create_app(environment="production"):
     app.add_url_rule("/api/v1.0/centros/<int:id>/turnos_disponibles", "api_shifts_avalaible_by_date", api_shifts.avalaible_by_date)
     app.add_url_rule("/api/v1.0/centros/<int:id>/reserva", "api_shifts_new", api_shifts.create, methods=["POST"])
 
+    # api stats
+    app.add_url_rule("/api/v1.0/stats/<int:month>", "api_stats_countByMonth", api_stats.shifts_by_month)
 
     # Handlers
     app.register_error_handler(404, handler.not_found_error)
