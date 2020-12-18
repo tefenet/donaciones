@@ -126,6 +126,7 @@ def create_app(environment="production"):
     # api stats
     app.add_url_rule("/api/v1.0/stats/byMonth/<int:month>", "api_stats_countByMonth", api_stats.shifts_by_month)
     app.add_url_rule("/api/v1.0/stats/byCity/<int:city_id>", "api_stats_countByCity", api_stats.shifts_by_city)
+    app.add_url_rule("/api/v1.0/stats/topSixCity", "api_stats_top_six", api_stats.top_six_cities)
 
     # Handlers
     app.register_error_handler(404, handler.not_found_error)

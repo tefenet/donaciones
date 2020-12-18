@@ -64,19 +64,6 @@ class Shifts(Base):
     def get_by_id(cls, shift_id):
         return cls.query.get(shift_id)
 
-    # @classmethod
-    # def search_by_center_name(cls, center_name):
-    #     """Este método devuelve una lista con todos los turnos pertenecientes a un centro 'center_name'
-    #     Si no se encuentran turnos devuelve una lista vacía"""
-    #     return cls.query.filter(Center.name == center_name).all()
-
-    # @classmethod
-    # def search_by_center_name_like(cls, search_name):
-    #     """Este método devuelve una lista con todos los turnos pertenecientes a un centro, o centros que
-    #     contengan 'search_name' en su nombre. Si no se encuentran turnos devuelve una lista vacía"""
-    #
-    #     return cls.query.filter(Center.name.like("%{}%".format(search_name))).all()
-
     @classmethod
     def search_by_center_id(cls, center_id):
         """Este método devuelve una lista con todos los turnos pertenecientes a un centro con id 'center_id'

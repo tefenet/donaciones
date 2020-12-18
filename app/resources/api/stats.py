@@ -44,7 +44,7 @@ def shifts_by_month(month):
 
 
 def shifts_by_city(city_id):
-    """Devuelve los turnos totales por tipo de centro para una ciudad indicada, recibe el id de la ciudad.
+    """dada una ciudad Devuelve los turnos totales por tipo de centro de la ciudad indicada, recibe el id de la ciudad.
     """
     try:
         shifts_of_city = list(chain(*[c.shifts for c in Center.get_by_city(city_id)]))
@@ -55,3 +55,15 @@ def shifts_by_city(city_id):
         return get_json_error_msg(error_msg=msg, error_code=error_code)
     except (OSError, ConnectionError) as e:
         return get_json_error_msg(error_code=500, error_msg="Error en el servidor", status="internal server error")
+
+
+def top_six_cities():
+    """Devuelve las 6 ciudaes con mas turnos para centros de alimentos en este mes, y sus cantidades respectivas.no recibe parametros
+        """
+    today=date.today()
+    inicio_de_mes = today.replace(day=1)
+    fin_de_mes = today.replace(day=monthrange(2020, today.month)[1])
+    shifts_of_month =list(filter(lambda sh: sh.center.center_type == 'alimentos', Shifts.query_shifts_between(inicio_de_mes, fin_de_mes)))
+    city_names = get_cities_dict()
+    city_counts = list(map(lambda sh: city_names[sh.center.city_id], shifts_of_month))
+    return jsonify(dict(Counter(city_counts).most_common(6)))
