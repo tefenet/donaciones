@@ -1,7 +1,11 @@
 import urllib
 from calendar import monthrange
 from collections import Counter
+from itertools import chain
+
 from flask import jsonify
+
+from app.models.center import Center
 from app.models.shifts import Shifts
 from datetime import date
 from json import loads
@@ -31,6 +35,20 @@ def shifts_by_month(month):
         shifts_of_month = Shifts.query_shifts_between(inicio_de_mes, fin_de_mes)
         city_names = get_cities_dict()
         city_counts = list(map(lambda sh: city_names[sh.center.city_id], shifts_of_month))
+        return jsonify(Counter(city_counts))
+    except ValueError as e:
+        msg, error_code = str(e), 404
+        return get_json_error_msg(error_msg=msg, error_code=error_code)
+    except (OSError, ConnectionError) as e:
+        return get_json_error_msg(error_code=500, error_msg="Error en el servidor", status="internal server error")
+
+
+def shifts_by_city(city_id):
+    """Devuelve los turnos totales por tipo de centro para una ciudad indicada, recibe el id de la ciudad.
+    """
+    try:
+        shifts_of_city = list(chain(*[c.shifts for c in Center.get_by_city(city_id)]))
+        city_counts = list(map(lambda sh: sh.center.center_type, shifts_of_city))
         return jsonify(Counter(city_counts))
     except ValueError as e:
         msg, error_code = str(e), 404

@@ -136,6 +136,11 @@ class Center(Base):
         return cls.query.filter(cls.name == center_name).first()
 
     @classmethod
+    def get_by_city(cls, city_id):
+        """Retorna el centro con id centro_id"""
+        return cls.query.filter(cls.city_id == city_id).all()
+
+    @classmethod
     def query_by_name(cls, name):
         return cls.query.filter(cls.name.contains(name))
 

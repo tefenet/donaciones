@@ -124,7 +124,8 @@ def create_app(environment="production"):
     app.add_url_rule("/api/v1.0/centros/<int:id>/reserva", "api_shifts_new", api_shifts.create, methods=["POST"])
 
     # api stats
-    app.add_url_rule("/api/v1.0/stats/<int:month>", "api_stats_countByMonth", api_stats.shifts_by_month)
+    app.add_url_rule("/api/v1.0/stats/byMonth/<int:month>", "api_stats_countByMonth", api_stats.shifts_by_month)
+    app.add_url_rule("/api/v1.0/stats/byCity/<int:city_id>", "api_stats_countByCity", api_stats.shifts_by_city)
 
     # Handlers
     app.register_error_handler(404, handler.not_found_error)
