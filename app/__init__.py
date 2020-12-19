@@ -10,6 +10,7 @@ from app.resources.api import issue as api_issue
 from app.resources.api import center as api_center
 from app.resources.api import shifts as api_shifts
 from app.resources.api import stats as api_stats
+from app.resources.api import index as api_index
 from app.helpers import handler
 from app.helpers import auth as helper_auth
 from app.models.sistema import Sistema as Sys
@@ -41,7 +42,7 @@ def create_app(environment="production"):
     app.jinja_env.globals.update(has_perm=auth.user_has_permission)
     app.jinja_env.globals.update(site_variables=Sys.get_sistema)
 
-    #permite usar URLs con o sin trailing slahses forma indistinta
+    # permite usar URLs con o sin trailing slahses forma indistinta
     app.url_map.strict_slashes = False
 
     # Autenticación
@@ -96,7 +97,6 @@ def create_app(environment="production"):
     app.add_url_rule("/cmd", "update_form", shifts.update_form)
     # app.add_url_rule("/turnos/choices", "get_choices", center.)
 
-
     # Ruta de configuración del sistema
     app.add_url_rule("/sistema/configurar", "system_configure", sistema.show)
     app.add_url_rule("/sistema/configurar", "system_configure_post", sistema.update, methods=["POST"])
@@ -110,8 +110,10 @@ def create_app(environment="production"):
         return render_template("home.html")
 
     # Rutas de API-rest v1.0
+    app.add_url_rule("/api/v1.0/", "api_index", api_index.index)
+
     # api issue
-    app.add_url_rule("/api/consultas", "api_issue_index", api_issue.index)
+    app.add_url_rule("/api/v1.0/consultas", "api_issue_index", api_issue.index)
 
     # Rutas de API-rest centros
     app.add_url_rule("/api/v1.0/centros/", "api_center_index", api_center.index)
@@ -120,7 +122,8 @@ def create_app(environment="production"):
     app.add_url_rule("/api/v1.0/centros/<int:center_id>/", "centros", api_center.show)
 
     # api shifts
-    app.add_url_rule("/api/v1.0/centros/<int:id>/turnos_disponibles", "api_shifts_avalaible_by_date", api_shifts.avalaible_by_date)
+    app.add_url_rule("/api/v1.0/centros/<int:id>/turnos_disponibles", "api_shifts_avalaible_by_date",
+                     api_shifts.avalaible_by_date)
     app.add_url_rule("/api/v1.0/centros/<int:id>/reserva", "api_shifts_new", api_shifts.create, methods=["POST"])
 
     # api stats
