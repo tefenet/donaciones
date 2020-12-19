@@ -2,13 +2,16 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 
 import Home from '@/components/Home'
-import Estadisticas from '@/components/Estadisticas'
 import Map from '@/components/Map'
 import SolicitudCentro from '@/components/SolicitudCentro'
 import Solicitudes from '@/components/Solicitudes'
 import SolicitudTurno from '@/components/SolicitudTurno'
 import SolicitudesTurno from '@/components/SolicitudesTurno'
 import NotFound404 from '@/components/NotFound404'
+import EstadisticasPrincipal from '@/components/stats/main'
+import EstadisticasTurnosPorMes from '@/components/stats/turnosPorMes'
+import EstadisticasTurnosPorCiudad from '@/components/stats/turnosPorCiudad'
+import EstadisticasTopCiudades from '@/components/stats/topCiudades'
 
 Vue.use(VueRouter)
 
@@ -18,12 +21,6 @@ const routes = [
         name: 'Home',
         component: Home,
         meta: {title: 'Inicio'}
-    },
-    {
-        path: '/estadisticas',
-        name: 'Estadisticas',
-        component: Estadisticas,
-        meta: {title: 'Estadísticas'}
     },
     {
         path: '/Mapa',
@@ -59,7 +56,32 @@ const routes = [
         path: "*",
         component: NotFound404,
         meta: {title: 'Error 404'}
-    }
+    },
+    {
+        path: '/estadisticas',
+        name: 'EstadisticasPrincipal',
+        component: EstadisticasPrincipal,
+        meta: {title: 'Estadísticas'}
+    },
+    {
+        path: '/estadisticas/turnospormes',
+        name: 'EstadisticasTurnosPorMes',
+        component: EstadisticasTurnosPorMes,
+        meta: {title: 'Estadisticas: Turnos por mes'}
+    },
+    {
+        path: '/estadisticas/turnosporciudad',
+        name: 'EstadisticasTurnosPorCiudad',
+        component: EstadisticasTurnosPorCiudad,
+        meta: {title: 'Estadisticas: Turnos por ciudad'}
+    },
+    {
+        path: '/estadisticas/topCiudades',
+        name: 'EstadisticasTopCiudades',
+        component: EstadisticasTopCiudades,
+        meta: {title: 'Estadisticas: Top 6 ciudades'}
+    },
+
 ]
 
 const router = new VueRouter({
