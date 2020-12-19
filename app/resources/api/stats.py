@@ -44,7 +44,7 @@ def shifts_by_month(month):
 
 
 def shifts_by_city(city_id):
-    """dada una ciudad Devuelve los turnos totales por tipo de centro de la ciudad indicada, recibe el id de la ciudad.
+    """dada una ciudad devuelve los turnos totales por tipo de centro de la ciudad indicada, recibe el id de la ciudad.
     """
     try:
         shifts_of_city = list(chain(*[c.shifts for c in Center.get_by_city(city_id)]))
