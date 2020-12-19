@@ -31,7 +31,9 @@ def shifts_by_month(month):
     """
     try:
         inicio_de_mes = date(2020, month, 1)
-        fin_de_mes = date(2020, month, 30).replace(day=monthrange(2020, month)[1])
+        fin_de_mes = date(2020, month, 28) if month == 2 else date(2020, month, 30).replace(
+            day=monthrange(2020, month)[1])
+        print(fin_de_mes)
         shifts_of_month = Shifts.query_shifts_between(inicio_de_mes, fin_de_mes)
         city_names = get_cities_dict()
         city_counts = list(map(lambda sh: city_names[sh.center.city_id], shifts_of_month))
@@ -60,10 +62,11 @@ def shifts_by_city(city_id):
 def top_six_cities():
     """Devuelve las 6 ciudaes con mas turnos para centros de alimentos en este mes, y sus cantidades respectivas.no recibe parametros
         """
-    today=date.today()
+    today = date.today()
     inicio_de_mes = today.replace(day=1)
     fin_de_mes = today.replace(day=monthrange(2020, today.month)[1])
-    shifts_of_month =list(filter(lambda sh: sh.center.center_type == 'alimentos', Shifts.query_shifts_between(inicio_de_mes, fin_de_mes)))
+    shifts_of_month = list(
+        filter(lambda sh: sh.center.center_type == 'alimentos', Shifts.query_shifts_between(inicio_de_mes, fin_de_mes)))
     city_names = get_cities_dict()
     city_counts = list(map(lambda sh: city_names[sh.center.city_id], shifts_of_month))
     return jsonify(dict(Counter(city_counts).most_common(6)))
