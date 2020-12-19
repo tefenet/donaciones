@@ -1,35 +1,50 @@
 <template>
   <div>
     <h1>Estadisticas</h1>
-    <p>Acá va el componente de las estadísticas!</p>
+    <p>Top 6 de ciudades con mas donaciones de alimentos </p>
     <b-container>
-      <ve-pie :data="chartData"></ve-pie>
+      <ve-bar :data="chartData"></ve-bar>
     </b-container>
   </div>
 </template>
 
 <script>
-import VePie from 'v-charts/lib/pie.common'
+import VeBar from 'v-charts/lib/bar.common'
+import axios from "axios";
+import {API_LOCATION} from "@/config";
 
 export default {
   name: 'Estadisticas',
-  components: {VePie},
+  components: {VeBar},
   data() {
     return {
+      ciudades: [],
       chartData: {
-        columns: ['date', 'cost', 'profit'],
+        columns: ['ciudad', 'donaciones'],
         rows: [
-          {'date': '01/01', 'cost': 123, 'profit': 3},
-          {'date': '01/02', 'cost': 1223, 'profit': 6},
-          {'date': '01/03', 'cost': 2123, 'profit': 90},
-          {'date': '01/04', 'cost': 4123, 'profit': 12},
-          {'date': '01/05', 'cost': 3123, 'profit': 15},
-          {'date': '01/06', 'cost': 7123, 'profit': 20}
         ]
       }
     }
+  },
+  methods: {
+    /*addCenterToGraph(ciudad){
+      this.chartData.rows.push({'ciudad': ciudad[1] , 'donaciones': ciudad[1]});
+    }*/
+  },
+  mounted() {
+    axios.get(API_LOCATION + 'stats/topSixCities')
+    .then(response => {
+      this.ciudades = response.data;
+      //this.centros.forEach(this.addCenterToGraph());
+      this.chartData.rows.push({'ciudad': 'La Plata', 'donaciones': 6}); //push de un elemento de prueba
+    })
+    .catch(error => {
+      console.log(error);
+    })
   }
+
 }
+
 </script>
 <style>
 </style>
