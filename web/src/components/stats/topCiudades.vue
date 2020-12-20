@@ -14,7 +14,7 @@ import axios from "axios";
 import {API_LOCATION} from "@/config";
 
 export default {
-  name: 'Estadisticas',
+  name: 'StatsTopCiudades',
   components: {VeBar},
   data() {
     return {

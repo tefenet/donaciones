@@ -12,7 +12,7 @@
 import VePie from 'v-charts/lib/pie.common'
 
 export default {
-  name: 'Estadisticas',
+  name: 'StatsDonacionesPorMes',
   components: {VePie},
   data() {
     return {
