@@ -116,5 +116,117 @@ def upgrade():
     op.bulk_insert(shifts_table, turnos)
 
 
+    turnos = []
+    hora_inicio = time(9, 00)
+    hora_fin = time(9, 30)
+    for i in range(1, 6):
+        turno = {
+            'donor_email': 'donor{}@test.com'.format(i), 'donor_phone': '+54 555 555-5555',
+            'start_time': hora_inicio, 'end_time': hora_fin, 'date': '2020-11-19', 'center_id': 4
+        }
+        hora_inicio = increment_time(hora_inicio)
+        hora_fin = increment_time(hora_fin)
+        turnos.append(turno)
+    op.bulk_insert(shifts_table, turnos)
+
+
+    turnos = []
+    hora_inicio = time(9, 00)
+    hora_fin = time(9, 30)
+    for i in range(1, 8):
+        turno = {
+            'donor_email': 'donor{}@test.com'.format(i), 'donor_phone': '+54 555 555-5555',
+            'start_time': hora_inicio, 'end_time': hora_fin, 'date': '2020-11-14', 'center_id': 5
+        }
+        hora_inicio = increment_time(hora_inicio)
+        hora_fin = increment_time(hora_fin)
+        turnos.append(turno)
+    op.bulk_insert(shifts_table, turnos)
+
+    turnos = []
+    hora_inicio = time(9, 00)
+    hora_fin = time(9, 30)
+    for i in range(1, 4):
+        turno = {
+            'donor_email': 'donor{}@test.com'.format(i), 'donor_phone': '+54 555 555-5555',
+            'start_time': hora_inicio, 'end_time': hora_fin, 'date': '2020-12-19', 'center_id': 6
+        }
+        hora_inicio = increment_time(hora_inicio)
+        hora_fin = increment_time(hora_fin)
+        turnos.append(turno)
+    op.bulk_insert(shifts_table, turnos)
+
+
+    turnos = []
+    hora_inicio = time(9, 00)
+    hora_fin = time(9, 30)
+    for i in range(1, 4):
+        turno = {
+            'donor_email': 'donor{}@test.com'.format(i), 'donor_phone': '+54 555 555-5555',
+            'start_time': hora_inicio, 'end_time': hora_fin, 'date': '2020-12-19', 'center_id': 7
+        }
+        hora_inicio = increment_time(hora_inicio)
+        hora_fin = increment_time(hora_fin)
+        turnos.append(turno)
+    op.bulk_insert(shifts_table, turnos)
+
+    turnos = []
+    hora_inicio = time(9, 00)
+    hora_fin = time(9, 30)
+    for i in range(1, 4):
+        turno = {
+            'donor_email': 'donor{}@test.com'.format(i), 'donor_phone': '+54 555 555-5555',
+            'start_time': hora_inicio, 'end_time': hora_fin, 'date': '2020-12-19', 'center_id': 8
+        }
+        hora_inicio = increment_time(hora_inicio)
+        hora_fin = increment_time(hora_fin)
+        turnos.append(turno)
+    op.bulk_insert(shifts_table, turnos)
+
+
+    turnos = []
+    hora_inicio = time(9, 00)
+    hora_fin = time(9, 30)
+    for i in range(1, 6):
+        turno = {
+            'donor_email': 'donor{}@test.com'.format(i), 'donor_phone': '+54 555 555-5555',
+            'start_time': hora_inicio, 'end_time': hora_fin, 'date': '2020-12-19', 'center_id': 11
+        }
+        hora_inicio = increment_time(hora_inicio)
+        hora_fin = increment_time(hora_fin)
+        turnos.append(turno)
+    op.bulk_insert(shifts_table, turnos)
+
+
+
+    turnos = []
+    hora_inicio = time(9, 00)
+    hora_fin = time(9, 30)
+    for i in range(1, 8):
+        turno = {
+            'donor_email': 'donor{}@test.com'.format(i), 'donor_phone': '+54 555 555-5555',
+            'start_time': hora_inicio, 'end_time': hora_fin, 'date': '2020-12-19', 'center_id': 12
+        }
+        hora_inicio = increment_time(hora_inicio)
+        hora_fin = increment_time(hora_fin)
+        turnos.append(turno)
+    op.bulk_insert(shifts_table, turnos)
+
+
+
+    turnos = []
+    hora_inicio = time(9, 00)
+    hora_fin = time(9, 30)
+    for i in range(1, 3):
+        turno = {
+            'donor_email': 'donor{}@test.com'.format(i), 'donor_phone': '+54 555 555-5555',
+            'start_time': hora_inicio, 'end_time': hora_fin, 'date': '2020-12-19', 'center_id': 13
+        }
+        hora_inicio = increment_time(hora_inicio)
+        hora_fin = increment_time(hora_fin)
+        turnos.append(turno)
+    op.bulk_insert(shifts_table, turnos)
+
+
 def downgrade():
     op.drop_table('shifts')

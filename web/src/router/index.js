@@ -9,8 +9,8 @@ import SolicitudTurno from '@/components/SolicitudTurno'
 import SolicitudesTurno from '@/components/SolicitudesTurno'
 import NotFound404 from '@/components/NotFound404'
 import EstadisticasPrincipal from '@/components/stats/main'
-import EstadisticasTurnosPorMes from '@/components/stats/turnosPorMes'
-import EstadisticasTurnosPorCiudad from '@/components/stats/turnosPorCiudad'
+import TurnosPorMes from '@/components/stats/turnosPorMes'
+import EstadisticasTipoDonacionesPorCiudad from '@/components/stats/tipoDonacionesPorCiudad'
 import EstadisticasTopCiudades from '@/components/stats/topCiudades'
 
 Vue.use(VueRouter)
@@ -61,25 +61,25 @@ const routes = [
         path: '/estadisticas',
         name: 'EstadisticasPrincipal',
         component: EstadisticasPrincipal,
-        meta: {title: 'Estadísticas'}
+        meta: {title: 'Estadísticas de donaciones'}
     },
     {
-        path: '/estadisticas/turnospormes',
-        name: 'EstadisticasTurnosPorMes',
-        component: EstadisticasTurnosPorMes,
+        path: '/estadisticas/turnosByMonth',
+        name: 'TurnosPorMes',
+        component: TurnosPorMes,
         meta: {title: 'Estadisticas: Turnos por mes'}
     },
     {
-        path: '/estadisticas/turnosporciudad',
-        name: 'EstadisticasTurnosPorCiudad',
-        component: EstadisticasTurnosPorCiudad,
-        meta: {title: 'Estadisticas: Turnos por ciudad'}
+        path: '/estadisticas/tipodonacionesporciudad',
+        name: 'EstadisticasTipoDonacionesPorCiudad',
+        component: EstadisticasTipoDonacionesPorCiudad,
+        meta: {title: 'Estadisticas: Tipo donaciones por ciudad'}
     },
     {
-        path: '/estadisticas/topCiudades',
+        path: '/estadisticas/topciudades',
         name: 'EstadisticasTopCiudades',
         component: EstadisticasTopCiudades,
-        meta: {title: 'Estadisticas: Top 6 ciudades'}
+        meta: {title: 'Estadisticas: Top 6 ciudades con mas donaciones'}
     },
 
 ]

@@ -48,14 +48,85 @@ def upgrade():
             "phone": "(221) 426-5424",
             "email": "colegiosagradocorazon@hotmail.com",
             "web_site": "www.colegiosagradolaplata.com.ar",
-            "city_id": 1,
+            "city_id": 19,
             "type": "alimentos",
             "opening": "08:00:00",
-            "closing": "16:00:00",
+            "closing": "22:00:00",
             "state": "approved",
             "published": True,
 
-            "geo_location": "-34.92071991722597, -57.94590649040175"
+            "geo_location": "-34.83571991722597, -57.94590649040175"
+        },
+        {
+            "name": "Instituto Medico Plantense",
+            "address": "Av. 51 n 315",
+            "phone": "(221) 425 8394",
+            "email": "donaciones@institutomedicoplatense.com.ar",
+            "web_site": "institutomedicoplatense.com.ar",
+            "city_id": 19,
+            "type": "salud",
+            "opening": "08:00:00",
+            "closing": "22:00:00",
+            "state": "approved",
+            "published": True,
+            "geo_location": "-34.90965038981363, -57.943757871434286"
+        },
+        {
+            "name": "Iglesia nuestra señora de la misericordia",
+            "address": "Av. 45 n 315",
+            "phone": "(221) 436 2394",
+            "email": "nuestrasenoradelamisericorida@churches.com",
+            "web_site": "nuestrasenoradelamisericorida.com.ar",
+            "city_id": 19,
+            "type": "general",
+            "opening": "08:00:00",
+            "closing": "22:00:00",
+            "state": "approved",
+            "published": True,
+
+            "geo_location": "-34.92003063901663, -57.96338471684177"
+        },
+        {
+            "name": "Merendero: Los pibes del Almirante",
+            "address": "A. Brown al 5600",
+            "phone": "(011) 453-5277",
+            "email": "merenderoalmibrown@hotmail.com",
+            "web_site": "www.merenderoalmibrown.com.ar",
+            "city_id": 1,
+            "type": "alimentos",
+            "opening": "08:00:00",
+            "closing": "22:00:00",
+            "state": "approved",
+            "published": True,
+            "geo_location": "-34.83906440261315, -58.37168732165909",
+        },
+        {
+            "name": "Clinica Almirante Brown",
+            "address": "Roca al 2500",
+            "phone": "(011) 433-5677",
+            "email": "almibrownclinical@hotmail.com",
+            "web_site": "www.almibrownclinic.com.ar",
+            "city_id": 1,
+            "type": "salud",
+            "opening": "08:00:00",
+            "closing": "22:00:00",
+            "state": "approved",
+            "published": True,
+            "geo_location": "-34.83106480521315, -58.3716879165909"
+        },
+        {
+            "name": "Club de barrio Almirante Brown",
+            "address": "San martin al 5200",
+            "phone": "(011) 426-5677",
+            "email": "almibrown@hotmail.com",
+            "web_site": "www.almibrown.com.ar",
+            "city_id": 1,
+            "type": "general",
+            "opening": "08:00:00",
+            "closing": "22:00:00",
+            "state": "approved",
+            "published": True,
+            "geo_location": "-34.83106480221315, -58.3716879165909"
         },
         {
             "name": "Hospital Garrahan",
@@ -66,10 +137,9 @@ def upgrade():
             "city_id": 2,
             "type": "salud",
             "opening": "08:00:00",
-            "closing": "16:00:00",
+            "closing": "22:00:00",
             "state": "approved",
             "published": True,
-
             "geo_location": "-34.63065329193494, -58.393359430692904"
         },
         {
@@ -81,10 +151,9 @@ def upgrade():
             "city_id": 2,
             "type": "salud",
             "opening": "08:00:00",
-            "closing": "16:00:00",
+            "closing": "22:00:00",
             "state": "approved",
             "published": True,
-
             "geo_location": "-34.60601607563314, -58.425758801858386"
         },
         {
@@ -93,29 +162,13 @@ def upgrade():
             "phone": "(225) 427-5474",
             "email": "",
             "web_site": "",
-            "city_id": 5,
+            "city_id": 129,
             "type": "alimentos",
-            "opening": "10:00:00",
-            "closing": "18:00:00",
+            "opening": "08:00:00",
+            "closing": "22:00:00",
             "state": "approved",
             "published": True,
-
             "geo_location": "-37.32932776782616, -59.13628374661565"
-        },
-        {
-            "name": "Instituto Medico Plantense",
-            "address": "Av. 51 n 315",
-            "phone": "(221) 425 8394",
-            "email": "donaciones@institutomedicoplatense.com.ar",
-            "web_site": "institutomedicoplatense.com.ar",
-            "city_id": 1,
-            "type": "salud",
-            "opening": "10:00:00",
-            "closing": "18:00:00",
-            "state": "approved",
-            "published": True,
-
-            "geo_location": "-34.90965038981363, -57.943757871434286"
         },
         {
             "name": "Deacon Mcgowan",
@@ -123,13 +176,12 @@ def upgrade():
             "phone": "(113) 744-3458",
             "email": "luctus.et.ultrices@vestibulumlorem.com",
             "web_site": "https://www.Felicia.com",
-            "city_id": 8,
+            "city_id": 2,
             "type": "alimentos",
             "opening": "09:00:00",
-            "closing": "16:00:00",
-            "state": "pending",
+            "closing": "22:00:00",
+            "state": "approved",
             "published": True,
-
             "geo_location": "-39.42783, -131.22992"
         },
         {
@@ -138,13 +190,12 @@ def upgrade():
             "phone": "(934) 281-6656",
             "email": "vel@tellus.edu",
             "web_site": "https://www.Tatiana.com",
-            "city_id": 17,
+            "city_id": 3,
             "type": "alimentos",
             "opening": "09:00:00",
             "closing": "16:00:00",
-            "state": "pending",
+            "state": "approved",
             "published": True,
-
             "geo_location": "-34.745573, -58.451698"
         },
         {
@@ -153,13 +204,12 @@ def upgrade():
             "phone": "(872) 148-4734",
             "email": "ut@euligulaAenean.com",
             "web_site": "https://www.Jane.com",
-            "city_id": 22,
+            "city_id": 4,
             "type": "alimentos",
             "opening": "09:00:00",
             "closing": "16:00:00",
-            "state": "pending",
+            "state": "approved",
             "published": True,
-
             "geo_location": "-34.747447, -58.383987"
         },
         {
@@ -168,13 +218,12 @@ def upgrade():
             "phone": "(473) 165-2064",
             "email": "Suspendisse.sagittis.Nullam@Proin.org",
             "web_site": "https://www.Angelica.com",
-            "city_id": 23,
+            "city_id": 6,
             "type": "alimentos",
             "opening": "09:00:00",
             "closing": "16:00:00",
-            "state": "pending",
+            "state": "approved",
             "published": True,
-
             "geo_location": "-34.773909, -58.361731"
         },
         {
@@ -187,9 +236,8 @@ def upgrade():
             "type": "alimentos",
             "opening": "09:00:00",
             "closing": "16:00:00",
-            "state": "pending",
+            "state": "approved",
             "published": True,
-
             "geo_location": "-34.517665, -58.763253"
         },
         {
@@ -204,7 +252,6 @@ def upgrade():
             "closing": "16:00:00",
             "state": "pending",
             "published": True,
-
             "geo_location": "-34.467201, -58.733340"
         },
         {
@@ -217,9 +264,8 @@ def upgrade():
             "type": "alimentos",
             "opening": "09:00:00",
             "closing": "16:00:00",
-            "state": "pending",
+            "state": "approved",
             "published": True,
-
             "geo_location": "-34.449221, -58.790768"
         },
         {
