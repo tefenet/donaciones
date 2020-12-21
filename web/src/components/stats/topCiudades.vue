@@ -26,25 +26,19 @@ export default {
       }
     }
   },
-  methods: {
-    /*addCenterToGraph(ciudad){
-      this.chartData.rows.push({'ciudad': ciudad[1] , 'donaciones': ciudad[1]});
-    }*/
-  },
   mounted() {
     axios.get(API_LOCATION + 'stats/topSixCities')
     .then(response => {
       this.ciudades = response.data;
-      //this.centros.forEach(this.addCenterToGraph());
-      this.chartData.rows.push({'ciudad': 'La Plata', 'donaciones': 6}); //push de un elemento de prueba
+      Object.keys(this.ciudades).forEach(key => {
+        this.chartData.rows.push({'ciudad': key , 'donaciones': this.ciudades[key] });
+      });
     })
     .catch(error => {
       console.log(error);
     })
   }
-
 }
-
 </script>
 <style>
 </style>

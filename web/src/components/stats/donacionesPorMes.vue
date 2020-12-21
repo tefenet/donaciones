@@ -1,7 +1,7 @@
 <template>
   <div>
     <h1>Estadisticas</h1>
-    <p>Acá va el componente de las estadísticas!</p>
+    <p>Donaciones realizadas por mes en las distintas ciudades</p>
     <b-container>
       <ve-pie :data="chartData"></ve-pie>
     </b-container>
