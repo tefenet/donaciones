@@ -19,7 +19,7 @@
           <span>No hay datos disponibles para graficar.</span>
         </section>
         <section v-else>
-          <ve-bar :data="turnosMunicipios"></ve-bar>
+          <ve-ring :data="turnosMunicipios" :settings="ringSettings"></ve-ring>
         </section>
       </b-container>
     </b-container>
@@ -27,16 +27,19 @@
 </template>
 
 <script>
-import VeBar from 'v-charts/lib/bar.common'
+import VeRing from 'v-charts/lib/ring.common'
 import axios from "axios";
 import {API_LOCATION} from "@/config";
 
 export default {
   name: 'TurnosPorMes',
-  components: {VeBar},
+  components: {VeRing},
   data() {
     return {
       turnosMunicipios: {},
+      ringSettings: {
+        roseType: 'radius', limitShowNum: 7
+      },
       selected: null,
       empty: false,
       meses: [{value: 1, text: 'Enero'}, {value: 2, text: 'Febrero'}, {value: 3, text: 'Marzo'},
