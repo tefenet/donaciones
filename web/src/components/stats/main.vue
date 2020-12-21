@@ -15,7 +15,8 @@
         <div class="d-flex justify-content-center">
           <b-row align-h="center" class="d-flex align-items-stretch flex-row">
             <b-col md="4" class="mt-4">
-              <b-card title="Estadísticas de donaciones por ciudad en cada mes"
+              <b-card :img-src=imgEstadisticas1
+                      title="Estadísticas de donaciones por ciudad en cada mes"
                       img-alt=img-top
                       tag="article"
                       class="mb-2"
@@ -29,7 +30,8 @@
               </b-card>
             </b-col>
             <b-col md="4" class="mt-4">
-              <b-card title="Estadistícas de tipos de donaciones en cada ciudad"
+              <b-card :img-src=imgEstadisticas2
+                      title="Estadistícas de tipos de donaciones en cada ciudad"
                       img-alt=img-top
                       tag="article"
                       class="mb-2"
@@ -45,10 +47,12 @@
               </b-card>
             </b-col>
             <b-col md="4" class="mt-4">
-              <b-card title="Top 6 ciudades con mas donaciones de alimentos por mes"
-                      img-alt=img-top
-                      tag="article"
-                      class="mb-2"
+              <b-card
+                  :img-src=imgEstadisticas3
+                  title="Top 6 ciudades con mas donaciones de alimentos por mes"
+                  img-alt=img-top
+                  tag="article"
+                  class="mb-2"
               >
                 <b-card-text>
                   Estadísticas de las 6 ciudaes con mas turnos para centros de alimentos en este mes, y sus cantidades
@@ -68,9 +72,11 @@
 </template>
 <script>
 import estadisticas from "@/assets/estadisticas.jpg"
+import imgEstadisticas1 from "@/assets/estadisticas_1.png"
+import imgEstadisticas2 from "@/assets/estadisticas_2.png"
+import imgEstadisticas3 from "@/assets/estadisticas_3.png"
 
 export default {
-
   name: 'Estadisticas',
   props: {
     msg: String,
@@ -78,6 +84,9 @@ export default {
   data: function () {
     return {
       estadisticas: estadisticas,
+      imgEstadisticas1: imgEstadisticas1,
+      imgEstadisticas2: imgEstadisticas2,
+      imgEstadisticas3: imgEstadisticas3,
     }
   }
 }
